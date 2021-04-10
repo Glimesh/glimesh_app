@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/blocs/repos/glimesh_bloc.dart';
 import 'package:janus_client/JanusClient.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class FTLPlayer extends StatefulWidget {
+  final Channel channel;
+
+  const FTLPlayer({Key? key, required this.channel}) : super(key: key);
+
   @override
   _FTLPlayerState createState() => _FTLPlayerState();
 }
@@ -43,7 +48,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
     session = await janus!.createSession();
     print(session!.sessionId);
     plugin = await session!.attach("janus.plugin.ftl");
-    await this.watchChannel(1417);
+    await this.watchChannel(widget.channel.id);
     print('got handleId');
     print(plugin!.handleId);
     plugin!.remoteStream.listen((event) {

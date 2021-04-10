@@ -1,16 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/blocs/repos/glimesh_bloc.dart';
+import 'package:glimesh_app/repository.dart';
+import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
+import 'package:glimesh_app/screens/LoginScreen.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-void main() {
-  runApp(MyApp());
+Future<void> main() async {
+  runApp(GlimeshApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class GlimeshApp extends StatelessWidget {
+  GraphQLClient _client() {
+    final HttpLink _httpLink = HttpLink(
+      'https://glimesh.tv/api',
+    );
+
+    // This is to be replaced with actual authentication
+    const CLIENT_ID = String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
+
+    final AuthLink _authLink = AuthLink(
+      getToken: () =>
+          'Client-ID $CLIENT_ID',
+    );
+
+    final Link _link = _authLink.concat(_httpLink);
+
+    return GraphQLClient(
+      cache: GraphQLCache(store: InMemoryStore()),
+      link: _link,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Glimesh',
+      routes: {
+        '/channels': (_) => BlocProvider(
+              create: (context) => ChannelListBloc(
+                glimeshRepository: GlimeshRepository(client: _client()),
+              ),
+              child: Scaffold(body: ChannelListScreen()),
+            ),
+        '/channel': (_) => Scaffold(
+              appBar: AppBar(
+                title: Text("Channel Page"),
+              ),
+              body: ChannelScreen(),
+            )
+      },
       theme: ThemeData(
         brightness: Brightness.dark,
       ),
@@ -42,34 +82,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title!),
       ),
-      body: ChannelScreen(),
+      body: LoginScreen(),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey.shade600,
@@ -78,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.table_rows),
+            icon: Icon(Icons.grid_view),
             label: "Channels",
           ),
           BottomNavigationBarItem(

@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
+  bloc:
+    dependency: transitive
+    description:
+      name: bloc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -43,6 +50,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  connectivity:
+    dependency: transitive
+    description:
+      name: connectivity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.3"
+  connectivity_for_web:
+    dependency: transitive
+    description:
+      name: connectivity_for_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
+  connectivity_macos:
+    dependency: transitive
+    description:
+      name: connectivity_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
+  connectivity_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   crypto:
     dependency: transitive
     description:
@@ -57,6 +92,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -83,6 +125,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_bloc:
+    dependency: "direct main"
+    description:
+      name: flutter_bloc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -102,6 +151,76 @@ packages:
       url: "https://github.com/flutter-webrtc/flutter-webrtc.git"
     source: git
     version: "0.6.3"
+  gql:
+    dependency: transitive
+    description:
+      name: gql
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.0-nullsafety.2"
+  gql_dedupe_link:
+    dependency: transitive
+    description:
+      name: gql_dedupe_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0-nullsafety.1"
+  gql_error_link:
+    dependency: transitive
+    description:
+      name: gql_error_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0-nullsafety.1"
+  gql_exec:
+    dependency: transitive
+    description:
+      name: gql_exec
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0-nullsafety.2"
+  gql_http_link:
+    dependency: transitive
+    description:
+      name: gql_http_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0-nullsafety.1"
+  gql_link:
+    dependency: transitive
+    description:
+      name: gql_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0-nullsafety.3"
+  gql_transform_link:
+    dependency: transitive
+    description:
+      name: gql_transform_link
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0-nullsafety.1"
+  graphql:
+    dependency: transitive
+    description:
+      name: graphql
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0-nullsafety.3"
+  graphql_flutter:
+    dependency: "direct main"
+    description:
+      name: graphql_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0-nullsafety.2"
+  hive:
+    dependency: transitive
+    description:
+      name: hive
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   http:
     dependency: transitive
     description:
@@ -144,6 +263,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  normalize:
+    dependency: transitive
+    description:
+      name: normalize
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1-0.1.nullsafety.0"
   path:
     dependency: transitive
     description:
@@ -214,6 +347,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.1"
+  provider:
+    dependency: transitive
+    description:
+      name: provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.26.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -274,7 +421,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.4"
   vector_math:
     dependency: transitive
     description:

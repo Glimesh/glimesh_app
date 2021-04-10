@@ -29,11 +29,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   janus_client:
-    path: ./flutter_janus_client 
-  # janus_client:
-  #   git:
-  #     url: https://github.com/flutterjanus/flutter_janus_client.git
-  #     ref: v2
+    path: flutter_janus_client
+  # Library is currently not built correctly for iOS, have to maintain our own local copy.
+  #    git:
+  #      url: https://github.com/flutterjanus/flutter_janus_client.git
+  #      ref: c04b3e79fb8f6f39ea6bb68fd85176b9928a72f4
+  graphql_flutter: ^5.0.0-nullsafety.2
+  flutter_bloc: ^7.0.0
+  equatable: ^2.0.0
 
 dev_dependencies:
   flutter_test:
