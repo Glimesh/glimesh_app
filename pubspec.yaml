@@ -37,6 +37,8 @@ dependencies:
   graphql_flutter: ^5.0.0-nullsafety.2
   flutter_bloc: ^7.0.0
   equatable: ^2.0.0
+  phoenix_wings: ^0.2.2
+  gql_phoenix_link: ^0.1.0
 
 dev_dependencies:
   flutter_test:

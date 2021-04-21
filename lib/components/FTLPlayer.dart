@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glimesh_app/blocs/repos/glimesh_bloc.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:janus_client/JanusClient.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 

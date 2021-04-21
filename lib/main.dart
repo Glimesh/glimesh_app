@@ -1,65 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:glimesh_app/blocs/repos/glimesh_bloc.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/screens/LoginScreen.dart';
+import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'blocs/repos/chat_messages_bloc.dart';
 
 Future<void> main() async {
   runApp(GlimeshApp());
 }
 
 class GlimeshApp extends StatelessWidget {
-  GraphQLClient _client() {
-    final HttpLink _httpLink = HttpLink(
-      'https://glimesh.tv/api',
-    );
+  Future<GraphQLClient> _client() async {
+    const CLIENT_ID =
+        String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
 
-    // This is to be replaced with actual authentication
-    const CLIENT_ID = String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
-
-    final AuthLink _authLink = AuthLink(
-      getToken: () =>
-          'Client-ID $CLIENT_ID',
-    );
-
-    final Link _link = _authLink.concat(_httpLink);
+    final _socketUrl =
+        'wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&client_id=$CLIENT_ID';
+    final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
+    final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
 
     return GraphQLClient(
       cache: GraphQLCache(store: InMemoryStore()),
-      link: _link,
+      link: _phoenixLink,
     );
+  }
+
+  waitForClient(connected) {
+    _client().then((value) => connected(value));
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Glimesh',
-      routes: {
-        '/channels': (_) => BlocProvider(
-              create: (context) => ChannelListBloc(
-                glimeshRepository: GlimeshRepository(client: _client()),
+    return FutureBuilder(
+        future: _client(),
+        builder: (BuildContext context, AsyncSnapshot<GraphQLClient> snapshot) {
+
+
+          if (snapshot.hasData) {
+            GraphQLClient client = snapshot.data!;
+
+            final routes = <String, WidgetBuilder>{
+              '/channels': (BuildContext context) => new ChannelListScreen(client: client),
+              '/channel': (BuildContext context) => new ChannelScreen(client: client),
+            };
+
+            return MaterialApp(
+              title: 'Glimesh',
+              routes: routes,
+              theme: ThemeData(
+                brightness: Brightness.dark,
               ),
-              child: Scaffold(body: ChannelListScreen()),
-            ),
-        '/channel': (_) => Scaffold(
-              appBar: AppBar(
-                title: Text("Channel Page"),
+              darkTheme: ThemeData(
+                brightness: Brightness.dark,
               ),
-              body: ChannelScreen(),
-            )
-      },
-      theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      themeMode: ThemeMode.dark,
-      home: MyHomePage(title: 'Glimesh'),
-    );
+              themeMode: ThemeMode.dark,
+              home: MyHomePage(title: 'Glimesh'),
+            );
+          } else if (snapshot.hasError) {
+            return Container(child: Text("Error Loading API"));
+
+          }
+
+          return Container(child: Center(
+            child: Text("Loading", textDirection: TextDirection.ltr),
+          ));
+        });
   }
 }
 
@@ -98,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.grid_view),
-            label: "Channels",
+            label: "Categories",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),

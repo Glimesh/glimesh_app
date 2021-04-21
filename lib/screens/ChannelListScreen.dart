@@ -1,52 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:glimesh_app/blocs/repos/glimesh_bloc.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
+import 'package:glimesh_app/repository.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-class ChannelListScreen extends StatefulWidget {
-  @override
-  _ChannelListState createState() => _ChannelListState();
-}
+class ChannelListScreen extends StatelessWidget {
+  final GraphQLClient client;
 
-class _ChannelListState extends State<ChannelListScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    BlocProvider.of<ChannelListBloc>(context).add(LoadChannels());
-  }
+  const ChannelListScreen({required this.client}) : super();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          ListChannels(
-            bloc: BlocProvider.of<ChannelListBloc>(context),
-          )
-        ],
+    return Scaffold(
+      appBar: AppBar(title: Text("Gaming Streams")),
+      body: BlocProvider(
+        create: (context) => ChannelListBloc(
+          glimeshRepository: GlimeshRepository(client: client),
+        ),
+        child: ChannelListWidget(),
       ),
     );
   }
 }
 
-class ListChannels extends StatelessWidget {
-  final ChannelListBloc bloc;
-
-  const ListChannels({required this.bloc}) : super();
-
+class ChannelListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
+    bloc.add(LoadChannels());
+
     return BlocBuilder<ChannelListBloc, ChannelListState>(
         bloc: bloc,
         builder: (BuildContext context, ChannelListState state) {
           print(state);
           if (state is ChannelListLoading) {
-            return Expanded(
-              child: Container(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: "Loading ...",
-                  ),
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(
+                  semanticsLabel: "Loading ...",
                 ),
               ),
             );
@@ -59,11 +50,9 @@ class ListChannels extends StatelessWidget {
           if (state is ChannelListLoaded) {
             final List<Channel> channels = state.results;
 
-            return Expanded(
-              child: ListView.builder(
+            return ListView.builder(
                 itemCount: channels.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    InkWell(
+                itemBuilder: (BuildContext context, int index) => InkWell(
                       onTap: () {
                         Navigator.pushNamed(
                           context,
@@ -72,13 +61,14 @@ class ListChannels extends StatelessWidget {
                         );
                       },
                       // Generally, material cards use onSurface with 12% opacity for the pressed state.
-                      splashColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+                      splashColor: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.12),
                       // Generally, material cards do not have a highlight overlay.
                       highlightColor: Colors.transparent,
                       child: _buildCard(context, channels[index]),
-                    )
-              ),
-            );
+                    ));
           }
 
           return Text("Unexpected");
@@ -118,7 +108,7 @@ class ListChannels extends StatelessWidget {
                       color: Colors.black54,
                     ),
                     padding: EdgeInsets.all(15),
-                    child:  Text(channel.title),
+                    child: Text(channel.title),
                   ),
                 ),
               ),
@@ -126,43 +116,6 @@ class ListChannels extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildListTile(BuildContext context, Channel channel) {
-    return InkWell(
-      onTap: () => {
-        print("clicked")
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => PropertyScreen(rental: rental)))
-      },
-      child: ListTile(
-        title: Text(channel.title),
-        leading: Image.network(
-          channel.thumbnail,
-          fit: BoxFit.fitHeight,
-        ),
-      ),
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  const SectionTitle({
-    Key? key,
-    this.title,
-  }) : super(key: key);
-
-  final String? title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 12.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(title!, style: Theme.of(context).textTheme.subtitle1),
-      ),
     );
   }
 }

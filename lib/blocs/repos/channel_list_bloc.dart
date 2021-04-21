@@ -102,8 +102,6 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
         return;
       }
 
-      print(queryResults);
-
       final List<dynamic> channels = queryResults.data!['channels'] as List<
           dynamic>;
 
