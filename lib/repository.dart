@@ -10,7 +10,7 @@ class GlimeshRepository {
 
   GlimeshRepository({required this.client});
 
-  Future<QueryResult> getLiveChannels() async {
+  Future<QueryResult> getLiveChannels(String categorySlug) async {
     // final WatchQueryOptions _options = WatchQueryOptions(
     //   document: parseString(channel_queries.queryLiveChannels),
     //   variables: <String, dynamic>{},
@@ -21,7 +21,7 @@ class GlimeshRepository {
     // return await client.query(_options);
     return client.query(QueryOptions(
       document: parseString(channel_queries.queryLiveChannels),
-      variables: <String, dynamic>{},
+      variables: <String, dynamic>{"categorySlug": categorySlug},
     ));
   }
 

@@ -1,6 +1,6 @@
 const String queryLiveChannels = r'''
-query LiveChannels {
-  channels(status:LIVE) {
+query LiveChannels($categorySlug: String!) {
+  channels(status: LIVE, categorySlug: $categorySlug) {
     id
     title
     stream {

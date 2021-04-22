@@ -17,9 +17,6 @@ class LoadChatMessages extends ChatMessagesEvent {
   LoadChatMessages({required this.channelId}) : super([channelId]);
 
   @override
-  String toString() => 'LoadChatMessages';
-
-  @override
   List<Object> get props => [this.channelId];
 }
 
@@ -27,9 +24,6 @@ class NewChatMessage extends ChatMessagesEvent {
   final ChatMessage chatMessage;
 
   NewChatMessage({required this.chatMessage}) : super([chatMessage]);
-
-  @override
-  String toString() => 'NewChatMessage';
 
   @override
   List<Object> get props => [chatMessage];
@@ -41,10 +35,7 @@ abstract class ChatMessagesState extends Equatable {
 }
 
 class ChatMessage {
-  const ChatMessage({
-    required this.username,
-    required this.message
-  });
+  const ChatMessage({required this.username, required this.message});
 
   final String username;
   final String message;
@@ -69,14 +60,12 @@ class ChatMessagesLoaded extends ChatMessagesState {
 class ChatSubscriptionLoaded extends ChatMessagesState {
   final Stream<List<ChatMessage>> chatMessageSubscription;
 
-
-  ChatSubscriptionLoaded({required this.chatMessageSubscription}) : super([chatMessageSubscription]);
+  ChatSubscriptionLoaded({required this.chatMessageSubscription})
+      : super([chatMessageSubscription]);
 
   @override
   List<Object> get props => [chatMessageSubscription];
 }
-
-
 
 class ChatMessagesNotLoaded extends ChatMessagesState {
   final List<GraphQLError>? errors;
@@ -90,7 +79,6 @@ class ChatMessagesNotLoaded extends ChatMessagesState {
   List<Object?> get props => [this.errors];
 }
 
-
 class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
   final GlimeshRepository glimeshRepository;
 
@@ -99,61 +87,66 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
 
   List<ChatMessage> chatMessages = [];
 
-  ChatMessagesBloc({required this.glimeshRepository}): super(ChatMessagesLoading());
+  ChatMessagesBloc({required this.glimeshRepository})
+      : super(ChatMessagesLoading());
+
+  StreamSubscription<QueryResult>? subscriptionListener;
 
   @override
   Stream<ChatMessagesState> mapEventToState(ChatMessagesEvent event) async* {
     try {
       if (event is LoadChatMessages) {
         // Load some existing chat messages
-        // final queryResults = await this.glimeshRepository.getSomeChatMessages(event.channelId);
-        //
-        // if (!queryResults.hasException) {
-        //   final List<dynamic> messages = queryResults.data!['channel']['chatMessages'] as List<dynamic>;
-        //
-        //   final List<ChatMessage> existingChatMessages = messages.map((dynamic e) =>
-        //       ChatMessage(
-        //           username: e['user']['username'] as String,
-        //           message: e['message'] as String
-        //       )).toList();
-        //
-        //   chatMessages = existingChatMessages;
-        //   _controller.add(chatMessages);
-        // }
-        //
-        chatMessages = [
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-          ChatMessage(username: "clone1018", message: "Some test message"),
-        ];
-        _controller.add(chatMessages.reversed.toList());
+        final queryResults =
+            await this.glimeshRepository.getSomeChatMessages(event.channelId);
+
+        if (!queryResults.hasException) {
+          final List<dynamic> messages =
+              queryResults.data!['channel']['chatMessages'] as List<dynamic>;
+
+          final List<ChatMessage> existingChatMessages = messages
+              .map((dynamic e) => ChatMessage(
+                  username: e['user']['username'] as String,
+                  message: e['message'] as String))
+              .toList();
+
+          chatMessages = existingChatMessages.reversed.toList().sublist(0, 10);
+          _controller.add(chatMessages);
+        }
+
+        // chatMessages = [
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        //   ChatMessage(username: "clone1018", message: "Some test message"),
+        // ];
+        // _controller.add(chatMessages.reversed.toList());
 
         // Subscribe for more updates
-        Stream<QueryResult> subscription = this.glimeshRepository.subscribeToChatMessages(event.channelId);
+        Stream<QueryResult> subscription =
+            this.glimeshRepository.subscribeToChatMessages(event.channelId);
 
-        subscription.listen((event) {
+        subscriptionListener = subscription.listen((event) {
           dynamic data = event.data!['chatMessage'] as dynamic;
 
           ChatMessage chatMessage = ChatMessage(
               username: data['user']['username'] as String,
-              message: data['message'] as String
-          );
+              message: data['message'] as String);
 
           chatMessages.add(chatMessage);
 
@@ -161,7 +154,8 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
           _controller.add(chatMessages.reversed.toList());
         });
 
-        yield ChatSubscriptionLoaded(chatMessageSubscription: chatMessagesStream);
+        yield ChatSubscriptionLoaded(
+            chatMessageSubscription: chatMessagesStream);
       } else {
         print(event);
         // New event, who dis?
@@ -174,6 +168,8 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
 
   Future<void> close() {
     _controller.close();
+
+    subscriptionListener!.cancel();
 
     return super.close();
   }

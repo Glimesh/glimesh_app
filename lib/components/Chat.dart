@@ -12,37 +12,33 @@ class Chat extends StatelessWidget {
     return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
         bloc: bloc,
         builder: (BuildContext context, ChatMessagesState state) {
-          print("Chat.dart");
-          print(state);
           if (state is ChatMessagesLoading) {
             return Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: "Loading ...",
-                  ),
-                );
+              child: CircularProgressIndicator(
+                semanticsLabel: "Loading ...",
+              ),
+            );
           }
 
           if (state is ChatMessagesNotLoaded) {
-            return  Text("Error loading channels");
+            return Text("Error loading channels");
           }
 
           if (state is ChatSubscriptionLoaded) {
+            print("ChatSubscriptionLoaded in Chat.dart");
             final subscription = state.chatMessageSubscription;
 
             ScrollController _scrollController = ScrollController();
 
-
-
-            return StreamBuilder(stream: subscription,
+            return StreamBuilder(
+                stream: subscription,
                 builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
                   print("StreamBuilder is updated");
 
                   if (snapshot.hasError) {
                     print(snapshot.error);
                     return Center(
-                      child: Text(
-                          "Error"
-                      ),
+                      child: Text("Error"),
                     );
                   }
 
@@ -54,7 +50,6 @@ class Chat extends StatelessWidget {
                     //       curve: Curves.easeOut,
                     //       duration: const Duration(milliseconds: 500));
                     // }
-
 
                     return ListView.builder(
                       itemCount: messages.length,

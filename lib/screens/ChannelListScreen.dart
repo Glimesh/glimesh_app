@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
@@ -11,23 +12,29 @@ class ChannelListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String categorySlug = ModalRoute.of(context)!.settings.arguments as String;
+
     return Scaffold(
-      appBar: AppBar(title: Text("Gaming Streams")),
+      appBar: AppBar(title: Text("$categorySlug Streams")),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
           glimeshRepository: GlimeshRepository(client: client),
         ),
-        child: ChannelListWidget(),
+        child: ChannelListWidget(categorySlug: categorySlug),
       ),
     );
   }
 }
 
 class ChannelListWidget extends StatelessWidget {
+  final String categorySlug;
+
+  ChannelListWidget({required this.categorySlug});
+
   @override
   Widget build(BuildContext context) {
     ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
-    bloc.add(LoadChannels());
+    bloc.add(LoadChannels(categorySlug: this.categorySlug));
 
     return BlocBuilder<ChannelListBloc, ChannelListState>(
         bloc: bloc,
@@ -50,25 +57,29 @@ class ChannelListWidget extends StatelessWidget {
           if (state is ChannelListLoaded) {
             final List<Channel> channels = state.results;
 
+            if (channels.length == 0) {
+              return Center(child: Text("No live channels in this category"));
+            }
+
             return ListView.builder(
-                itemCount: channels.length,
-                itemBuilder: (BuildContext context, int index) => InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/channel',
-                          arguments: channels[index],
-                        );
-                      },
-                      // Generally, material cards use onSurface with 12% opacity for the pressed state.
-                      splashColor: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.12),
-                      // Generally, material cards do not have a highlight overlay.
-                      highlightColor: Colors.transparent,
-                      child: _buildCard(context, channels[index]),
-                    ));
+              dragStartBehavior: DragStartBehavior.down,
+              itemCount: channels.length,
+              itemBuilder: (BuildContext context, int index) => InkWell(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/channel',
+                    arguments: channels[index],
+                  );
+                },
+                // Generally, material cards use onSurface with 12% opacity for the pressed state.
+                splashColor:
+                    Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
+                // Generally, material cards do not have a highlight overlay.
+                highlightColor: Colors.transparent,
+                child: _buildCard(context, channels[index]),
+              ),
+            );
           }
 
           return Text("Unexpected");
