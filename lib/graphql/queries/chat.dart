@@ -28,3 +28,11 @@ subscription ChatMessages($channelId: ID!) {
   }
 }
 ''';
+
+const String sendChatMessageMutation = r'''
+mutation SendChatMessage($channelId: ID!, $message: String!) {
+  createChatMessage(channelId: $channelId, message: { message: $message }) {
+    id
+  } 
+}
+''';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:janus_client/JanusClient.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:glimesh_app/models.dart';
 
 class FTLPlayer extends StatefulWidget {
   final Channel channel;
@@ -21,8 +21,6 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
 
-  List<dynamic> streams = [];
-  int? selectedStreamId;
   bool _loading = true;
 
   StateSetter? _setState;
@@ -83,12 +81,29 @@ class _FTLPlayerState extends State<FTLPlayer> {
   Future<void> cleanUpAndBack() async {}
 
   @override
-  destroy() async {
-    // await plugin!.dispose();
+  void dispose() {
+    print("!! DISPOSE CALLED !!");
+
+    plugin!.send(data: {"request": "stop"});
+
+    plugin!.dispose();
     session!.dispose();
+    plugin!.remoteStream = null;
+    _remoteRenderer.srcObject = null;
     _remoteRenderer.dispose();
-    Navigator.of(context).pop();
+
+    super.dispose();
   }
+
+  // @override
+  // void deactivate() {
+  //   super.deactivate();
+
+  //   plugin!.send(data: {"request": "stop"});
+
+  //   _remoteRenderer.dispose();
+  //   session!.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -114,15 +129,5 @@ class _FTLPlayerState extends State<FTLPlayer> {
             : Padding(padding: EdgeInsets.zero),
       ],
     );
-  }
-
-  @override
-  deactivate() {
-    super.deactivate();
-
-    plugin!.send(data: {"request": "stop"});
-
-    _remoteRenderer.dispose();
-    session!.dispose();
   }
 }

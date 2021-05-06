@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
+import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/repository.dart';
 
 Future<void> main() async {
   runApp(GlimeshApp());
@@ -51,13 +56,35 @@ class GlimeshApp extends StatelessWidget {
             final routes = <String, WidgetBuilder>{
               '/channels': (BuildContext context) =>
                   new ChannelListScreen(client: client),
-              '/channel': (BuildContext context) =>
-                  new ChannelScreen(client: client),
+              // '/channel': (BuildContext context) =>
+              //     new ChannelScreen(client: client),
+            };
+
+            final generateRoutes = (settings) {
+              if (settings.name == '/channel') {
+                final Channel channel = settings.arguments as Channel;
+
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return BlocProvider(
+                      create: (context) => ChatMessagesBloc(
+                        glimeshRepository: GlimeshRepository(client: client),
+                      ),
+                      child: ChannelScreen(channel: channel),
+                    );
+                  },
+                );
+              }
+
+              // Fail if we're missing any routes.
+              assert(false, 'Need to implement ${settings.name}');
+              return null;
             };
 
             return MaterialApp(
               title: 'Glimesh Alpha',
               routes: routes,
+              onGenerateRoute: generateRoutes,
               theme: ThemeData(
                 brightness: Brightness.dark,
               ),

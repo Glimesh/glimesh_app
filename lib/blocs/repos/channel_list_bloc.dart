@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:glimesh_app/models.dart';
 
 @immutable
 abstract class ChannelListEvent extends Equatable {
@@ -26,24 +27,6 @@ class LoadChannels extends ChannelListEvent {
 @immutable
 abstract class ChannelListState extends Equatable {
   ChannelListState([List props = const []]) : super();
-}
-
-class Channel {
-  const Channel(
-      {required this.id,
-      required this.title,
-      required this.thumbnail,
-      required this.chatBackgroundUrl,
-      required this.username,
-      required this.avatarUrl});
-
-  final int id;
-  final String title;
-  final String thumbnail;
-  final String chatBackgroundUrl;
-
-  final String username;
-  final String avatarUrl;
 }
 
 class ChannelListLoading extends ChannelListState {

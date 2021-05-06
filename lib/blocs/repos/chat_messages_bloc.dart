@@ -5,18 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
-class ChatMessage {
-  const ChatMessage({
-    required this.username,
-    required this.message,
-    required this.avatarUrl,
-  });
-
-  final String username;
-  final String avatarUrl;
-  final String message;
-}
+import 'package:glimesh_app/models.dart';
 
 @immutable
 abstract class ChatMessagesEvent extends Equatable {

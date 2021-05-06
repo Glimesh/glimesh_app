@@ -33,4 +33,11 @@ class GlimeshRepository {
       ),
     );
   }
+
+  Future<QueryResult> sendChatMessage(int channelId, String message) {
+    return client.mutate(MutationOptions(
+      document: parseString(chat_queries.sendChatMessageMutation),
+      variables: <String, dynamic>{"channelId": channelId, "message": message},
+    ));
+  }
 }

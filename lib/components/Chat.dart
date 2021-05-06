@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
-import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
+import 'package:glimesh_app/models.dart';
 
 class Chat extends StatelessWidget {
   final Channel channel;
