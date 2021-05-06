@@ -1,21 +1,29 @@
 const String getSomeChatMessages = r'''
 query GetSomeChatMessages($channelId: ID!) {
   channel(id: $channelId) {
-    chatMessages {
-      id
-      message
-      user { username }
+    chatMessages(last: 5) {
+      edges {
+        node {
+          id
+          message
+          user {
+            username
+            avatarUrl
+          }
+        }
+      }
     }
   }
 }
 ''';
 
-const String chatMessages = r'''
+const String chatMessagesSubscription = r'''
 subscription ChatMessages($channelId: ID!) {
   chatMessage(channelId: $channelId) {
     message
     user {
       username
+      avatarUrl
     }
   }
 }

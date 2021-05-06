@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
@@ -13,9 +14,14 @@ class GlimeshApp extends StatelessWidget {
   Future<GraphQLClient> _client() async {
     const CLIENT_ID =
         String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
+    const CLIENT_SECRET = String.fromEnvironment('GLIMESH_CLIENT_SECRET',
+        defaultValue: 'FAKE_VALUE');
+
+    final oauthClient = await createOauthClient(CLIENT_ID, CLIENT_SECRET);
+    final token = oauthClient.credentials.accessToken;
 
     final _socketUrl =
-        'wss://glimesh.tv/api/socket/websocket?vsn=2.0.0&client_id=$CLIENT_ID';
+        'wss://glimesh.dev/api/graph/websocket?vsn=2.0.0&token=$token';
     final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
     final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
 
@@ -31,6 +37,11 @@ class GlimeshApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final whiteTextTheme = Theme.of(context).textTheme.apply(
+          bodyColor: Colors.white,
+          displayColor: Colors.white,
+        );
+
     return FutureBuilder(
         future: _client(),
         builder: (BuildContext context, AsyncSnapshot<GraphQLClient> snapshot) {
@@ -55,9 +66,7 @@ class GlimeshApp extends StatelessWidget {
                 primaryColor: Color(0xff060818),
                 canvasColor: Color(0xff060818),
                 bottomAppBarColor: Color(0xff0e1726),
-                textTheme: TextTheme().apply(
-                    bodyColor: Color(0xffffffff),
-                    displayColor: Color(0xffffffff)),
+                textTheme: whiteTextTheme,
               ),
               themeMode: ThemeMode.dark,
               home: MyHomePage(title: 'Glimesh Alpha'),
@@ -93,6 +102,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,10 +119,10 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: const <Widget>[
+          children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
               ),
               child: Text(
                 'Drawer Header',
@@ -143,21 +154,29 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
         type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
-            label: "Categories",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: "Following",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box),
+            icon: Icon(Icons.person),
             label: "Profile",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Browse",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "Following",
           ),
         ],
       ),
     );
+  }
+
+  _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }

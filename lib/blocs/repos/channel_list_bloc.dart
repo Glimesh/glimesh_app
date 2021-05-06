@@ -30,11 +30,20 @@ abstract class ChannelListState extends Equatable {
 
 class Channel {
   const Channel(
-      {required this.id, required this.title, required this.thumbnail});
+      {required this.id,
+      required this.title,
+      required this.thumbnail,
+      required this.chatBackgroundUrl,
+      required this.username,
+      required this.avatarUrl});
 
   final int id;
   final String title;
   final String thumbnail;
+  final String chatBackgroundUrl;
+
+  final String username;
+  final String avatarUrl;
 }
 
 class ChannelListLoading extends ChannelListState {
@@ -103,16 +112,21 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       }
 
       final List<dynamic> channels =
-          queryResults.data!['channels'] as List<dynamic>;
+          queryResults.data!['channels']['edges'] as List<dynamic>;
 
       final List<Channel> listOfChannels = channels
           .map((dynamic e) => Channel(
-              id: int.parse(e['id']),
-              title: e['title'] as String,
-              thumbnail: e['stream']['thumbnail'] as String))
+                id: int.parse(e['node']['id']),
+                title: e['node']['title'] as String,
+                chatBackgroundUrl: e['node']['chatBgUrl'] as String,
+                thumbnail: e['node']['stream']['thumbnailUrl'] as String,
+                username: e['node']['streamer']['username'] as String,
+                avatarUrl: e['node']['streamer']['avatarUrl'] as String,
+              ))
           .toList();
 
-      listOfChannels.sort((a, b) => a.id.compareTo(b.id));
+      // This is temporary to show my stream at the top :)
+      listOfChannels.sort((a, b) => b.id.compareTo(a.id));
 
       yield ChannelListLoaded(results: listOfChannels);
     } catch (error) {

@@ -41,7 +41,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   initJanusClient() async {
     setState(() {
       rest = RestJanusTransport(
-        url: 'https://do-nyc3-edge1.kjfk.live.glimesh.tv/janus',
+        url: 'https://janus-dev/janus',
       );
       janus = JanusClient(transport: rest, iceServers: []);
     });
@@ -80,13 +80,13 @@ class _FTLPlayerState extends State<FTLPlayer> {
     initJanusClient();
   }
 
-  Future<void> cleanUpAndBack() async {
-    plugin!.send(data: {"request": "stop"});
-  }
+  Future<void> cleanUpAndBack() async {}
 
+  @override
   destroy() async {
     // await plugin!.dispose();
     session!.dispose();
+    _remoteRenderer.dispose();
     Navigator.of(context).pop();
   }
 
@@ -117,8 +117,12 @@ class _FTLPlayerState extends State<FTLPlayer> {
   }
 
   @override
-  void dispose() async {
-    // TODO: implement dispose
-    super.dispose();
+  deactivate() {
+    super.deactivate();
+
+    plugin!.send(data: {"request": "stop"});
+
+    _remoteRenderer.dispose();
+    session!.dispose();
   }
 }

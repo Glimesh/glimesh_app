@@ -6,6 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+class ChatMessage {
+  const ChatMessage({
+    required this.username,
+    required this.message,
+    required this.avatarUrl,
+  });
+
+  final String username;
+  final String avatarUrl;
+  final String message;
+}
+
 @immutable
 abstract class ChatMessagesEvent extends Equatable {
   ChatMessagesEvent([List props = const []]) : super();
@@ -32,13 +44,6 @@ class NewChatMessage extends ChatMessagesEvent {
 @immutable
 abstract class ChatMessagesState extends Equatable {
   ChatMessagesState([List props = const []]) : super();
-}
-
-class ChatMessage {
-  const ChatMessage({required this.username, required this.message});
-
-  final String username;
-  final String message;
 }
 
 class ChatMessagesLoading extends ChatMessagesState {
@@ -101,41 +106,20 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
             await this.glimeshRepository.getSomeChatMessages(event.channelId);
 
         if (!queryResults.hasException) {
-          final List<dynamic> messages =
-              queryResults.data!['channel']['chatMessages'] as List<dynamic>;
+          final List<dynamic> messages = queryResults.data!['channel']
+              ['chatMessages']['edges'] as List<dynamic>;
 
           final List<ChatMessage> existingChatMessages = messages
               .map((dynamic e) => ChatMessage(
-                  username: e['user']['username'] as String,
-                  message: e['message'] as String))
+                    username: e['node']['user']['username'] as String,
+                    avatarUrl: e['node']['user']['avatarUrl'] as String,
+                    message: e['node']['message'] as String,
+                  ))
               .toList();
 
-          chatMessages = existingChatMessages.reversed.toList().sublist(0, 10);
+          chatMessages = existingChatMessages.reversed.toList();
           _controller.add(chatMessages);
         }
-
-        // chatMessages = [
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        //   ChatMessage(username: "clone1018", message: "Some test message"),
-        // ];
-        // _controller.add(chatMessages.reversed.toList());
 
         // Subscribe for more updates
         Stream<QueryResult> subscription =
@@ -145,8 +129,10 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
           dynamic data = event.data!['chatMessage'] as dynamic;
 
           ChatMessage chatMessage = ChatMessage(
-              username: data['user']['username'] as String,
-              message: data['message'] as String);
+            username: data['user']['username'] as String,
+            avatarUrl: data['user']['avatarUrl'] as String,
+            message: data['message'] as String,
+          );
 
           chatMessages.add(chatMessage);
 

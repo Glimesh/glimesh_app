@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 
 class Chat extends StatelessWidget {
+  final Channel channel;
   final ChatMessagesBloc bloc;
 
-  const Chat({required this.bloc}) : super();
+  const Chat({required this.bloc, required this.channel}) : super();
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(channel.chatBackgroundUrl),
+          repeat: ImageRepeat.repeat,
+          alignment: Alignment.topLeft,
+        ),
+      ),
+      child: _buildChatMessages(context),
+    );
+  }
+
+  Widget _buildChatMessages(BuildContext context) {
     return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
         bloc: bloc,
         builder: (BuildContext context, ChatMessagesState state) {
@@ -69,12 +84,33 @@ class Chat extends StatelessWidget {
                                 color: Color(0xFF0E1826),
                               ),
                               padding: EdgeInsets.all(10),
-                              child: Text(
-                                messages[index].username +
-                                    ": " +
-                                    messages[index].message,
-                                style: TextStyle(fontSize: 15),
+                              child: Text.rich(
+                                TextSpan(children: [
+                                  WidgetSpan(
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          messages[index].avatarUrl),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: messages[index].username +
+                                        ": " +
+                                        messages[index].message,
+                                    style: TextStyle(fontSize: 16),
+                                  )
+                                ]),
                               ),
+                              // child: Row(
+                              //   children: [
+                              //     Image.network(messages[index].avatarUrl),
+                              //     Text(
+                              //       messages[index].username +
+                              //           ": " +
+                              //           messages[index].message,
+                              //       style: TextStyle(fontSize: 15),
+                              //     )
+                              //   ],
+                              // ),
                             ),
                           ),
                         );

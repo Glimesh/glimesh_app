@@ -24,12 +24,13 @@ class CategoryListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      buildHeader(context),
-      buildButtons(context),
+      _buildHeader(context),
+      _buildButtons(context),
+      _buildSomeStreams(context)
     ]);
   }
 
-  Widget buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -38,7 +39,7 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  "Categories Made Simpler",
+                  "Next-Gen Live Streaming!",
                   style: Theme.of(context).textTheme.headline4,
                   // style: TextStyle(fontSize: 20),
                   maxLines: 1,
@@ -47,14 +48,20 @@ class CategoryListWidget extends StatelessWidget {
             ],
           ),
           Row(
-            children: [Text("Explore our categories and find your new home!")],
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                    "The first live streaming platform built around truly real time interactivity. Our streams are warp speed, our chat is blazing, and our community is thriving.",
+                    style: Theme.of(context).textTheme.subtitle1),
+              )
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget buildButtons(BuildContext context) {
+  Widget _buildButtons(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
       child: Column(
@@ -144,6 +151,37 @@ class CategoryListWidget extends StatelessWidget {
             padding: EdgeInsets.all(20),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSomeStreams(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  "Explore Live Streams",
+                  style: Theme.of(context).textTheme.headline4,
+                  // style: TextStyle(fontSize: 20),
+                  maxLines: 1,
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                    "Experience real time interaction by visiting some of these selected streams!",
+                    style: Theme.of(context).textTheme.subtitle1),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

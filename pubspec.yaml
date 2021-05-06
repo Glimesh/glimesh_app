@@ -40,6 +40,7 @@ dependencies:
   phoenix_wings: ^0.2.2
   gql_phoenix_link: ^0.1.0
   auto_size_text: ^2.1.0
+  oauth2: ^2.0.0
 
 dev_dependencies:
   flutter_test:
