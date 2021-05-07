@@ -5,6 +5,7 @@ import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
+import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
@@ -51,8 +52,8 @@ class GlimeshApp extends StatelessWidget {
             final routes = <String, WidgetBuilder>{
               '/channels': (BuildContext context) =>
                   new ChannelListScreen(client: client),
-              // '/channel': (BuildContext context) =>
-              //     new ChannelScreen(client: client),
+              '/profile': (BuildContext context) =>
+                  new ProfileScreen(client: client),
             };
 
             final generateRoutes = (settings) {
@@ -204,5 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _selectedIndex = index;
     });
+
+    if (index == 0) {
+      Navigator.pushNamed(context, '/profile');
+    }
   }
 }

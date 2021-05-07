@@ -5,7 +5,6 @@ import 'package:glimesh_app/components/ChatInput.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 class ChannelScreen extends StatefulWidget {
