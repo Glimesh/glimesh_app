@@ -67,14 +67,57 @@ class _StreamTitleState extends State<StreamTitle> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildMetadataItem("Game", "World of Warcraft"),
-              _buildMetadataItem("Tags", "PC Gaming"),
-              _buildMetadataItem("Language", "English"),
-              _buildMetadataItem("Content", "Mature"),
+              _buildSubcategoryTag(),
+              _buildTags(),
+              _buildLanguageTag(),
+              _buildMatureTag()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSubcategoryTag() {
+    if (widget.channel.subcategory == null) {
+      return Padding(padding: EdgeInsets.zero);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Subcategory"),
+        Chip(label: Text(widget.channel.subcategory!.name))
+      ],
+    );
+  }
+
+  Widget _buildTags() {
+    List<Widget> tagButtons = widget.channel.tags
+        .map((Tag tag) => Chip(label: Text(tag.name)))
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text("Tags"), Wrap(children: tagButtons)],
+    );
+  }
+
+  Widget _buildLanguageTag() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text("Language"), Chip(label: Text(widget.channel.language))],
+    );
+  }
+
+  Widget _buildMatureTag() {
+    if (widget.channel.matureContent == false) {
+      return Padding(padding: EdgeInsets.zero);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text("Content"), Chip(label: Text("Mature"))],
     );
   }
 
@@ -101,9 +144,6 @@ class _StreamTitleState extends State<StreamTitle> {
 
   Widget _buttonContainer() {
     return Column(
-      // layoutBehavior: ButtonBarLayoutBehavior.constrained,
-      // crossAxisAlignment: CrossAxisAlignment.stretch,
-
       children: [
         Padding(padding: EdgeInsets.only(bottom: 5)),
         ElevatedButton(
@@ -115,16 +155,16 @@ class _StreamTitleState extends State<StreamTitle> {
           ),
         ),
         Padding(padding: EdgeInsets.only(bottom: 5)),
-        ElevatedButton(
-          onPressed: () => {},
-          child: Text("Subscribe"),
-          style: ElevatedButton.styleFrom(
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.all(5),
-            primary: Colors.purple[700],
-          ),
-        ),
-        Padding(padding: EdgeInsets.only(bottom: 5)),
+        // ElevatedButton(
+        //   onPressed: () => {},
+        //   child: Text("Subscribe"),
+        //   style: ElevatedButton.styleFrom(
+        //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        //     padding: EdgeInsets.all(5),
+        //     primary: Colors.purple[700],
+        //   ),
+        // ),
+        // Padding(padding: EdgeInsets.only(bottom: 5)),
       ],
     );
   }

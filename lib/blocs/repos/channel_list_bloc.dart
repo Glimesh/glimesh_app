@@ -97,16 +97,8 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       final List<dynamic> channels =
           queryResults.data!['channels']['edges'] as List<dynamic>;
 
-      final List<Channel> listOfChannels = channels
-          .map((dynamic e) => Channel(
-                id: int.parse(e['node']['id']),
-                title: e['node']['title'] as String,
-                chatBackgroundUrl: e['node']['chatBgUrl'] as String,
-                thumbnail: e['node']['stream']['thumbnailUrl'] as String,
-                username: e['node']['streamer']['username'] as String,
-                avatarUrl: e['node']['streamer']['avatarUrl'] as String,
-              ))
-          .toList();
+      final List<Channel> listOfChannels =
+          channels.map(buildChannelFromJson).toList();
 
       // This is temporary to show my stream at the top :)
       listOfChannels.sort((a, b) => b.id.compareTo(a.id));
@@ -116,5 +108,32 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       print(error);
       yield ChannelListNotLoaded();
     }
+  }
+
+  Channel buildChannelFromJson(dynamic json) {
+    return Channel(
+      id: int.parse(json['node']['id']),
+      title: json['node']['title'] as String,
+      chatBackgroundUrl: json['node']['chatBgUrl'] as String,
+      thumbnail: json['node']['stream']['thumbnailUrl'] as String,
+      username: json['node']['streamer']['username'] as String,
+      avatarUrl: json['node']['streamer']['avatarUrl'] as String,
+      matureContent: json['node']['matureContent'] as bool,
+      language: json['node']['language'] as String,
+      subcategory: buildSubcategoryFromJson(json['node']['subcategory']),
+      tags: buildTagsFromJson(json['node']['tags']),
+    );
+  }
+
+  Subcategory? buildSubcategoryFromJson(dynamic subcategory) {
+    if (subcategory == null) {
+      return null;
+    }
+
+    return Subcategory(name: subcategory["name"] as String);
+  }
+
+  List<Tag> buildTagsFromJson(List<dynamic> tags) {
+    return tags.map((dynamic e) => Tag(name: e['name'] as String)).toList();
   }
 }

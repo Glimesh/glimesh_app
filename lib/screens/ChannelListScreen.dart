@@ -37,53 +37,62 @@ class ChannelListWidget extends StatelessWidget {
     ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
     bloc.add(LoadChannels(categorySlug: this.categorySlug));
 
-    return BlocBuilder<ChannelListBloc, ChannelListState>(
-        bloc: bloc,
-        builder: (BuildContext context, ChannelListState state) {
-          print(state);
-          if (state is ChannelListLoading) {
-            return Container(
-              child: Center(
-                child: CircularProgressIndicator(
-                  semanticsLabel: "Loading ...",
-                ),
-              ),
-            );
-          }
+    return RefreshIndicator(
+        child: BlocBuilder<ChannelListBloc, ChannelListState>(
+            bloc: bloc,
+            builder: (BuildContext context, ChannelListState state) {
+              print(state);
+              if (state is ChannelListLoading) {
+                return Container(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: "Loading ...",
+                    ),
+                  ),
+                );
+              }
 
-          if (state is ChannelListNotLoaded) {
-            return Text("Error loading channels");
-          }
+              if (state is ChannelListNotLoaded) {
+                return Text("Error loading channels");
+              }
 
-          if (state is ChannelListLoaded) {
-            final List<Channel> channels = state.results;
+              if (state is ChannelListLoaded) {
+                final List<Channel> channels = state.results;
 
-            if (channels.length == 0) {
-              return Center(child: Text("No live channels in this category"));
-            }
+                if (channels.length == 0) {
+                  return Center(
+                      child: Text("No live channels in this category"));
+                }
 
-            return ListView.builder(
-              dragStartBehavior: DragStartBehavior.down,
-              itemCount: channels.length,
-              itemBuilder: (BuildContext context, int index) => InkWell(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/channel',
-                    arguments: channels[index],
-                  );
-                },
-                // Generally, material cards use onSurface with 12% opacity for the pressed state.
-                splashColor:
-                    Theme.of(context).colorScheme.onSurface.withOpacity(0.12),
-                // Generally, material cards do not have a highlight overlay.
-                highlightColor: Colors.transparent,
-                child: _buildCard(context, channels[index]),
-              ),
-            );
-          }
+                return ListView.builder(
+                  itemCount: channels.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/channel',
+                        arguments: channels[index],
+                      );
+                    },
+                    // Generally, material cards use onSurface with 12% opacity for the pressed state.
+                    splashColor: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.12),
+                    // Generally, material cards do not have a highlight overlay.
+                    highlightColor: Colors.transparent,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: _buildCard(context, channels[index]),
+                    ),
+                  ),
+                );
+              }
 
-          return Text("Unexpected");
+              return Text("Unexpected");
+            }),
+        onRefresh: () async {
+          bloc.add(LoadChannels(categorySlug: this.categorySlug));
         });
   }
 
@@ -91,7 +100,6 @@ class ChannelListWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // Photo and title.
         SizedBox(
           height: 220.0,
           child: Stack(

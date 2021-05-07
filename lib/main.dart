@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/glimesh.dart';
@@ -34,10 +33,6 @@ class GlimeshApp extends StatelessWidget {
       cache: GraphQLCache(store: InMemoryStore()),
       link: _phoenixLink,
     );
-  }
-
-  waitForClient(connected) {
-    _client().then((value) => connected(value));
   }
 
   @override
@@ -99,7 +94,11 @@ class GlimeshApp extends StatelessWidget {
               home: MyHomePage(title: 'Glimesh Alpha'),
             );
           } else if (snapshot.hasError) {
-            return Container(child: Text("Error Loading API"));
+            return Container(
+                child: Text(
+              "Error Loading API",
+              textDirection: TextDirection.ltr,
+            ));
           }
 
           return Container(

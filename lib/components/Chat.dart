@@ -43,8 +43,6 @@ class Chat extends StatelessWidget {
             print("ChatSubscriptionLoaded in Chat.dart");
             final subscription = state.chatMessageSubscription;
 
-            ScrollController _scrollController = ScrollController();
-
             return StreamBuilder(
                 stream: subscription,
                 builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
@@ -59,12 +57,6 @@ class Chat extends StatelessWidget {
 
                   if (snapshot.hasData) {
                     final messages = snapshot.data!;
-                    // if (messages.length > 0) {
-                    //   _scrollController.animateTo(
-                    //       _scrollController.position.maxScrollExtent,
-                    //       curve: Curves.easeOut,
-                    //       duration: const Duration(milliseconds: 500));
-                    // }
 
                     return ListView.builder(
                       itemCount: messages.length,
@@ -73,47 +65,7 @@ class Chat extends StatelessWidget {
                       padding: EdgeInsets.only(top: 10, bottom: 10),
                       physics: BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return Container(
-                          padding: EdgeInsets.all(3),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                // 0e1826
-                                color: Color(0xFF0E1826),
-                              ),
-                              padding: EdgeInsets.all(10),
-                              child: Text.rich(
-                                TextSpan(children: [
-                                  WidgetSpan(
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          messages[index].avatarUrl),
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: messages[index].username +
-                                        ": " +
-                                        messages[index].message,
-                                    style: TextStyle(fontSize: 16),
-                                  )
-                                ]),
-                              ),
-                              // child: Row(
-                              //   children: [
-                              //     Image.network(messages[index].avatarUrl),
-                              //     Text(
-                              //       messages[index].username +
-                              //           ": " +
-                              //           messages[index].message,
-                              //       style: TextStyle(fontSize: 15),
-                              //     )
-                              //   ],
-                              // ),
-                            ),
-                          ),
-                        );
+                        return _buildChatMessage(messages[index]);
                       },
                     );
                   }
@@ -124,5 +76,38 @@ class Chat extends StatelessWidget {
 
           return Text("Unexpected");
         });
+  }
+
+  Widget _buildChatMessage(ChatMessage message) {
+    return Container(
+      padding: EdgeInsets.all(3),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Color(0xFF0E1826),
+          ),
+          padding: EdgeInsets.all(10),
+          child: Text.rich(
+            TextSpan(children: [
+              WidgetSpan(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: CircleAvatar(
+                    radius: 10,
+                    backgroundImage: NetworkImage(message.avatarUrl),
+                  ),
+                ),
+              ),
+              TextSpan(
+                text: message.username + ": " + message.message,
+                style: TextStyle(fontSize: 16),
+              )
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 }

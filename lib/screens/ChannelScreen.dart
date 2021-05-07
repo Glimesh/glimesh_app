@@ -46,18 +46,17 @@ class ChannelWidget extends StatelessWidget {
     ChatMessagesBloc chatMessageBloc =
         BlocProvider.of<ChatMessagesBloc>(context);
 
-    bool debug = false;
+    bool debug = true;
 
     return Scaffold(
-      appBar: AppBar(title: Text(channel.title)),
+      appBar: AppBar(title: Text("${channel.username}'s Channel")),
       body: Column(
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
             child: debug
                 ? Center(
-                    child: Image.network(
-                        "https://glimesh.tv/images/stream-not-started-09759810c3e9ebedf236f1b173f5d51e.jpg?vsn=d"),
+                    child: Image.network(channel.thumbnail),
                   )
                 : FTLPlayer(channel: channel),
           ),

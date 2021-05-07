@@ -10,14 +10,30 @@ class ChatMessage {
   final String message;
 }
 
+class Subcategory {
+  const Subcategory({required this.name});
+
+  final String name;
+}
+
+class Tag {
+  const Tag({required this.name});
+
+  final String name;
+}
+
 class Channel {
-  const Channel({
+  Channel({
     required this.id,
     required this.title,
     required this.thumbnail,
     required this.chatBackgroundUrl,
     required this.username,
     required this.avatarUrl,
+    required this.language,
+    required this.matureContent,
+    required this.tags,
+    this.subcategory,
   });
 
   final int id;
@@ -27,4 +43,10 @@ class Channel {
 
   final String username;
   final String avatarUrl;
+
+  final String language;
+  final bool matureContent;
+
+  List<Tag> tags = [];
+  final Subcategory? subcategory;
 }

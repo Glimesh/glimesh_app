@@ -6,9 +6,21 @@ query LiveChannels($categorySlug: String!) {
         id
         title
         chatBgUrl
+        language
+        matureContent
+        
         stream {
           thumbnailUrl
         }
+
+        subcategory {
+          name
+        }
+
+        tags {
+          name
+        }
+
         streamer {
           username
           avatarUrl

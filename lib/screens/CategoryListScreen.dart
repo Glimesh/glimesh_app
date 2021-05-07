@@ -23,7 +23,7 @@ class CategoryListScreen extends StatelessWidget {
 class CategoryListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return ListView(children: [
       _buildHeader(context),
       _buildButtons(context),
       _buildSomeStreams(context)
