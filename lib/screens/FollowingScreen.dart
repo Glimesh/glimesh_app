@@ -5,10 +5,10 @@ import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class ProfileScreen extends StatelessWidget {
+class FollowingScreen extends StatelessWidget {
   final GraphQLClient client;
 
-  const ProfileScreen({required this.client}) : super();
+  const FollowingScreen({required this.client}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,13 @@ class ProfileScreen extends StatelessWidget {
         create: (context) => UserBloc(
           glimeshRepository: GlimeshRepository(client: client),
         ),
-        child: ProfileWidget(),
+        child: FollowingWidget(),
       ),
     );
   }
 }
 
-class ProfileWidget extends StatelessWidget {
+class FollowingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserBloc bloc = BlocProvider.of<UserBloc>(context);
@@ -50,7 +50,7 @@ class ProfileWidget extends StatelessWidget {
           User user = state.user;
 
           return Center(
-            child: Text("You are ${user.username} :)"),
+            child: Text("Showing following for ${user.username} :)"),
           );
         }
 

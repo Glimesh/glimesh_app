@@ -5,6 +5,7 @@ import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
+import 'package:glimesh_app/screens/FollowingScreen.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -92,9 +93,10 @@ class GlimeshApp extends StatelessWidget {
                 textTheme: whiteTextTheme,
               ),
               themeMode: ThemeMode.dark,
-              home: MyHomePage(title: 'Glimesh Alpha'),
+              home: MyHomePage(title: 'Glimesh Alpha', client: client),
             );
           } else if (snapshot.hasError) {
+            print(snapshot.error);
             return Container(
                 child: Text(
               "Error Loading API",
@@ -111,7 +113,7 @@ class GlimeshApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.client, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -123,13 +125,30 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String? title;
+  final GraphQLClient client;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
+
+  List<Widget> pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      pages = [
+        ProfileScreen(client: widget.client),
+        CategoryListScreen(),
+        FollowingScreen(client: widget.client),
+      ];
+      _selectedIndex = 1;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      body: CategoryListScreen(),
+      body: pages.isEmpty ? Text("Loading") : pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey.shade600,
@@ -206,8 +225,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = index;
     });
 
-    if (index == 0) {
-      Navigator.pushNamed(context, '/profile');
-    }
+    // if (index == 0) {
+    //   Navigator.pushNamed(context, '/profile');
+    // }
   }
 }

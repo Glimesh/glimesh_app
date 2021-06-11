@@ -1,17 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
-class Category {
-  String name;
-  String slug;
-  IconData icon;
-
-  Category({
-    required this.name,
-    required this.slug,
-    this.icon = Icons.question_answer,
-  });
-}
+import 'package:glimesh_app/models.dart';
 
 class CategoryListScreen extends StatelessWidget {
   @override

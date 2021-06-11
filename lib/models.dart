@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class User {
   const User({
     required this.id,
@@ -18,6 +20,18 @@ class ChatMessage {
   final String username;
   final String avatarUrl;
   final String message;
+}
+
+class Category {
+  String name;
+  String slug;
+  IconData icon;
+
+  Category({
+    required this.name,
+    required this.slug,
+    this.icon = Icons.question_answer,
+  });
 }
 
 class Subcategory {
