@@ -31,6 +31,11 @@ class GlimeshRepository {
     ));
   }
 
+  Future<QueryResult> getMyLiveFollowedChannels() async {
+    return client.query(QueryOptions(
+        document: parseString(channel_queries.queryLiveFollowedChannels)));
+  }
+
   Future<QueryResult> getSomeChatMessages(int channelId) {
     return client.query(QueryOptions(
       document: parseString(chat_queries.getSomeChatMessages),

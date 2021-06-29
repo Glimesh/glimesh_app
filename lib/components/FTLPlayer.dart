@@ -35,7 +35,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   initJanusClient() async {
     setState(() {
       rest = RestJanusTransport(
-        url: 'https://janus-dev/janus',
+        url: 'https://do-nyc3-edge1.kjfk.live.glimesh.tv/janus',
       );
       janus = JanusClient(transport: rest, iceServers: []);
     });

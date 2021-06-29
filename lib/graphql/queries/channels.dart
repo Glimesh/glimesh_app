@@ -31,3 +31,38 @@ query LiveChannels($categorySlug: String!) {
 }
 
 ''';
+
+const String queryLiveFollowedChannels = r'''
+query GetMyself {
+  myself {
+    followingLiveChannels(first: 5) {
+      edges {
+        node {
+          id
+          title
+          chatBgUrl
+          language
+          matureContent
+          
+          stream {
+            thumbnailUrl
+          }
+
+          subcategory {
+            name
+          }
+
+          tags {
+            name
+          }
+
+          streamer {
+            username
+            avatarUrl
+          }
+        }
+      }
+    }
+  }
+}
+''';

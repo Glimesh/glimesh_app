@@ -24,6 +24,14 @@ class LoadChannels extends ChannelListEvent {
   List<Object> get props => [this.categorySlug, this.channelLimit];
 }
 
+class LoadMyLiveFollowedChannels extends ChannelListEvent {
+  @override
+  String toString() => 'LoadMyLiveFollowedChannels';
+
+  @override
+  List<Object> get props => [];
+}
+
 @immutable
 abstract class ChannelListState extends Equatable {
   ChannelListState([List props = const []]) : super();
@@ -71,7 +79,9 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
     print("got here");
     try {
       if (event is LoadChannels) {
-        yield* _mapChannelsToState(event.categorySlug, event.channelLimit);
+        yield* _loadChannels(event.categorySlug, event.channelLimit);
+      } else if (event is LoadMyLiveFollowedChannels) {
+        yield* _loadMyLiveFollowedChannels();
       } else {
         // New event, who dis?
       }
@@ -81,7 +91,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
     }
   }
 
-  Stream<ChannelListState> _mapChannelsToState(
+  Stream<ChannelListState> _loadChannels(
       String categorySlug, int channelLimit) async* {
     try {
       yield ChannelListLoading();
@@ -102,6 +112,31 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
 
       // This is temporary to show my stream at the top :)
       listOfChannels.sort((a, b) => b.id.compareTo(a.id));
+
+      yield ChannelListLoaded(results: listOfChannels);
+    } catch (error) {
+      print(error);
+      yield ChannelListNotLoaded();
+    }
+  }
+
+  Stream<ChannelListState> _loadMyLiveFollowedChannels() async* {
+    try {
+      yield ChannelListLoading();
+
+      final queryResults =
+          await this.glimeshRepository.getMyLiveFollowedChannels();
+
+      if (queryResults.hasException) {
+        yield ChannelListNotLoaded(queryResults.exception!.graphqlErrors);
+        return;
+      }
+
+      final List<dynamic> channels = queryResults.data!['myself']
+          ['followingLiveChannels']['edges'] as List<dynamic>;
+
+      final List<Channel> listOfChannels =
+          channels.map(buildChannelFromJson).toList();
 
       yield ChannelListLoaded(results: listOfChannels);
     } catch (error) {

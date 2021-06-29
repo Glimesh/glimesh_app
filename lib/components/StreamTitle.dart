@@ -137,7 +137,10 @@ class _StreamTitleState extends State<StreamTitle> {
       children: [
         Text(widget.channel.username,
             style: Theme.of(context).textTheme.subtitle1),
-        Text(widget.channel.title),
+        Text(
+          widget.channel.title,
+          maxLines: 2,
+        ),
       ],
     );
   }

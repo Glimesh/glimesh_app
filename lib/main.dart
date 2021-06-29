@@ -11,8 +11,21 @@ import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
+import 'dart:io';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 Future<void> main() async {
+  // This should only be done in development. Gotta figure out how to toggle it.
+  HttpOverrides.global = new MyHttpOverrides();
+
   runApp(GlimeshApp());
 }
 
@@ -25,6 +38,8 @@ class GlimeshApp extends StatelessWidget {
 
     final oauthClient = await createOauthClient(CLIENT_ID, CLIENT_SECRET);
     final token = oauthClient.credentials.accessToken;
+
+    print("Got access token: " + token);
 
     final _socketUrl =
         'wss://glimesh.dev/api/graph/websocket?vsn=2.0.0&token=$token';
