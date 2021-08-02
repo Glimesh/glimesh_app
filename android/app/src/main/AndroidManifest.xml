@@ -38,4 +38,12 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+     <activity android:name="com.example.glimesh_app.flutter_web_auth.CallbackActivity" >
+        <intent-filter android:label="flutter_web_auth">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="com.example.glimesh_app" />
+        </intent-filter>
+    </activity>
 </manifest>

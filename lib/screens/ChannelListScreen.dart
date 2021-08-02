@@ -5,21 +5,19 @@ import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/auth.dart';
 
 class ChannelListScreen extends StatelessWidget {
-  final GraphQLClient client;
-
-  const ChannelListScreen({required this.client}) : super();
-
   @override
   Widget build(BuildContext context) {
     String categorySlug = ModalRoute.of(context)!.settings.arguments as String;
+    final authState = AuthState.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text("$categorySlug Streams")),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
-          glimeshRepository: GlimeshRepository(client: client),
+          glimeshRepository: GlimeshRepository(client: authState!.client!),
         ),
         child: ChannelListWidget(categorySlug: categorySlug),
       ),
