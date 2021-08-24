@@ -121,7 +121,7 @@ class CategoryListWidget extends StatelessWidget {
           onPressed: () => Navigator.pushNamed(
             context,
             '/channels',
-            arguments: category.slug,
+            arguments: category,
           ),
           child: Column(
             children: [
