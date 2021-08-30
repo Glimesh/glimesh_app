@@ -10,16 +10,16 @@ import 'package:glimesh_app/auth.dart';
 class ChannelListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String categorySlug = ModalRoute.of(context)!.settings.arguments as String;
+    Category category = ModalRoute.of(context)!.settings.arguments as Category;
     final authState = AuthState.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("$categorySlug Streams")),
+      appBar: AppBar(title: Text("${category.name} Streams")),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
           glimeshRepository: GlimeshRepository(client: authState!.client!),
         ),
-        child: ChannelListWidget(categorySlug: categorySlug),
+        child: ChannelListWidget(categorySlug: category.slug),
       ),
     );
   }
