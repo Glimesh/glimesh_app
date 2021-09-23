@@ -36,6 +36,11 @@ class GlimeshRepository {
         document: parseString(channel_queries.queryLiveFollowedChannels)));
   }
 
+  Future<QueryResult> getHomepageChannels() async {
+    return client.query(QueryOptions(
+        document: parseString(channel_queries.queryHomepageChannels)));
+  }
+
   Future<QueryResult> getSomeChatMessages(int channelId) {
     return client.query(QueryOptions(
       document: parseString(chat_queries.getSomeChatMessages),
