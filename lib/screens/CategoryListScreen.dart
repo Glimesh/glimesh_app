@@ -28,6 +28,7 @@ class CategoryListWidget extends StatelessWidget {
     return ListView(children: [
       _buildHeader(context),
       _buildButtons(context),
+      _buildExploreHeader(context),
       _buildSomeStreams(context)
     ]);
   }
@@ -54,6 +55,37 @@ class CategoryListWidget extends StatelessWidget {
               Expanded(
                 child: AutoSizeText(
                     "The first live streaming platform built around truly real time interactivity. Our streams are warp speed, our chat is blazing, and our community is thriving.",
+                    style: Theme.of(context).textTheme.subtitle1),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildExploreHeader(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                  "Explore Live Streams",
+                  style: Theme.of(context).textTheme.headline4,
+                  // style: TextStyle(fontSize: 20),
+                  maxLines: 1,
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: AutoSizeText(
+                    "Experience real time interaction by visiting some of these selected streams!",
                     style: Theme.of(context).textTheme.subtitle1),
               )
             ],
@@ -161,34 +193,63 @@ class CategoryListWidget extends StatelessWidget {
     ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
     bloc.add(LoadHomepageChannels());
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: AutoSizeText(
-                  "Explore Live Streams",
-                  style: Theme.of(context).textTheme.headline4,
-                  // style: TextStyle(fontSize: 20),
-                  maxLines: 1,
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: AutoSizeText(
-                    "Experience real time interaction by visiting some of these selected streams!",
-                    style: Theme.of(context).textTheme.subtitle1),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
+    return RefreshIndicator(
+        child: BlocBuilder<ChannelListBloc, ChannelListState>(
+            bloc: bloc,
+            builder: (BuildContext context, ChannelListState state) {
+              if (state is ChannelListLoading) {
+                return Container(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      semanticsLabel: "Loading ...",
+                    ),
+                  ),
+                );
+              }
+
+              if (state is ChannelListNotLoaded) {
+                return Text("Error loading channels");
+              }
+
+              if (state is ChannelListLoaded) {
+                final List<Channel> channels = state.results;
+
+                if (channels.length == 0) {
+                  return Center(
+                      child: Text("No live channels on the homepage"));
+                }
+
+                return ListView.builder(
+                  //scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: channels.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/channel',
+                        arguments: channels[index],
+                      );
+                    },
+                    splashColor: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.12),
+                    highlightColor: Colors.transparent,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 5, bottom: 5),
+                      child: _buildCard(context, channels[index]),
+                    ),
+                  ),
+                );
+              }
+
+              return Text("unexpected");
+            }),
+        onRefresh: () async {
+          bloc.add(LoadHomepageChannels());
+        });
   }
 
   Widget _buildCard(BuildContext context, Channel channel) {
