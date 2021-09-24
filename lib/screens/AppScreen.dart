@@ -37,7 +37,7 @@ class _AppScreenState extends State<AppScreen> {
     setState(() {
       pages = [
         ProfileScreen(client: widget.client),
-        CategoryListScreen(),
+        CategoryListScreen(client: widget.client),
         FollowingScreen(client: widget.client),
       ];
       _selectedIndex = 1;

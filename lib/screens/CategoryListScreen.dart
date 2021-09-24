@@ -1,11 +1,24 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/repository.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class CategoryListScreen extends StatelessWidget {
+  final GraphQLClient client;
+
+  const CategoryListScreen({required this.client}) : super();
+
   @override
   Widget build(BuildContext context) {
-    return CategoryListWidget();
+    return BlocProvider(
+      create: (context) => ChannelListBloc(
+        glimeshRepository: GlimeshRepository(client: client),
+      ),
+      child: CategoryListWidget(),
+    );
   }
 }
 
