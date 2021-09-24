@@ -158,6 +158,9 @@ class CategoryListWidget extends StatelessWidget {
   }
 
   Widget _buildSomeStreams(BuildContext context) {
+    ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
+    bloc.add(LoadHomepageChannels());
+
     return Container(
       padding: EdgeInsets.all(20),
       child: Column(
