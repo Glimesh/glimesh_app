@@ -220,7 +220,6 @@ class CategoryListWidget extends StatelessWidget {
                 }
 
                 return ListView.builder(
-                  //scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   primary: false,
                   itemCount: channels.length,
