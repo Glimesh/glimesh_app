@@ -66,3 +66,36 @@ query GetMyself {
   }
 }
 ''';
+
+const String queryHomepageChannels = r'''
+query GetHomepageChannels {
+  homepageChannels{
+    edges {
+      node {
+        id
+        title
+        chatBgUrl
+        language
+        matureContent
+
+        stream {
+          thumbnailUrl
+        }
+
+        subcategory {
+          name
+        }
+
+        tags {
+          name
+        }
+
+        streamer {
+          username
+          avatarUrl
+        }
+      }
+    }
+  }
+}
+''';
