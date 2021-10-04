@@ -4,9 +4,27 @@ import 'package:glimesh_app/auth.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 
 class LoginScreen extends StatelessWidget {
   AuthState? authState;
+
+  String _redirectUrl() {
+    if (kIsWeb && kDebugMode) {
+      // When we're in a local web environment, use our automatically generated flutter URI
+      final currentUri = Uri.base;
+
+      return Uri(
+        host: currentUri.host,
+        scheme: currentUri.scheme,
+        port: currentUri.port,
+        path: '/auth-redirect.html',
+      ).toString();
+    } else {
+      return String.fromEnvironment("GLIMESH_REDIRECT_URL",
+          defaultValue: "test.glimesh.app://login-callback");
+    }
+  }
 
   Future<GraphQLClient> _client() async {
     const clientID =
@@ -15,8 +33,7 @@ class LoginScreen extends StatelessWidget {
         defaultValue: "https://glimesh.test");
     const glimeshWsApiUrl = String.fromEnvironment("GLIMESH_WS_API_URL",
         defaultValue: "wss://glimesh.test");
-    const glimeshRedirectUrl = String.fromEnvironment("GLIMESH_REDIRECT_URL",
-        defaultValue: "test.glimesh.app://login-callback");
+    final glimeshRedirectUrl = _redirectUrl();
 
     final oauthClient =
         await createOauthClient(glimeshApiUrl, glimeshRedirectUrl, clientID);
