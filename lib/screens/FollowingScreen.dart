@@ -37,7 +37,6 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
         child: BlocBuilder<ChannelListBloc, ChannelListState>(
             bloc: bloc,
             builder: (BuildContext context, ChannelListState state) {
-              print(state);
               if (state is ChannelListLoading) {
                 return Container(
                   child: Center(
