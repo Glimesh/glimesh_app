@@ -16,41 +16,84 @@ class ChannelScreen extends StatefulWidget {
 }
 
 class _ChannelScreenState extends State<ChannelScreen> {
+  ChatMessagesBloc? chatMessageBloc;
+
   @override
   void initState() {
     super.initState();
 
-    BlocProvider.of<ChatMessagesBloc>(context)
-        .add(LoadChatMessages(channelId: widget.channel.id));
+    if (chatMessageBloc == null) {
+      chatMessageBloc = BlocProvider.of<ChatMessagesBloc>(context);
+
+      chatMessageBloc!.add(LoadChatMessages(channelId: widget.channel.id));
+    }
   }
 
   @override
   void dispose() {
+    chatMessageBloc!.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChannelWidget(channel: widget.channel);
+    if (chatMessageBloc != null) {
+      return ChannelWidget(
+        channel: widget.channel,
+        chatMessagesBloc: chatMessageBloc!,
+      );
+    } else {
+      return Text("Loading");
+    }
   }
 }
 
 // Chat messages appear multiple times because this is a stateless widget and multiple LoadChatMessage events are sent
 class ChannelWidget extends StatelessWidget {
   final Channel channel;
+  final ChatMessagesBloc chatMessagesBloc;
+  final bool debug = true;
 
-  ChannelWidget({required this.channel});
+  ChannelWidget({required this.channel, required this.chatMessagesBloc});
 
   Widget build(BuildContext context) {
-    ChatMessagesBloc chatMessageBloc =
-        BlocProvider.of<ChatMessagesBloc>(context);
-
-    bool debug = true;
+    bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
-      appBar: AppBar(title: Text("${channel.username}'s Channel")),
-      body: Column(
-        children: [
+        appBar: AppBar(title: Text("${channel.username}'s Channel")),
+        body: horizontalTablet ? _buildSidebar() : _buildStacked());
+  }
+
+  Widget _buildStacked() {
+    return Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: debug
+              ? Center(
+                  child: Image.network(channel.thumbnail),
+                )
+              : FTLPlayer(channel: channel),
+        ),
+        Container(child: StreamTitle(channel: channel)),
+        Expanded(
+          child: Chat(
+            channel: channel,
+          ),
+        ),
+        ChatInput(onSubmit: (message) {
+          chatMessagesBloc.glimeshRepository
+              .sendChatMessage(channel.id, message);
+        }),
+      ],
+    );
+  }
+
+  Widget _buildSidebar() {
+    return Row(children: [
+      Expanded(
+        flex: 9,
+        child: Column(children: [
           AspectRatio(
             aspectRatio: 16 / 9,
             child: debug
@@ -60,18 +103,24 @@ class ChannelWidget extends StatelessWidget {
                 : FTLPlayer(channel: channel),
           ),
           Container(child: StreamTitle(channel: channel)),
-          Expanded(
-            child: Chat(
-              channel: channel,
-              bloc: chatMessageBloc,
-            ),
-          ),
-          ChatInput(onSubmit: (message) {
-            chatMessageBloc.glimeshRepository
-                .sendChatMessage(channel.id, message);
-          }),
-        ],
+        ]),
       ),
-    );
+      Expanded(
+        flex: 3,
+        child: Column(
+          children: [
+            Expanded(
+              child: Chat(
+                channel: channel,
+              ),
+            ),
+            ChatInput(onSubmit: (message) {
+              chatMessagesBloc.glimeshRepository
+                  .sendChatMessage(channel.id, message);
+            })
+          ],
+        ),
+      ),
+    ]);
   }
 }

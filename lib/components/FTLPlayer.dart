@@ -52,8 +52,6 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
     plugin!.messages.listen((even) async {
       if (even.jsep != null) {
-        debugPrint("Handling SDP as well..." + even.jsep.toString());
-
         await plugin!.handleRemoteJsep(even.jsep);
         RTCSessionDescription answer = await plugin!.createAnswer();
         plugin!.send(data: {"request": "start"}, jsep: answer);

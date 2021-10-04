@@ -24,6 +24,6 @@ class AuthState extends InheritedWidget {
 
   @override
   bool updateShouldNotify(AuthState oldWidget) {
-    return client != oldWidget.client;
+    return authenticated != oldWidget.authenticated;
   }
 }

@@ -1,16 +1,8 @@
 PODS:
-  - AppAuth (1.3.1):
-    - AppAuth/Core (= 1.3.1)
-    - AppAuth/ExternalUserAgent (= 1.3.1)
-  - AppAuth/Core (1.3.1)
-  - AppAuth/ExternalUserAgent (1.3.1)
   - connectivity (0.0.1):
     - Flutter
     - Reachability
   - Flutter (1.0.0)
-  - flutter_appauth (0.0.1):
-    - AppAuth (= 1.3.1)
-    - Flutter
   - flutter_webrtc (0.2.2):
     - Flutter
     - GoogleWebRTC (= 1.1.31999)
@@ -20,26 +12,24 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - Reachability (3.2)
+  - shared_preferences (0.0.1):
+    - Flutter
   - uni_links (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
-    - Flutter
-  - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - Flutter (from `Flutter`)
-  - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   trunk:
-    - AppAuth
     - GoogleWebRTC
     - Libyuv
     - Reachability
@@ -49,32 +39,28 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity/ios"
   Flutter:
     :path: Flutter
-  flutter_appauth:
-    :path: ".symlinks/plugins/flutter_appauth/ios"
   flutter_webrtc:
     :path: ".symlinks/plugins/flutter_webrtc/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  AppAuth: 8803ba1aec6d00d9afd30093f82e600307eaa6ea
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  flutter_appauth: a6bf9fa3192a14a981475c4cbe3bcebd3b563144
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
   GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
 

@@ -5,9 +5,10 @@ import 'package:glimesh_app/models.dart';
 
 class Chat extends StatelessWidget {
   final Channel channel;
-  final ChatMessagesBloc bloc;
 
-  const Chat({required this.bloc, required this.channel}) : super();
+  const Chat({
+    required this.channel,
+  }) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -24,59 +25,90 @@ class Chat extends StatelessWidget {
   }
 
   Widget _buildChatMessages(BuildContext context) {
-    return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
-        bloc: bloc,
-        builder: (BuildContext context, ChatMessagesState state) {
-          if (state is ChatMessagesLoading) {
-            return Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: "Loading ...",
-              ),
-            );
-          }
+    return StreamBuilder(
+      stream: BlocProvider.of<ChatMessagesBloc>(context).chatMessagesStream,
+      builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
+        if (snapshot.hasError) {
+          print(snapshot.error);
+          return Center(
+            child: Text("Error"),
+          );
+        }
 
-          if (state is ChatMessagesNotLoaded) {
-            return Text("Error loading channels");
-          }
+        if (snapshot.hasData) {
+          final messages = snapshot.data!;
 
-          if (state is ChatSubscriptionLoaded) {
-            print("ChatSubscriptionLoaded in Chat.dart");
-            final subscription = state.chatMessageSubscription;
+          return ListView.builder(
+            itemCount: messages.length,
+            shrinkWrap: true,
+            reverse: true,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return _buildChatMessage(messages[index]);
+            },
+          );
+        }
 
-            return StreamBuilder(
-                stream: subscription,
-                builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
-                  print("StreamBuilder is updated");
-
-                  if (snapshot.hasError) {
-                    print(snapshot.error);
-                    return Center(
-                      child: Text("Error"),
-                    );
-                  }
-
-                  if (snapshot.hasData) {
-                    final messages = snapshot.data!;
-
-                    return ListView.builder(
-                      itemCount: messages.length,
-                      shrinkWrap: true,
-                      reverse: true,
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      physics: BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return _buildChatMessage(messages[index]);
-                      },
-                    );
-                  }
-
-                  return Text("Loading");
-                });
-          }
-
-          return Text("Unexpected");
-        });
+        return Text("Loading");
+      },
+    );
   }
+
+  // Widget _buildChatMessages(BuildContext context) {
+  //   return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
+  //       bloc: bloc,
+  //       builder: (BuildContext context, ChatMessagesState state) {
+  //         if (state is ChatMessagesLoading) {
+  //           return Center(
+  //             child: CircularProgressIndicator(
+  //               semanticsLabel: "Loading ...",
+  //             ),
+  //           );
+  //         }
+
+  //         if (state is ChatMessagesNotLoaded) {
+  //           return Text("Error loading channels");
+  //         }
+
+  //         if (state is ChatSubscriptionLoaded) {
+  //           print("ChatSubscriptionLoaded in Chat.dart");
+  //           subscription = state.chatMessageSubscription;
+
+  //           return StreamBuilder(
+  //               stream: subscription,
+  //               builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
+  //                 print("StreamBuilder is updated");
+
+  //                 if (snapshot.hasError) {
+  //                   print(snapshot.error);
+  //                   return Center(
+  //                     child: Text("Error"),
+  //                   );
+  //                 }
+
+  //                 if (snapshot.hasData) {
+  //                   final messages = snapshot.data!;
+
+  //                   return ListView.builder(
+  //                     itemCount: messages.length,
+  //                     shrinkWrap: true,
+  //                     reverse: true,
+  //                     padding: EdgeInsets.only(top: 10, bottom: 10),
+  //                     physics: BouncingScrollPhysics(),
+  //                     itemBuilder: (context, index) {
+  //                       return _buildChatMessage(messages[index]);
+  //                     },
+  //                   );
+  //                 }
+
+  //                 return Text("Loading");
+  //               });
+  //         }
+
+  //         return Text("Unexpected");
+  //       });
+  // }
 
   Widget _buildChatMessage(ChatMessage message) {
     return Container(

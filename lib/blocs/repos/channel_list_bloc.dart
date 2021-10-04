@@ -84,7 +84,6 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
 
   @override
   Stream<ChannelListState> mapEventToState(ChannelListEvent event) async* {
-    print("got here");
     try {
       if (event is LoadChannels) {
         yield* _loadChannels(event.categorySlug, event.channelLimit);

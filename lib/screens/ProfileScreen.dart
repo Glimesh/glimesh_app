@@ -43,7 +43,6 @@ class ProfileWidget extends StatelessWidget {
         }
 
         if (state is UserNotLoaded) {
-          print(state.errors);
           return Text("Error loading user");
         }
         if (state is UserLoaded) {
