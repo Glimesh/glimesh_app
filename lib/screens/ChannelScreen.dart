@@ -52,7 +52,7 @@ class _ChannelScreenState extends State<ChannelScreen> {
 class ChannelWidget extends StatelessWidget {
   final Channel channel;
   final ChatMessagesBloc chatMessagesBloc;
-  final bool debug = true;
+  final bool debug = false;
 
   ChannelWidget({required this.channel, required this.chatMessagesBloc});
 

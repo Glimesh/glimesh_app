@@ -11,5 +11,6 @@ abstract class AuthHandshake {
     return _instance;
   }
 
-  Future<Uri> authorize(Uri authorizationUrl, Uri redirectUri);
+  Future<Uri> authorize(Uri authorizationUrl);
+  String redirectUrl();
 }

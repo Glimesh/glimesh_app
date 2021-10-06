@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:glimesh_app/auth/handshake.dart';
 
 Future<oauth2.Client> createOauthClient(
-    String apiUrl, String redirectUrl, String identifier) async {
+    String apiUrl, String identifier) async {
   final prefs = await SharedPreferences.getInstance();
   final tokenEndpoint = Uri.parse("$apiUrl/api/oauth/token");
   final authorizationEndpoint = Uri.parse("$apiUrl/oauth/authorize");
@@ -19,13 +19,18 @@ Future<oauth2.Client> createOauthClient(
 
     if (credentials.isExpired) {
       prefs.remove(authenticationKey);
-      return createOauthClient(apiUrl, redirectUrl, identifier);
+      return createOauthClient(apiUrl, identifier);
     }
 
     return oauth2.Client(credentials, identifier: identifier);
   }
 
-  final redirectUri = Uri.parse(redirectUrl);
+  final handshaker = AuthHandshake.instance;
+  if (handshaker == null) {
+    throw new Exception("No auth handshake instance found");
+  }
+
+  final redirectUri = Uri.parse(handshaker.redirectUrl());
 
   final grant = oauth2.AuthorizationCodeGrant(
       identifier, authorizationEndpoint, tokenEndpoint,
@@ -34,8 +39,7 @@ Future<oauth2.Client> createOauthClient(
   final authorizationUrl = grant
       .getAuthorizationUrl(redirectUri, scopes: ["public", "email", "chat"]);
 
-  final handshaker = AuthHandshake.instance;
-  Uri responseUrl = await handshaker!.authorize(authorizationUrl, redirectUri);
+  Uri responseUrl = await handshaker.authorize(authorizationUrl);
 
   var client =
       await grant.handleAuthorizationResponse(responseUrl.queryParameters);

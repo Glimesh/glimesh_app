@@ -67,7 +67,7 @@ class _AppScreenState extends State<AppScreen> {
                 color: Theme.of(context).primaryColor,
               ),
               child: Text(
-                'Drawer Header',
+                'Glimesh',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,

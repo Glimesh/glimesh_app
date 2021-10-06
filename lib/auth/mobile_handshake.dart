@@ -13,14 +13,19 @@ class MobileHandshake extends AuthHandshake {
     }
   }
 
-  Future<Uri> authorize(Uri authorizationUrl, Uri redirectUri) async {
+  String redirectUrl() {
+    return String.fromEnvironment("GLIMESH_REDIRECT_URL",
+        defaultValue: "tv.glimesh.app://login-callback");
+  }
+
+  Future<Uri> authorize(Uri authorizationUrl) async {
     var completer = new Completer<Uri>();
 
     await _redirect(authorizationUrl);
 
     StreamSubscription? _sub;
     _sub = uriLinkStream.listen((Uri? uri) {
-      if (uri.toString().startsWith(redirectUri.toString())) {
+      if (uri.toString().startsWith(redirectUrl())) {
         _sub!.cancel();
         completer.complete(uri);
       }

@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:janus_client/JanusClient.dart';
+import 'package:janus_client/JanusClient.dart';
+import 'package:janus_client/JanusPlugin.dart';
+import 'package:janus_client/JanusSession.dart';
+import 'package:janus_client/JanusTransport.dart';
+import 'package:janus_client/JanusWebRTCHandle.dart';
+import 'package:janus_client/WebRTCHandle.dart';
+import 'package:janus_client/shelf.dart';
+import 'package:janus_client/utils.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
 
@@ -44,15 +52,15 @@ class _FTLPlayerState extends State<FTLPlayer> {
     plugin = await session!.attach("janus.plugin.ftl");
     await this.watchChannel(widget.channel.id);
 
-    plugin!.remoteStream.listen((event) {
+    plugin!.remoteStream!.listen((event) {
       if (event != null) {
         _remoteRenderer.srcObject = event;
       }
     });
 
-    plugin!.messages.listen((even) async {
+    plugin!.messages!.listen((even) async {
       if (even.jsep != null) {
-        await plugin!.handleRemoteJsep(even.jsep);
+        await plugin!.handleRemoteJsep(even.jsep!);
         RTCSessionDescription answer = await plugin!.createAnswer();
         plugin!.send(data: {"request": "start"}, jsep: answer);
 

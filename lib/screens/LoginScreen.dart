@@ -9,23 +9,6 @@ import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 class LoginScreen extends StatelessWidget {
   AuthState? authState;
 
-  String _redirectUrl() {
-    if (kIsWeb && kDebugMode) {
-      // When we're in a local web environment, use our automatically generated flutter URI
-      final currentUri = Uri.base;
-
-      return Uri(
-        host: currentUri.host,
-        scheme: currentUri.scheme,
-        port: currentUri.port,
-        path: '/auth-redirect.html',
-      ).toString();
-    } else {
-      return String.fromEnvironment("GLIMESH_REDIRECT_URL",
-          defaultValue: "test.glimesh.app://login-callback");
-    }
-  }
-
   Future<GraphQLClient> _client() async {
     const clientID =
         String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
@@ -33,10 +16,8 @@ class LoginScreen extends StatelessWidget {
         defaultValue: "https://glimesh.test");
     const glimeshWsApiUrl = String.fromEnvironment("GLIMESH_WS_API_URL",
         defaultValue: "wss://glimesh.test");
-    final glimeshRedirectUrl = _redirectUrl();
 
-    final oauthClient =
-        await createOauthClient(glimeshApiUrl, glimeshRedirectUrl, clientID);
+    final oauthClient = await createOauthClient(glimeshApiUrl, clientID);
     final token = oauthClient.credentials.accessToken;
 
     print("Got access token: " + token);
@@ -80,7 +61,7 @@ class LoginScreen extends StatelessWidget {
     //         ],
     //       ),
     return Padding(
-        padding: EdgeInsets.only(top: 120, bottom: 160),
+        padding: EdgeInsets.only(top: 60, bottom: 60),
         child: Column(
           children: [
             Expanded(
@@ -88,7 +69,7 @@ class LoginScreen extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: 120, right: 120),
+                padding: EdgeInsets.only(top: 40, left: 40, right: 40),
                 child: _loginButton(context, true),
               ),
             ),
@@ -112,10 +93,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _logo() {
-    return FittedBox(
-      fit: BoxFit.contain, // otherwise the logo will be tiny
-      child: Image.asset('assets/images/logo-with-text.png'),
-    );
+    return Image.asset('assets/images/logo-with-text.png');
   }
 
   Widget _loginButton(context, bool center) {

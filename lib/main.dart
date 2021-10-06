@@ -116,7 +116,7 @@ class GlimeshApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.dark,
       home: authState!.authenticated
-          ? AppScreen(client: authState.client!, title: "Glimesh.tv")
+          ? AppScreen(client: authState.client!, title: "Glimesh")
           : LoginScreen(),
     );
   }

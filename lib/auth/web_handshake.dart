@@ -5,7 +5,18 @@ import 'package:glimesh_app/auth/handshake.dart';
 AuthHandshake getHandshake() => WebHandshake();
 
 class WebHandshake extends AuthHandshake {
-  Future<Uri> authorize(Uri authorizationUrl, Uri redirectUri) async {
+  String redirectUrl() {
+    final currentUri = Uri.base;
+
+    return Uri(
+      host: currentUri.host,
+      scheme: currentUri.scheme,
+      port: currentUri.port,
+      path: '/auth-redirect.html',
+    ).toString();
+  }
+
+  Future<Uri> authorize(Uri authorizationUrl) async {
     var completer = new Completer<Uri>();
 
     html.WindowBase _popupWin = html.window.open(authorizationUrl.toString(),
