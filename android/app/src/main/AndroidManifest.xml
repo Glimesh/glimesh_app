@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.glimesh_app">
    <application
-        android:label="glimesh_app"
+        android:label="Glimesh"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -47,6 +47,9 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <!-- <activity android:name="com.example.glimesh_app.flutter_web_auth.CallbackActivity" >
         <intent-filter android:label="flutter_web_auth">
             <action android:name="android.intent.action.VIEW" />

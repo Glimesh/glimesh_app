@@ -1,14 +1,15 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
-import 'dart:io';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:glimesh_app/screens/LoginScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/auth.dart';
-
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
@@ -23,10 +24,17 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 Future<void> main() async {
-  // This should only be done in development. Gotta figure out how to toggle it.
-  HttpOverrides.global = new MyHttpOverrides();
+  if (Foundation.kDebugMode) {
+    HttpOverrides.global = new MyHttpOverrides();
+  }
 
-  runApp(AuthWidget());
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://45aff967b80a4b7ba9052619a2fc2012@o966048.ingest.sentry.io/5996892';
+    },
+    appRunner: () => runApp(AuthWidget()),
+  );
 }
 
 class AuthWidget extends StatefulWidget {
