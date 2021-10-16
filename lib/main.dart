@@ -8,8 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:glimesh_app/screens/LoginScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
+import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
+import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
@@ -98,6 +100,22 @@ class GlimeshApp extends StatelessWidget {
                     GlimeshRepository(client: authState!.client!),
               ),
               child: ChannelScreen(channel: channel),
+            );
+          },
+        );
+      }
+
+      if (settings.name == '/profile') {
+        final String username = settings.arguments as String;
+
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider(
+              create: (context) => UserBloc(
+                glimeshRepository:
+                    GlimeshRepository(client: authState!.client!),
+              ),
+              child: UserProfileScreen(username: username),
             );
           },
         );
