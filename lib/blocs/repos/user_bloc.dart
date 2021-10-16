@@ -18,12 +18,12 @@ class LoadMyself extends UserEvent {
 }
 
 class LoadUser extends UserEvent {
-  final int id;
+  final String username;
 
-  LoadUser({required this.id}) : super([id]);
+  LoadUser({required this.username}) : super([username]);
 
   @override
-  List<Object> get props => [this.id];
+  List<Object> get props => [this.username];
 }
 
 @immutable
@@ -65,7 +65,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (event is LoadMyself) {
         yield* _mapMyselfToState();
       } else if (event is LoadUser) {
-        yield* _mapUserToState(event.id);
+        yield* _mapUserToState(event.username);
       } else {
         // New event, who dis?
       }
@@ -95,11 +95,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Stream<UserState> _mapUserToState(int userId) async* {
+  Stream<UserState> _mapUserToState(String userName) async* {
     try {
       yield UserLoading();
 
-      final queryResults = await this.glimeshRepository.getUser(userId);
+      final queryResults = await this.glimeshRepository.getUser(userName);
 
       if (queryResults.hasException) {
         yield UserNotLoaded(queryResults.exception!.graphqlErrors);

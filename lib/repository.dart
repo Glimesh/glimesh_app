@@ -17,10 +17,10 @@ class GlimeshRepository {
     ));
   }
 
-  Future<QueryResult> getUser(int userId) async {
+  Future<QueryResult> getUser(String userName) async {
     return client.query(QueryOptions(
       document: parseString(user_queries.getUser),
-      variables: <String, dynamic>{"userId": userId},
+      variables: <String, dynamic>{"username": userName},
     ));
   }
 
