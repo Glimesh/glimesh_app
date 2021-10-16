@@ -8,7 +8,7 @@ query GetMyself {
 ''';
 
 const String getUser = r'''
-query GetUser($userId: ID!) {
+query GetUser($userId: Int!) {
   user(id: $userId) {
     id
     username
