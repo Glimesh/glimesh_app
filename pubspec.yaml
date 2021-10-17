@@ -46,6 +46,7 @@ dependencies:
   uni_links: ^0.5.1
   shared_preferences: ^2.0.8
   sentry_flutter: ^6.0.1
+  font_awesome_flutter: ^9.1.0
 
 dev_dependencies:
   flutter_test:
