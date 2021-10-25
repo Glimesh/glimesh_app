@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.0.8
   sentry_flutter: ^6.0.1
   font_awesome_flutter: ^9.1.0
+  flutter_markdown: ^0.6.8
 
 dev_dependencies:
   flutter_test:

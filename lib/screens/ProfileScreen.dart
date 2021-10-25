@@ -6,6 +6,7 @@ import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final String username;
@@ -98,7 +99,8 @@ class ProfileWidget extends StatelessWidget {
   Widget _buildStacked(BuildContext context, User user) {
     return Column(children: [
       _buildProfileInfo(context, user),
-      Text(user.profileContentMd ?? "")
+      Padding(padding: EdgeInsets.only(bottom: 5)),
+      Expanded(child: Markdown(data: user.profileContentMd ?? "", onTapLink: _handleMarkdownLinkTap))
     ]);
   }
 
@@ -107,8 +109,12 @@ class ProfileWidget extends StatelessWidget {
         padding: EdgeInsets.all(20),
         child: Row(children: [
           Expanded(flex: 3, child: _buildProfileInfo(context, user)),
-          Expanded(flex: 9, child: Text(user.profileContentMd ?? "")),
+          Expanded(flex: 9, child: Markdown(data: user.profileContentMd ?? "", onTapLink: _handleMarkdownLinkTap)),
         ]));
+  }
+
+  void _handleMarkdownLinkTap(String _text, String? href, String _title) {
+	_openLink(href!);
   }
 
   Widget _buildProfileInfo(BuildContext context, User user) {
