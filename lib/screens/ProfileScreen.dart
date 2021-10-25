@@ -170,7 +170,7 @@ class ProfileWidget extends StatelessWidget {
         if (social.platform == "twitter") {
           socials.add(IconButton(
               onPressed: () {
-                _openSocialLink("https://twitter.com/${social.username}");
+                _openLink("https://twitter.com/${social.username}");
               },
               icon: FaIcon(FontAwesomeIcons.twitter)));
         }
@@ -181,7 +181,7 @@ class ProfileWidget extends StatelessWidget {
       socials.add(
         IconButton(
             onPressed: () {
-              _openSocialLink("https://youtube.com/${user.socialYoutube}");
+              _openLink("https://youtube.com/${user.socialYoutube}");
             },
             icon: FaIcon(FontAwesomeIcons.youtube)),
       );
@@ -191,7 +191,7 @@ class ProfileWidget extends StatelessWidget {
       socials.add(
         IconButton(
             onPressed: () {
-              _openSocialLink("https://instagram.com/${user.socialInstagram}");
+              _openLink("https://instagram.com/${user.socialInstagram}");
             },
             icon: FaIcon(FontAwesomeIcons.instagram)),
       );
@@ -201,7 +201,7 @@ class ProfileWidget extends StatelessWidget {
       socials.add(
         IconButton(
             onPressed: () {
-              _openSocialLink(
+              _openLink(
                   "https://discord.com/invite/${user.socialDiscord}");
             },
             icon: FaIcon(FontAwesomeIcons.discord)),
@@ -212,7 +212,7 @@ class ProfileWidget extends StatelessWidget {
       socials.add(
         IconButton(
             onPressed: () {
-              _openSocialLink(user.socialGuilded!);
+              _openLink(user.socialGuilded!);
             },
             icon: FaIcon(FontAwesomeIcons.guilded)),
       );
@@ -221,7 +221,7 @@ class ProfileWidget extends StatelessWidget {
     return Row(children: socials, mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  void _openSocialLink(String link) async => {
+  void _openLink(String link) async => {
         await canLaunch(link)
             ? await launch(link)
             : throw "failed to launch ${link}"
