@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final String username;
@@ -81,11 +83,147 @@ class ProfileWidget extends StatelessWidget {
     if (userState is UserLoaded) {
       User user = (userState as UserLoaded).user;
 
-      return Center(
-        child: Text("${user.username} :)"),
-      );
+      if (MediaQuery.of(context).size.width > 992) {
+        // render side-by-side
+        return _buildSideBySide(context, user);
+      } else {
+        // render stacked
+        return _buildStacked(context, user);
+      }
     }
 
     return Text("Unexpected");
   }
+
+  Widget _buildStacked(BuildContext context, User user) {
+    return Column(children: [
+      _buildProfileInfo(context, user),
+      Text(user.profileContentMd ?? "")
+    ]);
+  }
+
+  Widget _buildSideBySide(BuildContext context, User user) {
+    return Container(
+        padding: EdgeInsets.all(20),
+        child: Row(children: [
+          Expanded(flex: 3, child: _buildProfileInfo(context, user)),
+          Expanded(flex: 9, child: Text(user.profileContentMd ?? "")),
+        ]));
+  }
+
+  Widget _buildProfileInfo(BuildContext context, User user) {
+    return Column(
+      children: [
+        Padding(padding: EdgeInsets.only(top: 5)),
+        Text(user.username, style: Theme.of(context).textTheme.headline5),
+        _buildTeamRole(user),
+        Padding(padding: EdgeInsets.only(bottom: 5)),
+        CircleAvatar(radius: 64, backgroundImage: NetworkImage(user.avatarUrl)),
+        //TODO pronouns (when we get them in the API)
+        Container(child: _buildSocials(user)),
+        Row(children: [
+          Column(children: [
+            Text("Followers"),
+            Text(user.countFollowers.toString()),
+          ]),
+          ElevatedButton(
+            onPressed: () {},
+            child: Text("Follow"),
+            style: ElevatedButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: EdgeInsets.all(5),
+            ),
+          ),
+          Column(children: [
+            Text("Following"),
+            Text(user.countFollowing.toString()),
+          ]),
+        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
+        //TODO report (pending API)
+      ],
+    );
+  }
+
+  Widget _buildTeamRole(User user) {
+    if (user.teamRole == null) return Container(width: 0, height: 0);
+
+    Color? colour;
+
+    switch (user.teamRole) {
+      case "Community Team":
+        colour = Colors.green[600];
+        break;
+      case "Core Team":
+        colour = Colors.red;
+        break;
+    }
+
+    return Text(user.teamRole!, style: TextStyle(color: colour));
+  }
+
+  Widget _buildSocials(User user) {
+    List<Widget> socials = [];
+
+    if (user.socials.length > 0) {
+      for (Social social in user.socials) {
+        // just check for twitter for now
+        if (social.platform == "twitter") {
+          socials.add(IconButton(
+              onPressed: () {
+                _openSocialLink("https://twitter.com/${social.username}");
+              },
+              icon: FaIcon(FontAwesomeIcons.twitter)));
+        }
+      }
+    }
+
+    if (user.socialYoutube != null) {
+      socials.add(
+        IconButton(
+            onPressed: () {
+              _openSocialLink("https://youtube.com/${user.socialYoutube}");
+            },
+            icon: FaIcon(FontAwesomeIcons.youtube)),
+      );
+    }
+
+    if (user.socialInstagram != null) {
+      socials.add(
+        IconButton(
+            onPressed: () {
+              _openSocialLink("https://instagram.com/${user.socialInstagram}");
+            },
+            icon: FaIcon(FontAwesomeIcons.instagram)),
+      );
+    }
+
+    if (user.socialDiscord != null) {
+      socials.add(
+        IconButton(
+            onPressed: () {
+              _openSocialLink(
+                  "https://discord.com/invite/${user.socialDiscord}");
+            },
+            icon: FaIcon(FontAwesomeIcons.discord)),
+      );
+    }
+
+    if (user.socialGuilded != null) {
+      socials.add(
+        IconButton(
+            onPressed: () {
+              _openSocialLink(user.socialGuilded!);
+            },
+            icon: FaIcon(FontAwesomeIcons.guilded)),
+      );
+    }
+
+    return Row(children: socials, mainAxisAlignment: MainAxisAlignment.center);
+  }
+
+  void _openSocialLink(String link) async => {
+        await canLaunch(link)
+            ? await launch(link)
+            : throw "failed to launch ${link}"
+      };
 }
