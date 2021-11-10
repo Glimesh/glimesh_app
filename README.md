@@ -28,6 +28,13 @@ This repository houses the Glimesh Mobile App.
 flutter test
 ```
 
+## Apple M1 Notes
+You may need to install the pods using slightly different methods:
+```sh
+cd ios
+arch -x86_64 pod install
+```
+
 ## Help
 If you need help with anything, please feel free to open [a GitHub Issue](https://github.com/Glimesh/glimesh_app/issues/new).
 

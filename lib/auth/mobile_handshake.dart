@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:sentry/sentry.dart';
 
 import 'package:glimesh_app/auth/handshake.dart';
 
@@ -10,6 +11,8 @@ class MobileHandshake extends AuthHandshake {
   _redirect(Uri authorizationUrl) async {
     if (await canLaunch(authorizationUrl.toString())) {
       await launch(authorizationUrl.toString());
+    } else {
+      await Sentry.captureMessage('Failed to launch oauth window');
     }
   }
 

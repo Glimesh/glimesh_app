@@ -5,6 +5,7 @@ import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:package_info_plus/package_info_plus.dart';
 
 class LoginScreen extends StatelessWidget {
   AuthState? authState;
@@ -88,6 +89,22 @@ class LoginScreen extends StatelessWidget {
         Expanded(
           child: _loginButton(context, false),
         ),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Text(
+                    'Version: ${snapshot.data!.version}',
+                  ),
+                );
+              default:
+                return const SizedBox();
+            }
+          },
+        ),
       ],
     );
   }
@@ -127,7 +144,23 @@ class LoginScreen extends StatelessWidget {
               },
               child: const Text("Login"),
             ),
-          )
+          ),
+          FutureBuilder<PackageInfo>(
+            future: PackageInfo.fromPlatform(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  return Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(
+                      'Version: ${snapshot.data!.version}',
+                    ),
+                  );
+                default:
+                  return const SizedBox();
+              }
+            },
+          ),
         ],
       ),
     );

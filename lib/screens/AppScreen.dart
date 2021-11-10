@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
@@ -64,14 +65,24 @@ class _AppScreenState extends State<AppScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: Colors.blue,
               ),
-              child: Text(
-                'Glimesh',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      return Text(
+                        'Glimesh (${snapshot.data!.version})',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      );
+                    default:
+                      return const SizedBox();
+                  }
+                },
               ),
             ),
             ListTile(

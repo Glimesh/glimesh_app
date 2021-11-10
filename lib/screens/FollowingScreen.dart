@@ -14,7 +14,6 @@ class FollowingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Live Followed Channels")),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
           glimeshRepository: GlimeshRepository(client: client),

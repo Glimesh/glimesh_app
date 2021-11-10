@@ -10,6 +10,7 @@ import 'package:janus_client/shelf.dart';
 import 'package:janus_client/utils.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:flutter_incall/flutter_incall.dart';
 
 class FTLPlayer extends StatefulWidget {
   final Channel channel;
@@ -27,6 +28,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   JanusPlugin? plugin;
 
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
+  IncallManager incall = new IncallManager();
 
   bool _loading = true;
 
@@ -57,6 +59,9 @@ class _FTLPlayerState extends State<FTLPlayer> {
         _remoteRenderer.srcObject = event;
       }
     });
+    // plugin!.remoteStream!.getAudioTracks()[0].enableSpeakerphone(true);
+    // await plugin!.remoteStream!.first.then(
+    // (value) => {value.getAudioTracks().first.enableSpeakerphone(true)});
 
     plugin!.messages!.listen((even) async {
       if (even.jsep != null) {
@@ -79,19 +84,38 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
   @override
   void dispose() {
-    plugin!.send(data: {"request": "stop"});
+    try {
+      plugin!.send(data: {"request": "stop"});
 
-    plugin!.dispose();
-    session!.dispose();
-    plugin!.remoteStream = null;
-    _remoteRenderer.srcObject = null;
-    _remoteRenderer.dispose();
+      plugin!.dispose();
+      session!.dispose();
+      plugin!.localStream = null;
+      plugin!.remoteStream = null;
+      _remoteRenderer.srcObject = null;
+      _remoteRenderer.dispose();
+    } catch (e) {
+      print(e.toString());
+    }
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Future: https://pub.dev/packages/audio_service
+
+    // _remoteRenderer.audioOutput = "something";
+    // navigator.mediaDevices.enumerateDevices().then((list) {
+    //   for (var device in list) {
+    //     print(device.label);
+    //     print(device.kind);
+    //     print("------");
+    //   }
+    // });
+
+    incall.setKeepScreenOn(true);
+    incall.setSpeakerphoneOn(true);
+
     return Stack(
       children: [
         RTCVideoView(
@@ -107,7 +131,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
                   children: [
                     CircularProgressIndicator(),
                     Padding(padding: EdgeInsets.all(10)),
-                    Text("Loading FTL Stream..")
+                    Text("Loading FTL Stream")
                   ],
                 ),
               )

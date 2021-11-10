@@ -54,9 +54,9 @@ class Channel {
     required this.chatBackgroundUrl,
     required this.username,
     required this.avatarUrl,
-    required this.language,
     required this.matureContent,
     required this.tags,
+    this.language,
     this.subcategory,
   });
 
@@ -68,7 +68,7 @@ class Channel {
   final String username;
   final String avatarUrl;
 
-  final String language;
+  final String? language;
   final bool matureContent;
 
   List<Tag> tags = [];

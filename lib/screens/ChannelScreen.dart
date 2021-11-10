@@ -60,8 +60,10 @@ class ChannelWidget extends StatelessWidget {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
-        appBar: AppBar(title: Text("${channel.username}'s Channel")),
-        body: horizontalTablet ? _buildSidebar() : _buildStacked());
+      body: SafeArea(
+        child: horizontalTablet ? _buildSidebar() : _buildStacked(),
+      ),
+    );
   }
 
   Widget _buildStacked() {

@@ -104,9 +104,13 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buildLanguageTag() {
+    if (widget.channel.language == null) {
+      return Padding(padding: EdgeInsets.zero);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text("Language"), Chip(label: Text(widget.channel.language))],
+      children: [Text("Language"), Chip(label: Text(widget.channel.language!))],
     );
   }
 
@@ -146,6 +150,8 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buttonContainer() {
+    return Padding(padding: EdgeInsets.zero);
+
     return Column(
       children: [
         Padding(padding: EdgeInsets.only(bottom: 5)),
