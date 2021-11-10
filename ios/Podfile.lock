@@ -9,9 +9,18 @@ PODS:
     - Libyuv (= 1703)
   - GoogleWebRTC (1.1.31999)
   - Libyuv (1703)
+  - package_info_plus (0.4.5):
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - Reachability (3.2)
+  - Sentry (7.3.0):
+    - Sentry/Core (= 7.3.0)
+  - Sentry/Core (7.3.0)
+  - sentry_flutter (0.0.1):
+    - Flutter
+    - FlutterMacOS
+    - Sentry (~> 7.3.0)
   - shared_preferences (0.0.1):
     - Flutter
   - uni_links (0.0.1):
@@ -23,7 +32,9 @@ DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -33,6 +44,7 @@ SPEC REPOS:
     - GoogleWebRTC
     - Libyuv
     - Reachability
+    - Sentry
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -41,8 +53,12 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_webrtc:
     :path: ".symlinks/plugins/flutter_webrtc/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  sentry_flutter:
+    :path: ".symlinks/plugins/sentry_flutter/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   uni_links:
@@ -56,12 +72,15 @@ SPEC CHECKSUMS:
   flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
   GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
+  sentry_flutter: 08fadaed464f44e1233d3fbb0c72b10cebd79487
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
 
-PODFILE CHECKSUM: bfe56d4b4581f6529828b1cb8394ac1cf6cd0487
+PODFILE CHECKSUM: 4ef07ac346f7210eaf6b24150d1807322d8faabf
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
