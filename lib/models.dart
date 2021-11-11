@@ -1,12 +1,42 @@
 import 'package:flutter/material.dart';
 
 class User {
-  const User({
+  User({
     required this.id,
     required this.username,
+    this.teamRole,
+    required this.avatarUrl,
+    required this.countFollowers,
+    required this.countFollowing,
+    this.profileContentMd,
+    this.socialDiscord,
+    this.socialGuilded,
+    this.socialYoutube,
+    this.socialInstagram,
+    required this.socials,
   });
 
   final int id;
+  final String username;
+  final String? teamRole;
+  final String avatarUrl;
+  final int countFollowers;
+  final int countFollowing;
+  final String? profileContentMd;
+  final String? socialDiscord;
+  final String? socialGuilded;
+  final String? socialYoutube;
+  final String? socialInstagram;
+  List<Social> socials;
+}
+
+class Social {
+  const Social({
+    required this.platform,
+    required this.username,
+  });
+
+  final String platform;
   final String username;
 }
 
