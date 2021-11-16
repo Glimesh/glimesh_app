@@ -5,9 +5,8 @@ PODS:
   - Flutter (1.0.0)
   - flutter_webrtc (0.2.2):
     - Flutter
-    - GoogleWebRTC (= 1.1.31999)
     - Libyuv (= 1703)
-  - GoogleWebRTC (1.1.31999)
+    - WebRTC-SDK (= 92.4515.07)
   - Libyuv (1703)
   - package_info_plus (0.4.5):
     - Flutter
@@ -27,6 +26,7 @@ PODS:
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
+  - WebRTC-SDK (92.4515.07)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -41,10 +41,10 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - GoogleWebRTC
     - Libyuv
     - Reachability
     - Sentry
+    - WebRTC-SDK
 
 EXTERNAL SOURCES:
   connectivity_plus:
@@ -69,8 +69,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
-  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
+  flutter_webrtc: 6b71a1fc1d931a3dfe879e578ea10e2e6cd84f53
   Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
@@ -80,7 +79,8 @@ SPEC CHECKSUMS:
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
+  WebRTC-SDK: 540a44f2e30e89c75e331d5c4a372253ba668233
 
-PODFILE CHECKSUM: 4ef07ac346f7210eaf6b24150d1807322d8faabf
+PODFILE CHECKSUM: 924d1024314fb86ff71b6a11d6ed3ae01b522dd0
 
 COCOAPODS: 1.11.2
