@@ -5,7 +5,13 @@ query GetSomeChatMessages($channelId: ID!) {
       edges {
         node {
           id
-          message
+          tokens {
+            type
+            ...on EmoteToken {
+              src
+            }
+            text
+          }
           user {
             username
             avatarUrl
@@ -20,7 +26,13 @@ query GetSomeChatMessages($channelId: ID!) {
 const String chatMessagesSubscription = r'''
 subscription ChatMessages($channelId: ID!) {
   chatMessage(channelId: $channelId) {
-    message
+    tokens {
+      type
+      ... on EmoteToken {
+        src
+      }
+      text
+    }
     user {
       username
       avatarUrl

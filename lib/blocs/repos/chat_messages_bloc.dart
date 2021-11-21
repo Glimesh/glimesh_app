@@ -102,7 +102,7 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
               .map((dynamic e) => ChatMessage(
                     username: e['node']['user']['username'] as String,
                     avatarUrl: e['node']['user']['avatarUrl'] as String,
-                    message: e['node']['message'] as String,
+                    tokens: _buildMessageTokensFromJson(e['node']['tokens']),
                   ))
               .toList();
 
@@ -120,7 +120,7 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
           ChatMessage chatMessage = ChatMessage(
             username: data['user']['username'] as String,
             avatarUrl: data['user']['avatarUrl'] as String,
-            message: data['message'] as String,
+            tokens: _buildMessageTokensFromJson(data['tokens']),
           );
 
           chatMessages.add(chatMessage);
@@ -139,6 +139,18 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
       print('$_ $stackTrace');
       yield state;
     }
+  }
+
+  List<MessageToken> _buildMessageTokensFromJson(List<dynamic> json) {
+    final List<MessageToken> tokens = json
+        .map((dynamic token) => MessageToken(
+              tokenType: token['type'] as String,
+              text: token['text'] as String,
+              src: token['src'] as String?,
+            ))
+        .toList();
+
+    return tokens;
   }
 
   Future<void> close() {
