@@ -41,10 +41,14 @@ class GlimeshRepository {
         document: parseString(channel_queries.queryHomepageChannels)));
   }
 
+  // fetchPolicy is set the noCache here due to issue #950 on graphql-flutter
+  // which seems to be causing issues with fragments?
+  // also, this fixes having old chat messages shown, which is nice
   Future<QueryResult> getSomeChatMessages(int channelId) {
     return client.query(QueryOptions(
       document: parseString(chat_queries.getSomeChatMessages),
       variables: <String, dynamic>{"channelId": channelId},
+      fetchPolicy: FetchPolicy.noCache,
     ));
   }
 
@@ -54,6 +58,7 @@ class GlimeshRepository {
         operationName: "ChatMessages",
         document: parseString(chat_queries.chatMessagesSubscription),
         variables: <String, dynamic>{"channelId": channelId},
+        fetchPolicy: FetchPolicy.noCache,
       ),
     );
   }

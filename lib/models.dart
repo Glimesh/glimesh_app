@@ -40,16 +40,28 @@ class Social {
   final String username;
 }
 
+class MessageToken {
+  const MessageToken({
+    required this.tokenType,
+    required this.text,
+    this.src,
+  });
+
+  final String tokenType;
+  final String text;
+  final String? src;
+}
+
 class ChatMessage {
   const ChatMessage({
     required this.username,
-    required this.message,
     required this.avatarUrl,
+    required this.tokens,
   });
 
   final String username;
   final String avatarUrl;
-  final String message;
+  final List<MessageToken> tokens;
 }
 
 class Category {
