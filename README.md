@@ -21,6 +21,12 @@ This repository houses the Glimesh Mobile App.
 4. Push to the branch (`git push origin feature/my-new-feature`)
 5. Create new Pull Request
 
+## Apple M1 Notes
+You may need to install the pods using slightly different methods:
+```sh
+cd ios
+arch -x86_64 pod install
+```
 
 ## Testing
 

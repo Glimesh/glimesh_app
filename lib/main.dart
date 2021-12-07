@@ -15,6 +15,7 @@ import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
+import 'package:glimesh_app/glimesh.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -56,6 +57,10 @@ class _AuthWidgetState extends State<AuthWidget> {
   }
 
   void logout() {
+    const glimeshApiUrl = String.fromEnvironment("GLIMESH_API_URL",
+        defaultValue: "https://glimesh.test");
+    deleteOauthClient(glimeshApiUrl);
+
     setState(() {
       authenticated = false;
       client = null;

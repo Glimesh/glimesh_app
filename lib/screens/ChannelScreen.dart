@@ -60,8 +60,10 @@ class ChannelWidget extends StatelessWidget {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
-        appBar: AppBar(title: Text("${channel.username}'s Channel")),
-        body: horizontalTablet ? _buildSidebar() : _buildStacked());
+      body: SafeArea(
+        child: horizontalTablet ? _buildSidebar() : _buildStacked(),
+      ),
+    );
   }
 
   Widget _buildStacked() {
@@ -75,7 +77,15 @@ class ChannelWidget extends StatelessWidget {
                 )
               : FTLPlayer(channel: channel),
         ),
-        Container(child: StreamTitle(channel: channel)),
+        Container(
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: StreamTitle(
+              channel: channel,
+              allowMetadata: true,
+            ),
+          ),
+        ),
         Expanded(
           child: Chat(
             channel: channel,
@@ -102,7 +112,12 @@ class ChannelWidget extends StatelessWidget {
                   )
                 : FTLPlayer(channel: channel),
           ),
-          Container(child: StreamTitle(channel: channel)),
+          Container(
+            child: StreamTitle(
+              channel: channel,
+              allowMetadata: true,
+            ),
+          ),
         ]),
       ),
       Expanded(

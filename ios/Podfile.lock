@@ -3,26 +3,30 @@ PODS:
     - Flutter
     - Reachability
   - Flutter (1.0.0)
-  - flutter_webrtc (0.2.2):
+  - flutter_webrtc (0.7.1):
     - Flutter
     - Libyuv (= 1703)
+<<<<<<< HEAD
     - WebRTC-SDK (= 92.4515.07)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+=======
+    - WebRTC-SDK (= 92.4515.11)
+>>>>>>> c9a9079 (Forking Janus Client, adding stream titles to listings, lots of tiny bug fixes)
   - Libyuv (1703)
   - package_info_plus (0.4.5):
     - Flutter
-  - path_provider (0.0.1):
+  - path_provider_ios (0.0.1):
     - Flutter
   - Reachability (3.2)
-  - Sentry (7.3.0):
-    - Sentry/Core (= 7.3.0)
-  - Sentry/Core (7.3.0)
+  - Sentry (7.5.2):
+    - Sentry/Core (= 7.5.2)
+  - Sentry/Core (7.5.2)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.3.0)
+    - Sentry (~> 7.5.1)
   - shared_preferences (0.0.1):
     - Flutter
   - sqflite (0.0.2):
@@ -32,14 +36,14 @@ PODS:
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
-  - WebRTC-SDK (92.4515.07)
+  - WebRTC-SDK (92.4515.11)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -63,8 +67,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_webrtc/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
   shared_preferences:
@@ -79,20 +83,20 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  flutter_webrtc: 6b71a1fc1d931a3dfe879e578ea10e2e6cd84f53
+  flutter_webrtc: a5a79904f0bca0ea23aff49c51ca765f70a0f703
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: 9a4e621430e2dae4477d791f2f7e905720b6efbf
-  sentry_flutter: 08fadaed464f44e1233d3fbb0c72b10cebd79487
+  Sentry: 95788d2baa9cc904151c9ac41101c67d9f25e09e
+  sentry_flutter: 4cd99764f9fe01c9415790d1f3fb1c7fd3a5cbe9
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
-  WebRTC-SDK: 540a44f2e30e89c75e331d5c4a372253ba668233
+  WebRTC-SDK: 21dbc6028a68f3a89718057a2caa970a4da8ebb7
 
-PODFILE CHECKSUM: 72671a6ba25c4046f04b897bae6fb0be3cce31c0
+PODFILE CHECKSUM: 9388b2ab4c98804a24fefc585efd110a078cf07c
 
 COCOAPODS: 1.11.2

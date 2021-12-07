@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+4
+version: 1.0.0+9
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -28,13 +28,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.3
-  # janus_client:
-  #   path: flutter_janus_client
+  janus_streaming_client:
+    path: janus_streaming_client
   # Library is currently not built correctly for iOS, have to maintain our own local copy.
   #    git:
   #      url: https://github.com/flutterjanus/flutter_janus_client.git
   #      ref: c04b3e79fb8f6f39ea6bb68fd85176b9928a72f4
-  janus_client: ^2.1.1-beta
+  # janus_client: ^2.1.1-beta
   graphql_flutter: ^5.0.0
   flutter_bloc: ^7.3.0
   equatable: ^2.0.3

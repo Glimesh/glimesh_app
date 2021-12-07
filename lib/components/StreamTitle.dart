@@ -3,8 +3,9 @@ import 'package:glimesh_app/models.dart';
 
 class StreamTitle extends StatefulWidget {
   final Channel channel;
+  final bool? allowMetadata;
 
-  const StreamTitle({required this.channel}) : super();
+  const StreamTitle({required this.channel, this.allowMetadata}) : super();
 
   @override
   _StreamTitleState createState() => _StreamTitleState();
@@ -15,39 +16,45 @@ class _StreamTitleState extends State<StreamTitle> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onVerticalDragEnd: (details) {
-        setState(() {
-          _showMetadata = true;
-        });
-      },
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 5, right: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(widget.channel.avatarUrl),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    child: _streamerContainer(),
-                  ),
-                ),
-                _buttonContainer(),
-              ],
+    print(widget.allowMetadata);
+    if (widget.allowMetadata == true) {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onVerticalDragEnd: (details) {
+          setState(() {
+            _showMetadata = true;
+          });
+        },
+        child: _child(),
+      );
+    } else {
+      return _child();
+    }
+  }
+
+  Widget _child() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundImage: NetworkImage(widget.channel.avatarUrl),
             ),
-          ),
-          _showMetadata
-              ? _metadataContainer()
-              : Padding(padding: EdgeInsets.all(0)),
-        ],
-      ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                child: _streamerContainer(),
+              ),
+            ),
+            _buttonContainer(),
+          ],
+        ),
+        _showMetadata
+            ? _metadataContainer()
+            : Padding(padding: EdgeInsets.all(0)),
+      ],
     );
   }
 
@@ -104,9 +111,13 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buildLanguageTag() {
+    if (widget.channel.language == null) {
+      return Padding(padding: EdgeInsets.zero);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text("Language"), Chip(label: Text(widget.channel.language))],
+      children: [Text("Language"), Chip(label: Text(widget.channel.language!))],
     );
   }
 
@@ -146,6 +157,8 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buttonContainer() {
+    return Padding(padding: EdgeInsets.zero);
+
     return Column(
       children: [
         Padding(padding: EdgeInsets.only(bottom: 5)),

@@ -192,10 +192,18 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       username: json['node']['streamer']['username'] as String,
       avatarUrl: json['node']['streamer']['avatarUrl'] as String,
       matureContent: json['node']['matureContent'] as bool,
-      language: json['node']['language'] as String,
+      language: buildString(json['node']['language']),
       subcategory: buildSubcategoryFromJson(json['node']['subcategory']),
       tags: buildTagsFromJson(json['node']['tags']),
     );
+  }
+
+  String? buildString(dynamic input) {
+    if (input == null) {
+      return null;
+    }
+
+    return input as String;
   }
 
   Subcategory? buildSubcategoryFromJson(dynamic subcategory) {
