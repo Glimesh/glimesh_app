@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:janus_client/JanusClient.dart';
-import 'package:janus_client/JanusClient.dart';
-import 'package:janus_client/JanusPlugin.dart';
-import 'package:janus_client/JanusSession.dart';
-import 'package:janus_client/JanusTransport.dart';
-import 'package:janus_client/JanusWebRTCHandle.dart';
-import 'package:janus_client/WebRTCHandle.dart';
-import 'package:janus_client/shelf.dart';
-import 'package:janus_client/utils.dart';
+import 'package:janus_streaming_client/JanusClient.dart';
+import 'package:janus_streaming_client/JanusPlugin.dart';
+import 'package:janus_streaming_client/JanusSession.dart';
+import 'package:janus_streaming_client/JanusTransport.dart';
+import 'package:janus_streaming_client/shelf.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
 

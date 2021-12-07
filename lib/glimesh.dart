@@ -50,3 +50,14 @@ Future<oauth2.Client> createOauthClient(
   // authorization code to create a new Client.
   return client;
 }
+
+Future<bool> deleteOauthClient(String apiUrl) async {
+  final prefs = await SharedPreferences.getInstance();
+  final authenticationKey = "auth-$apiUrl";
+
+  if (prefs.containsKey(authenticationKey)) {
+    return prefs.remove(authenticationKey);
+  }
+
+  return false;
+}

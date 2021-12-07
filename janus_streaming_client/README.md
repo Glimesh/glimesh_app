@@ -1,0 +1,1 @@
+This project is a simplified fork from: https://github.com/flutterjanus/flutter_janus_client

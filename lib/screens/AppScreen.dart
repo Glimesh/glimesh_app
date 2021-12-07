@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
@@ -14,7 +15,7 @@ class AppScreen extends StatefulWidget {
   // how it looks.
 
   // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
+// case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
@@ -53,9 +54,9 @@ class _AppScreenState extends State<AppScreen> {
         title: Text(widget.title),
         // leading: IconButton(icon: const Icon(Icons.menu), onPressed: () => {}),
         actions: [
-          IconButton(
-              icon: const Icon(Icons.notifications_active),
-              onPressed: () => {}),
+          // IconButton(
+          //     icon: const Icon(Icons.notifications_active),
+          //     onPressed: () => {}),
         ],
       ),
       drawer: Drawer(
@@ -64,14 +65,24 @@ class _AppScreenState extends State<AppScreen> {
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: Colors.blue,
               ),
-              child: Text(
-                'Glimesh',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      return Text(
+                        'Glimesh (${snapshot.data!.version}+${snapshot.data!.buildNumber})',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
+                      );
+                    default:
+                      return const SizedBox();
+                  }
+                },
               ),
             ),
             ListTile(
