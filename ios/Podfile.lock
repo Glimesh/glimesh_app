@@ -6,14 +6,10 @@ PODS:
   - flutter_webrtc (0.7.1):
     - Flutter
     - Libyuv (= 1703)
-<<<<<<< HEAD
-    - WebRTC-SDK (= 92.4515.07)
+    - WebRTC-SDK (= 92.4515.11)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-=======
-    - WebRTC-SDK (= 92.4515.11)
->>>>>>> c9a9079 (Forking Janus Client, adding stream titles to listings, lots of tiny bug fixes)
   - Libyuv (1703)
   - package_info_plus (0.4.5):
     - Flutter
