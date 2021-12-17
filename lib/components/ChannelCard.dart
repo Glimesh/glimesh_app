@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
+import 'package:glimesh_app/components/SmallChip.dart';
 import 'package:glimesh_app/models.dart';
 
 class ChannelCard extends StatelessWidget {
@@ -40,8 +41,42 @@ class ChannelCard extends StatelessWidget {
               child: StreamTitle(channel: channel, allowMetadata: false),
             ),
           ),
+          Positioned(
+              top: 16.0,
+              right: 16.0,
+              left: 16.0,
+              child: _buildTagArea(channel.tags, channel.subcategory))
         ],
       ),
     );
+  }
+
+  Widget _buildTagArea(List<Tag> tags, Subcategory? subcategory) {
+    return Wrap(
+      textDirection: TextDirection.rtl,
+      spacing: 2.0,
+	  runSpacing: 2.0,
+      children: [
+        if (subcategory != null)
+          SmallChip(
+            backgroundColor: Colors.cyanAccent.shade700,
+            label:
+                Text(subcategory.name, style: TextStyle(color: Colors.black)),
+          ),
+        ..._buildTags(tags),
+      ],
+    );
+  }
+
+  // Opting to limit to displaying the first 5 tags only here because on smaller
+  // screens, we still want the user to be able to see the thumbnail
+  List<Widget> _buildTags(List<Tag> tags) {
+    return tags
+        .take(4)
+        .map(
+          (Tag tag) =>
+              SmallChip(label: Text(tag.name), backgroundColor: Colors.blue),
+        )
+        .toList();
   }
 }
