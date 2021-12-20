@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/components/SmallChip.dart';
 
 class StreamTitle extends StatefulWidget {
   final Channel channel;
@@ -146,8 +147,27 @@ class _StreamTitleState extends State<StreamTitle> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.channel.username,
-            style: Theme.of(context).textTheme.subtitle1),
+        Row(children: [
+          Text(widget.channel.username,
+              style: Theme.of(context).textTheme.subtitle1),
+          if (widget.channel.language != null)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: SmallChip(
+                label: Text(widget.channel.language!,
+                    style: TextStyle(color: Colors.black)),
+                backgroundColor: Colors.cyanAccent.shade700,
+              ),
+            ),
+          if (widget.channel.matureContent)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: SmallChip(
+                label: Text("Mature", style: TextStyle(color: Colors.black)),
+                backgroundColor: Colors.yellow.shade800,
+              ),
+            ),
+        ]),
         Text(
           widget.channel.title,
           maxLines: 2,
