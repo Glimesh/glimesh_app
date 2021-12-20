@@ -55,7 +55,7 @@ class ChannelCard extends StatelessWidget {
     return Wrap(
       textDirection: TextDirection.rtl,
       spacing: 2.0,
-	  runSpacing: 2.0,
+      runSpacing: 2.0,
       children: [
         if (subcategory != null)
           SmallChip(
