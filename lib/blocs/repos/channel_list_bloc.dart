@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/lang_displaynames.dart';
 
 @immutable
 abstract class ChannelListEvent extends Equatable {
@@ -192,7 +193,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       username: json['node']['streamer']['username'] as String,
       avatarUrl: json['node']['streamer']['avatarUrl'] as String,
       matureContent: json['node']['matureContent'] as bool,
-      language: buildString(json['node']['language']),
+      language: buildLanguageDisplayName(json['node']['language']),
       subcategory: buildSubcategoryFromJson(json['node']['subcategory']),
       tags: buildTagsFromJson(json['node']['tags']),
     );
@@ -216,5 +217,11 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
 
   List<Tag> buildTagsFromJson(List<dynamic> tags) {
     return tags.map((dynamic e) => Tag(name: e['name'] as String)).toList();
+  }
+
+  String? buildLanguageDisplayName(String? locale) {
+    if (locale == null) return null;
+
+    return languages[locale];
   }
 }
