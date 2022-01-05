@@ -69,4 +69,11 @@ class GlimeshRepository {
       variables: <String, dynamic>{"channelId": channelId, "message": message},
     ));
   }
+
+  Future<QueryResult> watchChannel(int channelId, String country) {
+    return client.mutate(MutationOptions(
+      document: parseString(channel_queries.watchChannel),
+      variables: <String, dynamic>{"channelId": channelId, "country": country},
+    ));
+  }
 }

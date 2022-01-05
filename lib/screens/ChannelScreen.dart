@@ -48,6 +48,13 @@ class _ChannelScreenState extends State<ChannelScreen> {
   }
 }
 
+class JanusEdgeRoute {
+  JanusEdgeRoute({required this.id, required this.url});
+
+  final int id;
+  final String url;
+}
+
 // Chat messages appear multiple times because this is a stateless widget and multiple LoadChatMessage events are sent
 class ChannelWidget extends StatelessWidget {
   final Channel channel;
@@ -56,17 +63,41 @@ class ChannelWidget extends StatelessWidget {
 
   ChannelWidget({required this.channel, required this.chatMessagesBloc});
 
+  Future<JanusEdgeRoute> watchChannel(int channelId) async {
+    // Todo: Move this to a real bloc
+    final queryResults =
+        await chatMessagesBloc.glimeshRepository.watchChannel(channel.id, "US");
+
+    final dynamic janus_edge = queryResults.data!['watchChannel'] as dynamic;
+    return JanusEdgeRoute(
+      id: int.parse(janus_edge['id']),
+      url: janus_edge['url'] as String,
+    );
+  }
+
   Widget build(BuildContext context) {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
       body: SafeArea(
-        child: horizontalTablet ? _buildSidebar() : _buildStacked(),
+        child: FutureBuilder(
+            future: watchChannel(channel.id),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              print(snapshot);
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  return horizontalTablet
+                      ? _buildSidebar(snapshot.data.url)
+                      : _buildStacked(snapshot.data.url);
+                default:
+                  return const SizedBox();
+              }
+            }),
       ),
     );
   }
 
-  Widget _buildStacked() {
+  Widget _buildStacked(String edgeUrl) {
     return Column(
       children: [
         AspectRatio(
@@ -75,7 +106,7 @@ class ChannelWidget extends StatelessWidget {
               ? Center(
                   child: Image.network(channel.thumbnail),
                 )
-              : FTLPlayer(channel: channel),
+              : FTLPlayer(channel: channel, edgeUrl: edgeUrl),
         ),
         Container(
           child: Padding(
@@ -99,7 +130,7 @@ class ChannelWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSidebar() {
+  Widget _buildSidebar(String edgeUrl) {
     return Row(children: [
       Expanded(
         flex: 9,
@@ -110,7 +141,7 @@ class ChannelWidget extends StatelessWidget {
                 ? Center(
                     child: Image.network(channel.thumbnail),
                   )
-                : FTLPlayer(channel: channel),
+                : FTLPlayer(channel: channel, edgeUrl: edgeUrl),
           ),
           Container(
             child: StreamTitle(

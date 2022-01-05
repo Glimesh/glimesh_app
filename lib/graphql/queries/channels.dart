@@ -99,3 +99,12 @@ query GetHomepageChannels {
   }
 }
 ''';
+
+const String watchChannel = r'''
+mutation WatchChannel($channelId: ID!, $country: String!) {
+  watchChannel(channelId: $channelId, country: $country) {
+    id
+    url
+  } 
+}
+''';
