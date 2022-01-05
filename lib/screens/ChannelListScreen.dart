@@ -15,7 +15,10 @@ class ChannelListScreen extends StatelessWidget {
     final authState = AuthState.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text("${category.name} Streams")),
+      appBar: AppBar(
+        title: Text("${category.name} Streams"),
+        backgroundColor: Colors.black.withOpacity(0.7),
+      ),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
           glimeshRepository: GlimeshRepository(client: authState!.client!),

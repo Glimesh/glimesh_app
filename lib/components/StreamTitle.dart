@@ -16,7 +16,6 @@ class _StreamTitleState extends State<StreamTitle> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.allowMetadata);
     if (widget.allowMetadata == true) {
       return GestureDetector(
         behavior: HitTestBehavior.translucent,

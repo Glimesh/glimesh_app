@@ -9,8 +9,10 @@ import 'package:glimesh_app/models.dart';
 
 class FTLPlayer extends StatefulWidget {
   final Channel channel;
+  final String edgeUrl;
 
-  const FTLPlayer({Key? key, required this.channel}) : super(key: key);
+  const FTLPlayer({Key? key, required this.channel, required this.edgeUrl})
+      : super(key: key);
 
   @override
   _FTLPlayerState createState() => _FTLPlayerState();
@@ -39,7 +41,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   initJanusClient() async {
     setState(() {
       rest = RestJanusTransport(
-        url: 'https://do-nyc3-edge1.kjfk.live.glimesh.tv/janus',
+        url: widget.edgeUrl,
       );
       janus = JanusClient(transport: rest, iceServers: []);
     });
@@ -103,7 +105,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
                   children: [
                     CircularProgressIndicator(),
                     Padding(padding: EdgeInsets.all(10)),
-                    Text("Loading FTL Stream..")
+                    Text("Loading Stream...")
                   ],
                 ),
               )
