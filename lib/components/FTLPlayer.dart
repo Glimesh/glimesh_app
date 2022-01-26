@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/components/Loading.dart';
 import 'package:janus_streaming_client/JanusClient.dart';
 import 'package:janus_streaming_client/JanusPlugin.dart';
 import 'package:janus_streaming_client/JanusSession.dart';
@@ -97,18 +98,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
           objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
         ),
         _loading
-            ? Align(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Padding(padding: EdgeInsets.all(10)),
-                    Text("Loading Stream...")
-                  ],
-                ),
-              )
+            ? Loading("Loading Stream")
             : Padding(padding: EdgeInsets.zero),
       ],
     );

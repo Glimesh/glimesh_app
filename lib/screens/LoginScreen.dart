@@ -23,14 +23,23 @@ class LoginScreen extends StatelessWidget {
 
     print("Got access token: " + token);
 
-    final _socketUrl =
-        "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
-    final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
-    final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
+    // final _socketUrl =
+    //     "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
+    // final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
+    // final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
+    final HttpLink httpLink = HttpLink(
+      'https://glimesh.tv/api/graph',
+    );
+
+    final AuthLink authLink = AuthLink(
+      getToken: () => 'Bearer $token',
+    );
+
+    final Link link = authLink.concat(httpLink);
 
     return GraphQLClient(
       cache: GraphQLCache(store: InMemoryStore()),
-      link: _phoenixLink,
+      link: link,
     );
   }
 
@@ -49,18 +58,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _buildVertical(context) {
-    // Column(
-    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //         children: <Widget>[
-    //           Image.asset('assets/images/logo-with-text.png'),
-    //           ElevatedButton(
-    //               onPressed: () async {
-    //                 GraphQLClient client = await _client();
-    //                 authState!.login(client);
-    //               },
-    //               child: const Text("Login"))
-    //         ],
-    //       ),
     return Padding(
         padding: EdgeInsets.only(top: 60, bottom: 60),
         child: Column(

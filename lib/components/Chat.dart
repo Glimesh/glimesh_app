@@ -6,10 +6,9 @@ import 'package:glimesh_app/models.dart';
 
 class Chat extends StatelessWidget {
   final Channel channel;
+  final ChatMessagesBloc chatMessagesBloc;
 
-  const Chat({
-    required this.channel,
-  }) : super();
+  const Chat({required this.channel, required this.chatMessagesBloc}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class Chat extends StatelessWidget {
 
   Widget _buildChatMessages(BuildContext context) {
     return StreamBuilder(
-      stream: BlocProvider.of<ChatMessagesBloc>(context).chatMessagesStream,
+      stream: chatMessagesBloc.chatMessagesStream,
       builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
         if (snapshot.hasError) {
           print(snapshot.error);

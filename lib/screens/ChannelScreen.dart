@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:gql_phoenix_link/gql_phoenix_link.dart';
+import 'package:phoenix_socket/phoenix_socket.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/components/Chat.dart';
 import 'package:glimesh_app/components/ChatInput.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/glimesh.dart';
+import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/components/Loading.dart';
+
+class JanusEdgeRoute {
+  JanusEdgeRoute({required this.id, required this.url});
+
+  final int id;
+  final String url;
+}
 
 class ChannelScreen extends StatefulWidget {
   final Channel channel;
@@ -16,81 +28,57 @@ class ChannelScreen extends StatefulWidget {
 }
 
 class _ChannelScreenState extends State<ChannelScreen> {
-  ChatMessagesBloc? chatMessageBloc;
+  ChatMessagesBloc? chatMessagesBloc;
+  late GraphQLClient client;
+  late PhoenixChannel channel;
+  late GlimeshRepository repository;
 
-  @override
-  void initState() {
-    super.initState();
+  Future<JanusEdgeRoute> _watchChannel(int channelId) async {
+    const glimeshWsApiUrl = String.fromEnvironment("GLIMESH_WS_API_URL",
+        defaultValue: "wss://glimesh.test");
+    String? token = await getGlimeshToken();
+    final _socketUrl =
+        "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
+    channel = await PhoenixLink.createChannel(websocketUri: _socketUrl);
+    final PhoenixLink _phoenixLink = PhoenixLink(channel: channel);
 
-    if (chatMessageBloc == null) {
-      chatMessageBloc = BlocProvider.of<ChatMessagesBloc>(context);
+    client = GraphQLClient(
+      cache: GraphQLCache(store: InMemoryStore()),
+      link: _phoenixLink,
+    );
 
-      chatMessageBloc!.add(LoadChatMessages(channelId: widget.channel.id));
-    }
-  }
+    repository = GlimeshRepository(client: client);
+    chatMessagesBloc = ChatMessagesBloc(
+      glimeshRepository: repository,
+    );
 
-  @override
-  void dispose() {
-    chatMessageBloc!.close();
-    super.dispose();
-  }
+    chatMessagesBloc!.add(LoadChatMessages(channelId: widget.channel.id));
 
-  @override
-  Widget build(BuildContext context) {
-    if (chatMessageBloc != null) {
-      return ChannelWidget(
-        channel: widget.channel,
-        chatMessagesBloc: chatMessageBloc!,
-      );
-    } else {
-      return Text("Loading");
-    }
-  }
-}
+    final queryResults = await repository.watchChannel(widget.channel.id, "US");
 
-class JanusEdgeRoute {
-  JanusEdgeRoute({required this.id, required this.url});
-
-  final int id;
-  final String url;
-}
-
-// Chat messages appear multiple times because this is a stateless widget and multiple LoadChatMessage events are sent
-class ChannelWidget extends StatelessWidget {
-  final Channel channel;
-  final ChatMessagesBloc chatMessagesBloc;
-  final bool debug = false;
-
-  ChannelWidget({required this.channel, required this.chatMessagesBloc});
-
-  Future<JanusEdgeRoute> watchChannel(int channelId) async {
-    // Todo: Move this to a real bloc
-    final queryResults =
-        await chatMessagesBloc.glimeshRepository.watchChannel(channel.id, "US");
-
-    final dynamic janus_edge = queryResults.data!['watchChannel'] as dynamic;
+    final dynamic janusEdge = queryResults.data!['watchChannel'] as dynamic;
     return JanusEdgeRoute(
-      id: int.parse(janus_edge['id']),
-      url: janus_edge['url'] as String,
+      id: int.parse(janusEdge['id']),
+      url: janusEdge['url'] as String,
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-            future: watchChannel(channel.id),
+            future: _watchChannel(widget.channel.id),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              print(snapshot);
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
                   return horizontalTablet
                       ? _buildSidebar(snapshot.data.url)
                       : _buildStacked(snapshot.data.url);
                 default:
-                  return const SizedBox();
+                  return Loading("Loading Stream");
               }
             }),
       ),
@@ -102,29 +90,23 @@ class ChannelWidget extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 16 / 9,
-          child: debug
-              ? Center(
-                  child: Image.network(channel.thumbnail),
-                )
-              : FTLPlayer(channel: channel, edgeUrl: edgeUrl),
+          child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
         ),
         Container(
           child: Padding(
             padding: EdgeInsets.all(5),
             child: StreamTitle(
-              channel: channel,
+              channel: widget.channel,
               allowMetadata: true,
             ),
           ),
         ),
         Expanded(
           child: Chat(
-            channel: channel,
-          ),
+              channel: widget.channel, chatMessagesBloc: chatMessagesBloc!),
         ),
         ChatInput(onSubmit: (message) {
-          chatMessagesBloc.glimeshRepository
-              .sendChatMessage(channel.id, message);
+          repository.sendChatMessage(widget.channel.id, message);
         }),
       ],
     );
@@ -137,15 +119,11 @@ class ChannelWidget extends StatelessWidget {
         child: Column(children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: debug
-                ? Center(
-                    child: Image.network(channel.thumbnail),
-                  )
-                : FTLPlayer(channel: channel, edgeUrl: edgeUrl),
+            child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
           ),
           Container(
             child: StreamTitle(
-              channel: channel,
+              channel: widget.channel,
               allowMetadata: true,
             ),
           ),
@@ -157,16 +135,24 @@ class ChannelWidget extends StatelessWidget {
           children: [
             Expanded(
               child: Chat(
-                channel: channel,
+                channel: widget.channel,
+                chatMessagesBloc: chatMessagesBloc!,
               ),
             ),
             ChatInput(onSubmit: (message) {
-              chatMessagesBloc.glimeshRepository
-                  .sendChatMessage(channel.id, message);
+              repository.sendChatMessage(widget.channel.id, message);
             })
           ],
         ),
       ),
     ]);
+  }
+
+  @override
+  void deactivate() {
+    channel.close();
+    chatMessagesBloc!.close();
+
+    super.deactivate();
   }
 }

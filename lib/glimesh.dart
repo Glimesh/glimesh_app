@@ -61,3 +61,26 @@ Future<bool> deleteOauthClient(String apiUrl) async {
 
   return false;
 }
+
+Future<String?> getGlimeshToken() async {
+  const glimeshApiUrl = String.fromEnvironment("GLIMESH_API_URL",
+      defaultValue: "https://glimesh.test");
+  final prefs = await SharedPreferences.getInstance();
+  final authenticationKey = "auth-$glimeshApiUrl";
+
+  // If the OAuth2 credentials have already been saved from a previous run, we
+  // just want to reload them.
+  if (prefs.containsKey(authenticationKey)) {
+    var credentials =
+        oauth2.Credentials.fromJson(prefs.getString(authenticationKey)!);
+
+    if (credentials.isExpired) {
+      prefs.remove(authenticationKey);
+      return null;
+    }
+
+    return credentials.accessToken;
+  }
+
+  return null;
+}
