@@ -120,8 +120,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       final List<Channel> listOfChannels =
           channels.map(buildChannelFromJson).toList();
 
-      // This is temporary to show my stream at the top :)
-      listOfChannels.sort((a, b) => b.id.compareTo(a.id));
+      print("ChannelListLoaded");
 
       yield ChannelListLoaded(results: listOfChannels);
     } catch (error) {

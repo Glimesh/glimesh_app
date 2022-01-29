@@ -1,0 +1,10 @@
+app_identifier("tv.glimesh.app") # The bundle identifier of your app
+apple_id("luke@axxim.net") # Your Apple email address
+
+itc_team_id("123721883") # App Store Connect Team ID
+team_id("3TCN256Z4Z") # Developer Portal Team ID
+itc_team_id("123721883") # App Store Connect Team ID
+team_id("3TCN256Z4Z") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile

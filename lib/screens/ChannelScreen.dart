@@ -63,26 +63,32 @@ class _ChannelScreenState extends State<ChannelScreen> {
     );
   }
 
+  JanusEdgeRoute? edgeRoute;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (edgeRoute == null) {
+      _watchChannel(widget.channel.id).then((JanusEdgeRoute edge) => {
+            setState(() {
+              edgeRoute = edge;
+            })
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     return Scaffold(
-      body: SafeArea(
-        child: FutureBuilder(
-            future: _watchChannel(widget.channel.id),
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  return horizontalTablet
-                      ? _buildSidebar(snapshot.data.url)
-                      : _buildStacked(snapshot.data.url);
-                default:
-                  return Loading("Loading Stream");
-              }
-            }),
-      ),
-    );
+        body: SafeArea(
+            child: edgeRoute == null
+                ? Loading("Loading Stream")
+                : horizontalTablet
+                    ? _buildSidebar(edgeRoute!.url)
+                    : _buildStacked(edgeRoute!.url)));
   }
 
   Widget _buildStacked(String edgeUrl) {
@@ -150,8 +156,11 @@ class _ChannelScreenState extends State<ChannelScreen> {
 
   @override
   void deactivate() {
+    print("widget deactivate");
     channel.close();
-    chatMessagesBloc!.close();
+    if (chatMessagesBloc != null) {
+      chatMessagesBloc!.close();
+    }
 
     super.deactivate();
   }
