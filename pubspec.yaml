@@ -49,6 +49,7 @@ dependencies:
   font_awesome_flutter: ^9.1.0
   flutter_markdown: ^0.6.8
   cached_network_image: ^3.1.0+1
+  wakelock: ^0.6.1+1
 
 dev_dependencies:
   flutter_test:
