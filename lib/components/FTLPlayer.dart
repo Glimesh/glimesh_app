@@ -7,6 +7,7 @@ import 'package:janus_streaming_client/JanusTransport.dart';
 import 'package:janus_streaming_client/shelf.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:wakelock/wakelock.dart';
 
 class FTLPlayer extends StatefulWidget {
   final Channel channel;
@@ -74,10 +75,14 @@ class _FTLPlayerState extends State<FTLPlayer> {
   void initState() {
     super.initState();
     initJanusClient();
+
+    Wakelock.enable();
   }
 
   @override
   void dispose() {
+    Wakelock.disable();
+
     plugin!.send(data: {"request": "stop"});
 
     plugin!.dispose();
