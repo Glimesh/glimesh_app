@@ -4,7 +4,6 @@ import 'package:glimesh_app/auth.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:package_info_plus/package_info_plus.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -23,23 +22,23 @@ class LoginScreen extends StatelessWidget {
 
     print("Got access token: " + token);
 
-    // final _socketUrl =
-    //     "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
-    // final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
-    // final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
-    final HttpLink httpLink = HttpLink(
-      'https://glimesh.tv/api/graph',
-    );
+    final _socketUrl =
+        "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
+    final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
+    final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
+    // final HttpLink httpLink = HttpLink(
+    //   'https://glimesh.tv/api/graph',
+    // );
 
-    final AuthLink authLink = AuthLink(
-      getToken: () => 'Bearer $token',
-    );
+    // final AuthLink authLink = AuthLink(
+    //   getToken: () => 'Bearer $token',
+    // );
 
-    final Link link = authLink.concat(httpLink);
+    // final Link link = authLink.concat(httpLink);
 
     return GraphQLClient(
       cache: GraphQLCache(store: InMemoryStore()),
-      link: link,
+      link: _phoenixLink,
     );
   }
 

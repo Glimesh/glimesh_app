@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/components/ChannelList.dart';
+import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:glimesh_app/components/ChannelCard.dart';
 
 class CategoryListScreen extends StatelessWidget {
   final GraphQLClient client;
@@ -26,12 +27,20 @@ class CategoryListScreen extends StatelessWidget {
 class CategoryListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(children: [
-      _buildHeader(context),
-      _buildButtons(context),
-      _buildExploreHeader(context),
-      _buildSomeStreams(context)
-    ]);
+    ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
+    bloc.add(LoadHomepageChannels());
+
+    return RefreshIndicator(
+      child: ListView(
+        children: [
+          _buildHeader(context),
+          _buildButtons(context),
+          _buildExploreHeader(context),
+          _buildSomeStreams(bloc)
+        ],
+      ),
+      onRefresh: () async => bloc.add(LoadHomepageChannels()),
+    );
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -96,67 +105,48 @@ class CategoryListWidget extends StatelessWidget {
     );
   }
 
+  List<Category> categories = [
+    Category(name: "Gaming", slug: "gaming", icon: Icons.sports_esports),
+    Category(name: "Art", slug: "art", icon: Icons.color_lens),
+    Category(name: "Music", slug: "music", icon: Icons.music_note),
+    Category(name: "Tech", slug: "tech", icon: Icons.memory),
+    Category(name: "IRL", slug: "irl", icon: Icons.photo_camera),
+    Category(name: "Education", slug: "education", icon: Icons.school)
+  ];
+
   Widget _buildButtons(BuildContext context) {
+    bool horizontalTablet = MediaQuery.of(context).size.width > 992;
+
+    List<Widget> buttons = [];
+    categories.forEach((category) {
+      buttons.add(buildButton(context, category));
+    });
+
+    List<Widget> children = horizontalTablet
+        ? [
+            Row(
+              children: buttons,
+            )
+          ]
+        : _splitIntoRows(buttons, 2);
+
     return Container(
       padding: EdgeInsets.all(10),
       child: Column(
-        children: [
-          Row(
-            children: [
-              buildButton(
-                  context,
-                  Category(
-                      name: "Gaming",
-                      slug: "gaming",
-                      icon: Icons.sports_esports)),
-              buildButton(
-                  context,
-                  Category(
-                    name: "Art",
-                    slug: "art",
-                    icon: Icons.color_lens,
-                  )),
-            ],
-          ),
-          Row(
-            children: [
-              buildButton(
-                  context,
-                  Category(
-                    name: "Music",
-                    slug: "music",
-                    icon: Icons.music_note,
-                  )),
-              buildButton(
-                  context,
-                  Category(
-                    name: "Tech",
-                    slug: "tech",
-                    icon: Icons.memory,
-                  )),
-            ],
-          ),
-          Row(
-            children: [
-              buildButton(
-                  context,
-                  Category(
-                    name: "IRL",
-                    slug: "irl",
-                    icon: Icons.photo_camera,
-                  )),
-              buildButton(
-                  context,
-                  Category(
-                    name: "Education",
-                    slug: "education",
-                    icon: Icons.school,
-                  )),
-            ],
-          )
-        ],
+        children: children,
       ),
     );
+  }
+
+  List<Widget> _splitIntoRows(children, int chunkSize) {
+    List<Widget> chunks = [];
+    for (var i = 0; i < children.length; i += chunkSize) {
+      chunks.add(Row(
+        children: children.sublist(i,
+            i + chunkSize > children.length ? children.length : i + chunkSize),
+      ));
+    }
+    return chunks;
   }
 
   Widget buildButton(BuildContext context, Category category) {
@@ -190,65 +180,29 @@ class CategoryListWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSomeStreams(BuildContext context) {
-    ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
-    bloc.add(LoadHomepageChannels());
+  Widget _buildSomeStreams(ChannelListBloc bloc) {
+    return BlocBuilder<ChannelListBloc, ChannelListState>(
+        bloc: bloc,
+        builder: (BuildContext context, ChannelListState state) {
+          if (state is ChannelListLoading) {
+            return Container(child: Loading("Loading Streams"));
+          }
 
-    return RefreshIndicator(
-        child: BlocBuilder<ChannelListBloc, ChannelListState>(
-            bloc: bloc,
-            builder: (BuildContext context, ChannelListState state) {
-              if (state is ChannelListLoading) {
-                return Container(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      semanticsLabel: "Loading ...",
-                    ),
-                  ),
-                );
-              }
+          if (state is ChannelListNotLoaded) {
+            return Text("Error loading channels");
+          }
 
-              if (state is ChannelListNotLoaded) {
-                return Text("Error loading channels");
-              }
+          if (state is ChannelListLoaded) {
+            final List<Channel> channels = state.results;
 
-              if (state is ChannelListLoaded) {
-                final List<Channel> channels = state.results;
+            if (channels.length == 0) {
+              return Center(child: Text("No live channels on the homepage"));
+            }
 
-                if (channels.length == 0) {
-                  return Center(
-                      child: Text("No live channels on the homepage"));
-                }
+            return ChannelList(channels: channels);
+          }
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: channels.length,
-                  itemBuilder: (BuildContext context, int index) => InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/channel',
-                        arguments: channels[index],
-                      );
-                    },
-                    splashColor: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.12),
-                    highlightColor: Colors.transparent,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 5, bottom: 5),
-                      child: new ChannelCard(channel: channels[index]),
-                    ),
-                  ),
-                );
-              }
-
-              return Text("unexpected");
-            }),
-        onRefresh: () async {
-          bloc.add(LoadHomepageChannels());
+          return Text("unexpected");
         });
   }
 }

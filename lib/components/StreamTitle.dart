@@ -17,69 +17,62 @@ class _StreamTitleState extends State<StreamTitle> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.allowMetadata == true) {
-      return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onVerticalDragEnd: (details) {
-          setState(() {
-            _showMetadata = true;
-          });
-        },
-        child: _child(),
-      );
-    } else {
-      return _child();
-    }
-  }
+    Widget streamerContainer = Padding(
+      padding: EdgeInsets.all(5),
+      child: _streamerContainer(),
+    );
 
-  Widget _child() {
+    Widget inkwellOrPlain = widget.allowMetadata == true
+        ? InkWell(
+            child: streamerContainer,
+            onTap: _toggleMetadata,
+          )
+        : streamerContainer;
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 24,
-              backgroundImage: NetworkImage(widget.channel.avatarUrl),
+            Padding(
+              padding: EdgeInsets.all(3),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundImage: NetworkImage(widget.channel.avatarUrl),
+              ),
             ),
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                child: _streamerContainer(),
-              ),
+              child: inkwellOrPlain,
             ),
             _buttonContainer(),
           ],
         ),
-        _showMetadata
-            ? _metadataContainer()
-            : Padding(padding: EdgeInsets.all(0)),
+        AnimatedCrossFade(
+            duration: const Duration(milliseconds: 250),
+            firstChild: Container(height: 0, width: double.infinity),
+            secondChild: _metadataContainer(),
+            crossFadeState: _showMetadata
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst)
       ],
     );
   }
 
   Widget _metadataContainer() {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onVerticalDragEnd: (details) {
-        setState(() {
-          _showMetadata = false;
-        });
-      },
-      child: SizedBox(
-        width: double.infinity,
-        height: 300,
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSubcategoryTag(),
-              _buildTags(),
-              _buildLanguageTag(),
-              _buildMatureTag()
-            ],
-          ),
+    return SizedBox(
+      width: double.infinity,
+      height: 300,
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: ListView(
+          children: [
+            _buildSubcategoryTag(),
+            _buildTags(),
+            _buildLanguageTag(),
+            _buildMatureTag()
+          ],
         ),
       ),
     );

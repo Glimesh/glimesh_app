@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/components/Loading.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
@@ -94,7 +95,7 @@ class _AppScreenState extends State<AppScreen> {
           ],
         ),
       ),
-      body: pages.isEmpty ? Text("Loading") : pages[_selectedIndex],
+      body: pages.isEmpty ? Loading("Loading") : pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey.shade600,
