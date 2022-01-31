@@ -35,6 +35,8 @@ PODS:
   - wakelock (0.0.1):
     - Flutter
   - WebRTC-SDK (92.4515.11)
+  - workmanager (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -48,6 +50,7 @@ DEPENDENCIES:
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
+  - workmanager (from `.symlinks/plugins/workmanager/ios`)
 
 SPEC REPOS:
   trunk:
@@ -80,6 +83,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
+  workmanager:
+    :path: ".symlinks/plugins/workmanager/ios"
 
 SPEC CHECKSUMS:
   connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
@@ -98,6 +103,7 @@ SPEC CHECKSUMS:
   url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   WebRTC-SDK: 21dbc6028a68f3a89718057a2caa970a4da8ebb7
+  workmanager: 0afdcf5628bbde6924c21af7836fed07b42e30e6
 
 PODFILE CHECKSUM: 9388b2ab4c98804a24fefc585efd110a078cf07c
 

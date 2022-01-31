@@ -94,22 +94,29 @@ class _ChannelScreenState extends State<ChannelScreen> {
   Widget _buildStacked(String edgeUrl) {
     return Column(
       children: [
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
+        Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
+            ),
+            InkWell(
+              child: Icon(Icons.chevron_left),
+              onTap: () => Navigator.pop(context),
+            )
+          ],
         ),
         Container(
-          child: Padding(
-            padding: EdgeInsets.all(5),
-            child: StreamTitle(
-              channel: widget.channel,
-              allowMetadata: true,
-            ),
+          child: StreamTitle(
+            channel: widget.channel,
+            allowMetadata: true,
           ),
         ),
         Expanded(
           child: Chat(
-              channel: widget.channel, chatMessagesBloc: chatMessagesBloc!),
+            channel: widget.channel,
+            chatMessagesBloc: chatMessagesBloc!,
+          ),
         ),
         ChatInput(onSubmit: (message) {
           repository.sendChatMessage(widget.channel.id, message);

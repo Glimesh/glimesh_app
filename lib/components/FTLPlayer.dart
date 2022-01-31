@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:janus_streaming_client/JanusClient.dart';
-import 'package:janus_streaming_client/JanusPlugin.dart';
-import 'package:janus_streaming_client/JanusSession.dart';
-import 'package:janus_streaming_client/JanusTransport.dart';
-import 'package:janus_streaming_client/shelf.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:wakelock/wakelock.dart';
@@ -38,6 +34,21 @@ class _FTLPlayerState extends State<FTLPlayer> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     await _remoteRenderer.initialize();
+    await _setupSpeakerphone();
+  }
+
+  _setupSpeakerphone() async {
+    if (plugin != null && plugin!.remoteStream != null) {
+      plugin!.remoteStream!.forEach((stream) {
+        stream.getAudioTracks()[0].enableSpeakerphone(true);
+      });
+
+      // MediaStream? remoteStream = await plugin!.remoteStream!.first;
+      // if (remoteStream.active != null && remoteStream.active!) {
+      //   print("!! Enabling speakerphone !!");
+      //   remoteStream.getAudioTracks()[0].enableSpeakerphone(true);
+      // }
+    }
   }
 
   initJanusClient() async {
@@ -58,11 +69,13 @@ class _FTLPlayerState extends State<FTLPlayer> {
       }
     });
 
-    plugin!.messages!.listen((even) async {
-      if (even.jsep != null) {
-        await plugin!.handleRemoteJsep(even.jsep!);
+    plugin!.messages!.listen((event) async {
+      if (event.jsep != null) {
+        await plugin!.handleRemoteJsep(event.jsep!);
         RTCSessionDescription answer = await plugin!.createAnswer();
         plugin!.send(data: {"request": "start"}, jsep: answer);
+
+        await _setupSpeakerphone();
 
         setState(() {
           _loading = false;

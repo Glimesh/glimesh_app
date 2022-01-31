@@ -50,6 +50,7 @@ dependencies:
   flutter_markdown: ^0.6.8
   cached_network_image: ^3.1.0+1
   wakelock: ^0.6.1+1
+  workmanager: ^0.5.0-dev.8
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,7 @@ flutter:
   assets:
     - assets/images/logo-with-text-sm.png
     - assets/images/logo-with-text.png
+    - assets/images/glimrip.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

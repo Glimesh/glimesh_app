@@ -120,6 +120,8 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       final List<Channel> listOfChannels =
           channels.map(buildChannelFromJson).toList();
 
+      listOfChannels.shuffle();
+
       print("ChannelListLoaded");
 
       yield ChannelListLoaded(results: listOfChannels);
@@ -174,6 +176,8 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
           .where((c) => c['node']['stream'] != null)
           .map(buildChannelFromJson)
           .toList();
+
+      listOfChannels.shuffle();
 
       yield ChannelListLoaded(results: listOfChannels);
     } catch (error, s) {

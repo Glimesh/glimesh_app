@@ -11,7 +11,15 @@ class ChannelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: ClampingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 480.0,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 16 / 9,
+      ),
       itemCount: channels.length,
       itemBuilder: (BuildContext context, int index) => InkWell(
         onTap: () {

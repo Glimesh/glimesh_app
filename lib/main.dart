@@ -5,6 +5,7 @@ import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:workmanager/workmanager.dart';
 
 import 'package:glimesh_app/screens/LoginScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
@@ -26,10 +27,45 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+// const checkLiveFollowedStreamsTask = "checkLiveFollowedStreamsTask";
+
+// void callbackDispatcher() {
+//   Workmanager().executeTask((task, inputData) {
+//     print("Native called background task: $task");
+//     return Future.value(true);
+//   });
+// }
+
 Future<void> main() async {
   if (Foundation.kDebugMode) {
     HttpOverrides.global = new MyHttpOverrides();
   }
+
+  // Workmanager().initialize(
+  //   callbackDispatcher,
+  //   isInDebugMode: true,
+  // );
+  // Workmanager().registerOneOffTask("1", "simpleTask");
+  // Workmanager().registerPeriodicTask(
+  //   "5",
+  //   checkLiveFollowedStreamsTask,
+  //   existingWorkPolicy: ExistingWorkPolicy.replace,
+  //   frequency: Duration(minutes: 15), //when should it check the link
+  //   initialDelay:
+  //       Duration(seconds: 5), //duration before showing the notification
+  //   constraints: Constraints(
+  //     // connected or metered mark the task as requiring internet
+  //     networkType: NetworkType.connected,
+  //   ),
+  // );
+  // await Workmanager.registerPeriodicTask("5", checkLiveFollowedStreamsTask,
+  //     existingWorkPolicy: ExistingWorkPolicy.replace,
+  //     frequency: Duration(minutes: 15), //when should it check the link
+  //     initialDelay:
+  //         Duration(seconds: 5), //duration before showing the notification
+  //     constraints: Constraints(
+  //       networkType: NetworkType.connected,
+  //     ));
 
   await SentryFlutter.init(
     (options) {
