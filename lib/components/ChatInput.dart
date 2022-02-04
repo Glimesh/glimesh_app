@@ -56,6 +56,7 @@ class _ChatInputState extends State<ChatInput> {
                 focusNode: focusNode,
                 controller: messageController,
                 decoration: InputDecoration(
+                  isDense: true,
                   hintText: "Send a message",
                   border: InputBorder.none,
                 ),
