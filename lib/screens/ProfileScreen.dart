@@ -24,7 +24,7 @@ class UserProfileScreen extends StatelessWidget {
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, UserState state) {
-            return ProfileWidget(userState: state);
+            return ProfileWidget(userState: state, isMyProfile: false);
           }),
     );
   }
@@ -56,15 +56,17 @@ class _MyProfileWidget extends StatelessWidget {
     return BlocBuilder(
         bloc: bloc,
         builder: (BuildContext context, UserState state) {
-          return ProfileWidget(userState: state);
+          return ProfileWidget(userState: state, isMyProfile: true);
         });
   }
 }
 
 class ProfileWidget extends StatelessWidget {
   final UserState userState;
+  final bool isMyProfile;
 
-  const ProfileWidget({required this.userState}) : super();
+  const ProfileWidget({required this.userState, required this.isMyProfile})
+      : super();
 
   @override
   Widget build(BuildContext context) {
@@ -139,14 +141,7 @@ class ProfileWidget extends StatelessWidget {
             Text("Followers"),
             Text(user.countFollowers.toString()),
           ]),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text("Follow"),
-            style: ElevatedButton.styleFrom(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              padding: EdgeInsets.all(5),
-            ),
-          ),
+          _buildChannelOrProfileButton(),
           Column(children: [
             Text("Following"),
             Text(user.countFollowing.toString()),
@@ -155,6 +150,23 @@ class ProfileWidget extends StatelessWidget {
         //TODO report (pending API)
       ],
     );
+  }
+
+  Widget _buildChannelOrProfileButton() {
+    if (isMyProfile)
+      return Padding(
+        padding: EdgeInsets.zero,
+      );
+    else {
+      return ElevatedButton(
+        onPressed: () {},
+        child: Text("Follow"),
+        style: ElevatedButton.styleFrom(
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: EdgeInsets.all(5),
+        ),
+      );
+    }
   }
 
   Widget _buildTeamRole(User user) {
