@@ -233,9 +233,11 @@ class ProfileWidget extends StatelessWidget {
     return Row(children: socials, mainAxisAlignment: MainAxisAlignment.center);
   }
 
-  void _openLink(String link) async => {
-        await canLaunch(link)
-            ? await launch(link)
-            : throw "failed to launch ${link}"
-      };
+  void _openLink(String link) async {
+    try {
+      await launch(link);
+    } catch (e) {
+      throw (e);
+    }
+  }
 }
