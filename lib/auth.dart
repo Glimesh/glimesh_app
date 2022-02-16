@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AuthState extends InheritedWidget {
   final bool authenticated;
+  final bool anonymous;
   final GraphQLClient? client;
   final Widget child;
 
@@ -12,6 +13,7 @@ class AuthState extends InheritedWidget {
   AuthState(
       {Key? key,
       required this.authenticated,
+      required this.anonymous,
       required this.login,
       required this.logout,
       required this.child,

@@ -1,142 +1,160 @@
 import 'package:flutter/material.dart';
-import 'package:gql_phoenix_link/gql_phoenix_link.dart';
-import 'package:phoenix_socket/phoenix_socket.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/components/Chat.dart';
 import 'package:glimesh_app/components/ChatInput.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
-import 'package:glimesh_app/glimesh.dart';
-import 'package:glimesh_app/repository.dart';
-import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/components/Loading.dart';
+import 'package:glimesh_app/models.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class JanusEdgeRoute {
-  JanusEdgeRoute({required this.id, required this.url});
-
-  final int id;
-  final String url;
-}
-
-class ChannelScreen extends StatefulWidget {
+class ChannelScreen extends StatelessWidget {
   final Channel channel;
 
   ChannelScreen({Key? key, required this.channel}) : super(key: key);
 
-  _ChannelScreenState createState() => _ChannelScreenState();
-}
-
-class _ChannelScreenState extends State<ChannelScreen> {
-  ChatMessagesBloc? chatMessagesBloc;
-  late GraphQLClient client;
-  late PhoenixChannel channel;
-  late GlimeshRepository repository;
-
-  Future<JanusEdgeRoute> _watchChannel(int channelId) async {
-    const glimeshWsApiUrl = String.fromEnvironment("GLIMESH_WS_API_URL",
-        defaultValue: "wss://glimesh.test");
-    String? token = await getGlimeshToken();
-    final _socketUrl =
-        "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
-    channel = await PhoenixLink.createChannel(websocketUri: _socketUrl);
-    final PhoenixLink _phoenixLink = PhoenixLink(channel: channel);
-
-    client = GraphQLClient(
-      cache: GraphQLCache(store: InMemoryStore()),
-      link: _phoenixLink,
-    );
-
-    repository = GlimeshRepository(client: client);
-    chatMessagesBloc = ChatMessagesBloc(
-      glimeshRepository: repository,
-    );
-
-    chatMessagesBloc!.add(LoadChatMessages(channelId: widget.channel.id));
-
-    final queryResults = await repository.watchChannel(widget.channel.id, "US");
-
-    final dynamic janusEdge = queryResults.data!['watchChannel'] as dynamic;
-    return JanusEdgeRoute(
-      id: int.parse(janusEdge['id']),
-      url: janusEdge['url'] as String,
-    );
-  }
-
-  JanusEdgeRoute? edgeRoute;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (edgeRoute == null) {
-      _watchChannel(widget.channel.id).then((JanusEdgeRoute edge) => {
-            setState(() {
-              edgeRoute = edge;
-            })
-          });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    bool horizontalTablet = MediaQuery.of(context).size.width > 992;
+    final authState = AuthState.of(context);
 
-    return Scaffold(
-        body: SafeArea(
-            child: edgeRoute == null
-                ? Loading("Loading Stream")
-                : horizontalTablet
-                    ? _buildSidebar(edgeRoute!.url)
-                    : _buildStacked(edgeRoute!.url)));
-  }
+    return BlocBuilder<ChannelBloc, ChannelState>(
+        builder: (BuildContext context, ChannelState state) {
+      if (state is ChannelLoading) {
+        return Scaffold(body: Loading("Loading Stream"));
+      }
 
-  Widget _buildStacked(String edgeUrl) {
-    return Column(
-      children: [
-        Stack(
+      if (state is ChannelNotLoaded) {
+        return Scaffold(body: Text("Error loading channels"));
+      }
+
+      if (state is ChannelReady) {
+        final JanusEdgeRoute edgeRoute = state.edgeRoute;
+        ChannelBloc bloc = BlocProvider.of<ChannelBloc>(context);
+
+        print("ChannelReady");
+
+        Widget chatWidget = Expanded(
+          child: Chat(
+            channel: channel,
+            chatMessagesStream: state.chatMessagesStream,
+          ),
+        );
+
+        Widget chatInputWidget = authState!.anonymous
+            ? Padding(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Expanded(
+                      child: TextField(
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: "Please login to chat!",
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pushNamed(context, "/login"),
+                      child: Text("Login"),
+                    ),
+                  ],
+                ))
+            : ChatInput(
+                onSubmit: (message) => bloc.add(
+                    SendChatMessage(channelId: channel.id, message: message)));
+
+        Widget videoPlayer = Stack(
           children: [
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
+              child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
             ),
             InkWell(
               child: Icon(Icons.chevron_left),
               onTap: () => Navigator.pop(context),
             )
           ],
-        ),
+        );
+        Widget metadata = Container(
+          child: StreamTitle(
+            channel: channel,
+            allowMetadata: true,
+          ),
+        );
+
+        return Scaffold(
+          body: SafeArea(
+            child: OrientationBuilder(
+              builder: (context, orientation) {
+                if (orientation == Orientation.portrait) {
+                  return _buildStacked(
+                    edgeRoute.url,
+                    videoPlayer,
+                    chatWidget,
+                    chatInputWidget,
+                  );
+                } else {
+                  return _buildSidebar(
+                    edgeRoute.url,
+                    videoPlayer,
+                    chatWidget,
+                    chatInputWidget,
+                  );
+                }
+              },
+            ),
+          ),
+        );
+      }
+
+      return SizedBox();
+    });
+  }
+
+  Widget _buildStacked(
+    String edgeUrl,
+    Widget videoPlayer,
+    Widget chatWidget,
+    Widget chatInputWidget,
+  ) {
+    return Column(
+      children: [
+        videoPlayer,
         Container(
           child: StreamTitle(
-            channel: widget.channel,
+            channel: channel,
             allowMetadata: true,
           ),
         ),
-        Expanded(
-          child: Chat(
-            channel: widget.channel,
-            chatMessagesBloc: chatMessagesBloc!,
-          ),
-        ),
-        ChatInput(onSubmit: (message) {
-          repository.sendChatMessage(widget.channel.id, message);
-        }),
+        chatWidget,
+        chatInputWidget,
       ],
     );
   }
 
-  Widget _buildSidebar(String edgeUrl) {
+  Widget _buildSidebar(
+    String edgeUrl,
+    Widget videoPlayer,
+    Widget chatWidget,
+    Widget chatInputWidget,
+  ) {
     return Row(children: [
       Expanded(
         flex: 9,
         child: Column(children: [
-          AspectRatio(
-            aspectRatio: 16 / 9,
-            child: FTLPlayer(channel: widget.channel, edgeUrl: edgeUrl),
-          ),
+          videoPlayer,
           Container(
             child: StreamTitle(
-              channel: widget.channel,
+              channel: channel,
               allowMetadata: true,
             ),
           ),
@@ -145,30 +163,9 @@ class _ChannelScreenState extends State<ChannelScreen> {
       Expanded(
         flex: 3,
         child: Column(
-          children: [
-            Expanded(
-              child: Chat(
-                channel: widget.channel,
-                chatMessagesBloc: chatMessagesBloc!,
-              ),
-            ),
-            ChatInput(onSubmit: (message) {
-              repository.sendChatMessage(widget.channel.id, message);
-            })
-          ],
+          children: [chatWidget, chatInputWidget],
         ),
       ),
     ]);
-  }
-
-  @override
-  void deactivate() {
-    print("widget deactivate");
-    channel.close();
-    if (chatMessagesBloc != null) {
-      chatMessagesBloc!.close();
-    }
-
-    super.deactivate();
   }
 }

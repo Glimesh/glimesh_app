@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/models.dart';
@@ -19,26 +20,25 @@ class UserProfileScreen extends StatelessWidget {
     bloc.add(LoadUser(username: username));
 
     return Scaffold(
-        appBar: AppBar(title: Text("Profile")),
-        body: BlocBuilder(
-            bloc: bloc,
-            builder: (BuildContext context, UserState state) {
-              return ProfileWidget(userState: state);
-            }));
+      appBar: AppBar(title: Text("Profile")),
+      body: BlocBuilder(
+          bloc: bloc,
+          builder: (BuildContext context, UserState state) {
+            return ProfileWidget(userState: state);
+          }),
+    );
   }
 }
 
 class MyProfileScreen extends StatelessWidget {
-  final GraphQLClient client;
-
-  const MyProfileScreen({required this.client}) : super();
-
   @override
   Widget build(BuildContext context) {
+    final authState = AuthState.of(context);
+
     return Container(
       child: BlocProvider(
         create: (context) => UserBloc(
-          glimeshRepository: GlimeshRepository(client: client),
+          glimeshRepository: GlimeshRepository(client: authState!.client!),
         ),
         child: _MyProfileWidget(),
       ),
@@ -100,7 +100,10 @@ class ProfileWidget extends StatelessWidget {
     return Column(children: [
       _buildProfileInfo(context, user),
       Padding(padding: EdgeInsets.only(bottom: 5)),
-      Expanded(child: Markdown(data: user.profileContentMd ?? "", onTapLink: _handleMarkdownLinkTap))
+      Expanded(
+          child: Markdown(
+              data: user.profileContentMd ?? "",
+              onTapLink: _handleMarkdownLinkTap))
     ]);
   }
 
@@ -109,12 +112,16 @@ class ProfileWidget extends StatelessWidget {
         padding: EdgeInsets.all(20),
         child: Row(children: [
           Expanded(flex: 3, child: _buildProfileInfo(context, user)),
-          Expanded(flex: 9, child: Markdown(data: user.profileContentMd ?? "", onTapLink: _handleMarkdownLinkTap)),
+          Expanded(
+              flex: 9,
+              child: Markdown(
+                  data: user.profileContentMd ?? "",
+                  onTapLink: _handleMarkdownLinkTap)),
         ]));
   }
 
   void _handleMarkdownLinkTap(String _text, String? href, String _title) {
-	_openLink(href!);
+    _openLink(href!);
   }
 
   Widget _buildProfileInfo(BuildContext context, User user) {
@@ -207,8 +214,7 @@ class ProfileWidget extends StatelessWidget {
       socials.add(
         IconButton(
             onPressed: () {
-              _openLink(
-                  "https://discord.com/invite/${user.socialDiscord}");
+              _openLink("https://discord.com/invite/${user.socialDiscord}");
             },
             icon: FaIcon(FontAwesomeIcons.discord)),
       );

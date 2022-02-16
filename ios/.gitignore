@@ -26,6 +26,9 @@ Flutter/flutter_assets/
 Flutter/flutter_export_environment.sh
 ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
+Runner.ipa
+Runner.*.zip
+fastlane/report.xml
 
 # Exceptions to above rules.
 !default.mode1v3

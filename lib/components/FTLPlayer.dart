@@ -4,6 +4,7 @@ import 'package:janus_streaming_client/JanusClient.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:logging/logging.dart';
 
 class FTLPlayer extends StatefulWidget {
   final Channel channel;
@@ -56,7 +57,11 @@ class _FTLPlayerState extends State<FTLPlayer> {
       rest = RestJanusTransport(
         url: widget.edgeUrl,
       );
-      janus = JanusClient(transport: rest, iceServers: []);
+      janus = JanusClient(
+        transport: rest,
+        iceServers: [],
+        loggerLevel: Level.WARNING,
+      );
     });
 
     session = await janus!.createSession();
@@ -115,9 +120,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
           _remoteRenderer,
           objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
         ),
-        _loading
-            ? Loading("Loading Stream")
-            : Padding(padding: EdgeInsets.zero),
+        _loading ? Loading("Loading Video") : Padding(padding: EdgeInsets.zero),
       ],
     );
   }

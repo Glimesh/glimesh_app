@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
+import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +13,6 @@ import 'package:glimesh_app/screens/LoginScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/auth.dart';
-import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/models.dart';
@@ -83,30 +84,78 @@ class AuthWidget extends StatefulWidget {
 
 class _AuthWidgetState extends State<AuthWidget> {
   bool authenticated = false;
+  bool anonymous = false;
   GraphQLClient? client;
 
-  void login(GraphQLClient newClient) {
+  @override
+  void initState() {
+    super.initState();
+
+    _checkExistingAuth();
+  }
+
+  _checkExistingAuth() async {
+    // Check if we have a saved token
+    String? clientToken = await Glimesh.getGlimeshToken();
+    if (clientToken == null) {
+      // If not use an anonymous client
+      _setupAnonymousClient();
+    } else {
+      // If so set auth state and bypass
+      _setupAuthenticatedClient();
+    }
+  }
+
+  _setupAnonymousClient() async {
+    client = await Glimesh.anonymousClient();
     setState(() {
-      client = newClient;
-      authenticated = true;
+      client = client;
+      authenticated = false;
+      anonymous = true;
     });
   }
 
-  void logout() {
-    const glimeshApiUrl = String.fromEnvironment("GLIMESH_API_URL",
-        defaultValue: "https://glimesh.test");
-    deleteOauthClient(glimeshApiUrl);
+  _setupAuthenticatedClient() async {
+    client = await Glimesh.client();
+    setState(() {
+      client = client;
+      authenticated = true;
+      anonymous = false;
+    });
+  }
 
+  login(GraphQLClient newClient) async {
+    setState(() {
+      client = newClient;
+      authenticated = true;
+      anonymous = false;
+    });
+  }
+
+  logout() async {
     setState(() {
       authenticated = false;
+      anonymous = false;
       client = null;
     });
+
+    _deleteClient();
+    _setupAnonymousClient();
+  }
+
+  void _deleteClient() {
+    if (client != null && client!.link is PhoenixLink) {
+      PhoenixLink link = client!.link as PhoenixLink;
+      link.channel.close();
+    }
+    Glimesh.deleteOauthClient();
   }
 
   @override
   Widget build(BuildContext context) {
     return AuthState(
       authenticated: authenticated,
+      anonymous: anonymous,
       client: client,
       login: login,
       logout: logout,
@@ -126,20 +175,25 @@ class GlimeshApp extends StatelessWidget {
         );
 
     final routes = <String, WidgetBuilder>{
-      '/channels': (context) => ChannelListScreen()
+      '/channels': (context) => ChannelListScreen(),
+      '/login': (context) => LoginScreen()
     };
 
     final generateRoutes = (settings) {
       if (settings.name == '/channel') {
         final Channel channel = settings.arguments as Channel;
+        final ChannelBloc bloc = ChannelBloc(
+          glimeshRepository: GlimeshRepository(client: authState!.client!),
+        );
+
+        bloc.add(WatchChannel(channelId: channel.id));
+        print("WatchChannel BlocProvider build");
 
         return MaterialPageRoute(
           builder: (context) {
+            print("MaterialPageRoute build");
             return BlocProvider(
-              create: (context) => ChatMessagesBloc(
-                glimeshRepository:
-                    GlimeshRepository(client: authState!.client!),
-              ),
+              create: (context) => bloc,
               child: ChannelScreen(channel: channel),
             );
           },
@@ -182,9 +236,9 @@ class GlimeshApp extends StatelessWidget {
         textTheme: whiteTextTheme,
       ),
       themeMode: ThemeMode.dark,
-      home: authState!.authenticated
-          ? AppScreen(client: authState.client!, title: "Glimesh")
-          : LoginScreen(),
+      home: authState!.client != null
+          ? AppScreen(title: "Glimesh")
+          : Padding(padding: EdgeInsets.zero),
     );
   }
 }

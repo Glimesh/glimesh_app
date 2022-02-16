@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/components/Loading.dart';
@@ -8,16 +9,13 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 class FollowingScreen extends StatelessWidget {
-  final GraphQLClient client;
-
-  const FollowingScreen({required this.client}) : super();
-
   @override
   Widget build(BuildContext context) {
+    final authState = AuthState.of(context);
     return Scaffold(
       body: BlocProvider(
         create: (context) => ChannelListBloc(
-          glimeshRepository: GlimeshRepository(client: client),
+          glimeshRepository: GlimeshRepository(client: authState!.client!),
         ),
         child: LiveFollowedChannelsWidget(),
       ),
@@ -26,8 +24,6 @@ class FollowingScreen extends StatelessWidget {
 }
 
 class LiveFollowedChannelsWidget extends StatelessWidget {
-  LiveFollowedChannelsWidget();
-
   @override
   Widget build(BuildContext context) {
     ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);

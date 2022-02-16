@@ -1,31 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/repository.dart';
+
+// class Chat extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     final authState = AuthState.of(context);
+
+//     return BlocProvider(
+//       create: (context) => ChannelBloc(
+//         glimeshRepository: GlimeshRepository(client: authState!.client!),
+//       ),
+//       child: ChatWidget(),
+//     );
+//   }
+// }
 
 class Chat extends StatelessWidget {
   final Channel channel;
-  final ChatMessagesBloc chatMessagesBloc;
+  final Stream<List<ChatMessage>> chatMessagesStream;
 
-  const Chat({required this.channel, required this.chatMessagesBloc}) : super();
+  const Chat({required this.channel, required this.chatMessagesStream})
+      : super();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(channel.chatBackgroundUrl),
-          repeat: ImageRepeat.repeat,
-          alignment: Alignment.topLeft,
-        ),
-      ),
-      child: _buildChatMessages(context),
-    );
-  }
+    print("Chat was rebuilt");
 
-  Widget _buildChatMessages(BuildContext context) {
     return StreamBuilder(
-      stream: chatMessagesBloc.chatMessagesStream,
+      stream: chatMessagesStream,
       builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
         if (snapshot.hasError) {
           print(snapshot.error);
@@ -37,22 +45,34 @@ class Chat extends StatelessWidget {
         if (snapshot.hasData) {
           final messages = snapshot.data!;
 
-          return ListView.builder(
-            itemCount: messages.length,
-            shrinkWrap: true,
-            reverse: true,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return _buildChatMessage(messages[index]);
-            },
-          );
+          return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(channel.chatBackgroundUrl),
+                  repeat: ImageRepeat.repeat,
+                  alignment: Alignment.topLeft,
+                ),
+              ),
+              child: ListView.builder(
+                itemCount: messages.length,
+                shrinkWrap: true,
+                reverse: true,
+                padding: EdgeInsets.only(top: 10, bottom: 10),
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return _buildChatMessage(messages[index]);
+                },
+              ));
         }
 
         return Text("Loading");
       },
     );
   }
+
+  // Widget _buildChatMessages(BuildContext context) {
+  //   return
+  // }
 
   // Widget _buildChatMessages(BuildContext context) {
   //   return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
