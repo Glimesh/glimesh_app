@@ -116,3 +116,10 @@ class Channel {
   List<Tag> tags = [];
   final Subcategory? subcategory;
 }
+
+class JanusEdgeRoute {
+  JanusEdgeRoute({required this.id, required this.url});
+
+  final int id;
+  final String url;
+}

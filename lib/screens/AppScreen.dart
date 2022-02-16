@@ -8,8 +8,7 @@ import 'package:glimesh_app/screens/FollowingScreen.dart';
 import 'package:glimesh_app/auth.dart';
 
 class AppScreen extends StatefulWidget {
-  AppScreen({Key? key, required this.client, required this.title})
-      : super(key: key);
+  AppScreen({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -21,7 +20,6 @@ class AppScreen extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  final GraphQLClient client;
 
   @override
   _AppScreenState createState() => _AppScreenState();
@@ -38,9 +36,9 @@ class _AppScreenState extends State<AppScreen> {
 
     setState(() {
       pages = [
-        MyProfileScreen(client: widget.client),
-        CategoryListScreen(client: widget.client),
-        FollowingScreen(client: widget.client),
+        MyProfileScreen(),
+        CategoryListScreen(),
+        FollowingScreen(),
       ];
       _selectedIndex = 1;
     });
@@ -87,16 +85,42 @@ class _AppScreenState extends State<AppScreen> {
                 },
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: authState!.logout,
-            ),
+            _anonymousUserInfo(authState!.anonymous),
+            if (authState.authenticated == false)
+              ListTile(
+                leading: Icon(Icons.login),
+                title: Text('Login'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
+            if (authState.authenticated == true)
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('Logout'),
+                onTap: authState.logout,
+              ),
           ],
         ),
       ),
       body: pages.isEmpty ? Loading("Loading") : pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: _bottomNavigationBar(authState.authenticated),
+    );
+  }
+
+  Widget _anonymousUserInfo(bool shown) {
+    if (shown) {
+      return ListTile(
+        title: Text("Login to experience the very best Glimesh has to offer!"),
+      );
+    } else {
+      return SizedBox();
+    }
+  }
+
+  Widget? _bottomNavigationBar(bool shown) {
+    if (shown) {
+      return BottomNavigationBar(
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey.shade600,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.w600),
@@ -118,8 +142,8 @@ class _AppScreenState extends State<AppScreen> {
             label: "Following",
           ),
         ],
-      ),
-    );
+      );
+    }
   }
 
   _onItemTapped(int index) {

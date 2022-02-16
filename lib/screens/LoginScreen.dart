@@ -9,39 +9,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 class LoginScreen extends StatelessWidget {
   AuthState? authState;
 
-  Future<GraphQLClient> _client() async {
-    const clientID =
-        String.fromEnvironment('GLIMESH_CLIENT_ID', defaultValue: 'FAKE_VALUE');
-    const glimeshApiUrl = String.fromEnvironment("GLIMESH_API_URL",
-        defaultValue: "https://glimesh.test");
-    const glimeshWsApiUrl = String.fromEnvironment("GLIMESH_WS_API_URL",
-        defaultValue: "wss://glimesh.test");
-
-    final oauthClient = await createOauthClient(glimeshApiUrl, clientID);
-    final token = oauthClient.credentials.accessToken;
-
-    print("Got access token: " + token);
-
-    final _socketUrl =
-        "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
-    final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
-    final PhoenixLink _phoenixLink = PhoenixLink(channel: await channel);
-    // final HttpLink httpLink = HttpLink(
-    //   'https://glimesh.tv/api/graph',
-    // );
-
-    // final AuthLink authLink = AuthLink(
-    //   getToken: () => 'Bearer $token',
-    // );
-
-    // final Link link = authLink.concat(httpLink);
-
-    return GraphQLClient(
-      cache: GraphQLCache(store: InMemoryStore()),
-      link: _phoenixLink,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     authState = AuthState.of(context);
@@ -147,16 +114,26 @@ class LoginScreen extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle1,
             textAlign: center ? TextAlign.center : TextAlign.left,
           ),
-          Padding(padding: EdgeInsets.only(top: 60)),
+          Padding(padding: EdgeInsets.only(top: 20)),
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                GraphQLClient client = await _client();
+                GraphQLClient client = await Glimesh.client();
                 authState!.login(client);
+
+                // Later once "state" is figured out, this can be just .pop to go back to the last page
+                Navigator.popUntil(context, ModalRoute.withName('/'));
               },
               child: const Text("Login"),
             ),
           ),
+          Padding(padding: EdgeInsets.only(top: 20)),
+          Center(
+            child: Text(
+              "If you need to register, please visit Glimesh.tv on your phone or computer.",
+              textAlign: center ? TextAlign.center : TextAlign.left,
+            ),
+          )
         ],
       ),
     );
