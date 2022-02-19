@@ -52,6 +52,10 @@ dependencies:
   wakelock: ^0.6.1+1
   workmanager: ^0.5.0-dev.8
   flutter_staggered_grid_view: ^0.6.1
+  gettext_i18n: ^1.0.4
+  flutter_localizations: 
+    sdk: flutter
+    version: ^0.0.0
 
 dev_dependencies:
   flutter_test:

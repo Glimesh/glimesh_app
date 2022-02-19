@@ -202,6 +202,11 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_markdown:
     dependency: "direct main"
     description:
@@ -240,6 +245,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
+  gettext:
+    dependency: transitive
+    description:
+      name: gettext
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
+  gettext_i18n:
+    dependency: "direct main"
+    description:
+      name: gettext_i18n
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  gettext_parser:
+    dependency: transitive
+    description:
+      name: gettext_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   gql:
     dependency: transitive
     description:
@@ -331,6 +357,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.17.0"
   janus_streaming_client:
     dependency: "direct main"
     description:
