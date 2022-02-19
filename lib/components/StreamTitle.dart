@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/FollowButton.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/components/SmallChip.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class StreamTitle extends StatefulWidget {
   final Channel channel;
@@ -58,7 +59,7 @@ class _StreamTitleState extends State<StreamTitle> {
         AnimatedCrossFade(
             duration: const Duration(milliseconds: 250),
             firstChild: Container(height: 0, width: double.infinity),
-            secondChild: _metadataContainer(),
+            secondChild: _metadataContainer(context),
             crossFadeState: _showMetadata
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst)
@@ -66,7 +67,7 @@ class _StreamTitleState extends State<StreamTitle> {
     );
   }
 
-  Widget _metadataContainer() {
+  Widget _metadataContainer(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 300,
@@ -75,8 +76,8 @@ class _StreamTitleState extends State<StreamTitle> {
         child: ListView(
           children: [
             _buildSubcategoryTag(),
-            _buildTags(),
-            _buildLanguageTag(),
+            _buildTags(context),
+            _buildLanguageTag(context),
             _buildMatureTag()
           ],
         ),
@@ -98,25 +99,28 @@ class _StreamTitleState extends State<StreamTitle> {
     );
   }
 
-  Widget _buildTags() {
+  Widget _buildTags(BuildContext context) {
     List<Widget> tagButtons = widget.channel.tags
         .map((Tag tag) => Chip(label: Text(tag.name)))
         .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text("Tags"), Wrap(children: tagButtons)],
+      children: [Text(context.t("Tags")), Wrap(children: tagButtons)],
     );
   }
 
-  Widget _buildLanguageTag() {
+  Widget _buildLanguageTag(BuildContext context) {
     if (widget.channel.language == null) {
       return Padding(padding: EdgeInsets.zero);
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [Text("Language"), Chip(label: Text(widget.channel.language!))],
+      children: [
+        Text(context.t("Language")),
+        Chip(label: Text(widget.channel.language!))
+      ],
     );
   }
 

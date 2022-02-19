@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 // import 'package:workmanager/workmanager.dart';
 
 import 'package:glimesh_app/screens/LoginScreen.dart';
@@ -271,6 +273,21 @@ class GlimeshApp extends StatelessWidget {
       title: 'Glimesh Alpha',
       routes: routes,
       onGenerateRoute: generateRoutes,
+      // uncomment the below to change the lang easily in testing without changing the device language
+      /* locale: Locale('es', ''), */
+      localizationsDelegates: [
+        GettextLocalizationsDelegate(defaultLanguage: 'en'),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: [
+        Locale('en'),
+        Locale('fr'),
+        Locale('es'),
+        Locale('es', 'ar'),
+        Locale('ko'),
+        Locale('pt'),
+      ],
       theme: ThemeData(
         brightness: Brightness.dark,
       ),

@@ -5,6 +5,7 @@ import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/auth.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class ChannelListScreen extends StatelessWidget {
   @override
@@ -67,7 +68,7 @@ class ChannelListWidget extends StatelessWidget {
                     children: [
                       Image.asset('assets/images/glimrip.png'),
                       Padding(padding: EdgeInsets.only(top: 20)),
-                      Text("No live channels in this category."),
+                      Text(context.t("No streams found for selected filter.")),
                     ],
                   ),
                 ),

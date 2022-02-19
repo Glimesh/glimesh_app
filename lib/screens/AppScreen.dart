@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
@@ -88,7 +89,7 @@ class _AppScreenState extends State<AppScreen> {
             if (authState.authenticated == false)
               ListTile(
                 leading: Icon(Icons.login),
-                title: Text('Login'),
+                title: Text(context.t('Login')),
                 onTap: () {
                   Navigator.pushNamed(context, '/login');
                 },
@@ -96,14 +97,15 @@ class _AppScreenState extends State<AppScreen> {
             if (authState.authenticated == true)
               ListTile(
                 leading: Icon(Icons.logout),
-                title: Text('Logout'),
+                title: Text(context.t('Sign Out')),
                 onTap: authState.logout,
               ),
           ],
         ),
       ),
       body: pages.isEmpty ? Loading("Loading") : pages[_selectedIndex],
-      bottomNavigationBar: _bottomNavigationBar(authState.authenticated),
+      bottomNavigationBar:
+          _bottomNavigationBar(context, authState.authenticated),
     );
   }
 
@@ -117,7 +119,7 @@ class _AppScreenState extends State<AppScreen> {
     }
   }
 
-  Widget? _bottomNavigationBar(bool shown) {
+  Widget? _bottomNavigationBar(BuildContext context, bool shown) {
     if (shown) {
       return BottomNavigationBar(
         selectedItemColor: Colors.blue,
@@ -130,7 +132,7 @@ class _AppScreenState extends State<AppScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: "Profile",
+            label: context.t("Profile"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -138,7 +140,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: "Following",
+            label: context.t("Following"),
           ),
         ],
       );

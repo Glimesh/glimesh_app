@@ -7,6 +7,7 @@ import 'package:glimesh_app/repository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class UserProfileScreen extends StatelessWidget {
   final String username;
@@ -19,7 +20,7 @@ class UserProfileScreen extends StatelessWidget {
     bloc.add(LoadUser(username: username));
 
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      appBar: AppBar(title: Text(context.t("Profile"))),
       body: BlocBuilder(
           bloc: bloc,
           builder: (BuildContext context, UserState state) {
@@ -137,12 +138,12 @@ class ProfileWidget extends StatelessWidget {
         Container(child: _buildSocials(user)),
         Row(children: [
           Column(children: [
-            Text("Followers"),
+            Text(context.t("Followers:")),
             Text(user.countFollowers.toString()),
           ]),
-          _buildChannelOrProfileButton(),
+          _buildChannelOrProfileButton(context),
           Column(children: [
-            Text("Following"),
+            Text(context.t("Following:")),
             Text(user.countFollowing.toString()),
           ]),
         ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
@@ -151,7 +152,7 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildChannelOrProfileButton() {
+  Widget _buildChannelOrProfileButton(BuildContext context) {
     if (isMyProfile)
       return Padding(
         padding: EdgeInsets.zero,
@@ -159,7 +160,7 @@ class ProfileWidget extends StatelessWidget {
     else {
       return ElevatedButton(
         onPressed: () {},
-        child: Text("Follow"),
+        child: Text(context.t("Follow")),
         style: ElevatedButton.styleFrom(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           padding: EdgeInsets.all(5),

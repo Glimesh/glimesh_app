@@ -6,6 +6,7 @@ import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ChannelScreen extends StatelessWidget {
   final Channel channel;

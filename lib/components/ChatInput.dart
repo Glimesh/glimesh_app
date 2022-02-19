@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class ChatInput extends StatefulWidget {
   final Function(String) onSubmit;
@@ -57,7 +58,7 @@ class _ChatInputState extends State<ChatInput> {
                 controller: messageController,
                 decoration: InputDecoration(
                   isDense: true,
-                  hintText: "Send a message",
+                  hintText: context.t("Send a message"),
                   border: InputBorder.none,
                 ),
                 onSubmitted: (msg) => sendAndClear(),
