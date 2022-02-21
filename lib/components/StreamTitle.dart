@@ -38,10 +38,15 @@ class _StreamTitleState extends State<StreamTitle> {
           children: [
             Padding(
               padding: EdgeInsets.all(3),
-              child: CircleAvatar(
-                radius: 24,
-                backgroundImage: NetworkImage(widget.channel.avatarUrl),
-              ),
+              child: InkWell(
+                  child: CircleAvatar(
+                    radius: 24,
+                    backgroundImage: NetworkImage(widget.channel.avatarUrl),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, "/profile",
+                        arguments: widget.channel.username);
+                  }),
             ),
             Expanded(
               child: inkwellOrPlain,
