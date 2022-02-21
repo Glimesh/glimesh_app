@@ -95,6 +95,7 @@ class Channel {
     required this.thumbnail,
     required this.chatBackgroundUrl,
     required this.username,
+    required this.user_id,
     required this.avatarUrl,
     required this.matureContent,
     required this.tags,
@@ -108,6 +109,7 @@ class Channel {
   final String chatBackgroundUrl;
 
   final String username;
+  final int user_id;
   final String avatarUrl;
 
   final String? language;

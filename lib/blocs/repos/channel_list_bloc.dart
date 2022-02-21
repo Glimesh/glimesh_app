@@ -194,6 +194,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       chatBackgroundUrl: json['node']['chatBgUrl'] as String,
       thumbnail: json['node']['stream']['thumbnailUrl'] as String,
       username: json['node']['streamer']['username'] as String,
+      user_id: int.parse(json['node']['streamer']['id']),
       avatarUrl: json['node']['streamer']['avatarUrl'] as String,
       matureContent: json['node']['matureContent'] as bool,
       language: buildLanguageDisplayName(json['node']['language']),

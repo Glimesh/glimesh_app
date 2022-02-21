@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
+import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -85,6 +86,7 @@ class AuthWidget extends StatefulWidget {
 class _AuthWidgetState extends State<AuthWidget> {
   bool authenticated = false;
   bool anonymous = false;
+  User? user;
   GraphQLClient? client;
 
   @override
@@ -117,18 +119,34 @@ class _AuthWidgetState extends State<AuthWidget> {
 
   _setupAuthenticatedClient() async {
     client = await Glimesh.client();
+
+    _fetchUserAndUpdate(client!);
+  }
+
+  login(GraphQLClient newClient) async {
+    _fetchUserAndUpdate(newClient);
+  }
+
+  _fetchUserAndUpdate(GraphQLClient client) async {
+    // This disgusting mess should be refactored...
+    GlimeshRepository repo = GlimeshRepository(client: client);
+    UserBloc bloc = UserBloc(glimeshRepository: repo);
+    final queryResults = await repo.getMyself();
+
+    if (queryResults.hasException) {
+      print(queryResults.exception!.graphqlErrors);
+      return;
+    }
+
+    final dynamic userRaw = queryResults.data!['myself'] as dynamic;
+    User newUser = bloc.buildUserFromJson(userRaw);
+    print(newUser);
+
     setState(() {
       client = client;
       authenticated = true;
       anonymous = false;
-    });
-  }
-
-  login(GraphQLClient newClient) async {
-    setState(() {
-      client = newClient;
-      authenticated = true;
-      anonymous = false;
+      user = newUser;
     });
   }
 
@@ -159,6 +177,7 @@ class _AuthWidgetState extends State<AuthWidget> {
       client: client,
       login: login,
       logout: logout,
+      user: user,
       child: GlimeshApp(),
     );
   }
@@ -182,8 +201,10 @@ class GlimeshApp extends StatelessWidget {
     final generateRoutes = (settings) {
       if (settings.name == '/channel') {
         final Channel channel = settings.arguments as Channel;
+        final GlimeshRepository repo =
+            GlimeshRepository(client: authState!.client!);
         final ChannelBloc bloc = ChannelBloc(
-          glimeshRepository: GlimeshRepository(client: authState!.client!),
+          glimeshRepository: repo,
         );
 
         bloc.add(WatchChannel(channelId: channel.id));
@@ -192,8 +213,12 @@ class GlimeshApp extends StatelessWidget {
         return MaterialPageRoute(
           builder: (context) {
             print("MaterialPageRoute build");
-            return BlocProvider(
-              create: (context) => bloc,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<ChannelBloc>(create: (context) => bloc),
+                BlocProvider<FollowBloc>(
+                    create: (context) => FollowBloc(glimeshRepository: repo)),
+              ],
               child: ChannelScreen(channel: channel),
             );
           },
