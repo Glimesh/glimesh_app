@@ -100,7 +100,7 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
   @override
   Stream<ChannelState> mapEventToState(ChannelEvent event) async* {
     try {
-      print(event);
+      print("ChannelBloc.mapEventToState($event)");
       if (event is WatchChannel) {
         print("Event is WatchChannel");
 

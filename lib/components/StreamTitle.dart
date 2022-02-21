@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/components/FollowButton.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/components/SmallChip.dart';
 
@@ -51,7 +52,7 @@ class _StreamTitleState extends State<StreamTitle> {
             Expanded(
               child: inkwellOrPlain,
             ),
-            _buttonContainer(),
+            if (widget.allowMetadata == true) _buttonContainer(),
           ],
         ),
         AnimatedCrossFade(
@@ -174,18 +175,14 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buttonContainer() {
-    return Padding(padding: EdgeInsets.zero);
+    // return Padding(padding: EdgeInsets.zero);
 
     return Column(
       children: [
         Padding(padding: EdgeInsets.only(bottom: 5)),
-        ElevatedButton(
-          onPressed: _toggleMetadata,
-          child: Text("Follow"),
-          style: ElevatedButton.styleFrom(
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            padding: EdgeInsets.all(5),
-          ),
+        Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: FollowButton(channel: widget.channel),
         ),
         Padding(padding: EdgeInsets.only(bottom: 5)),
         // ElevatedButton(

@@ -86,6 +86,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
   @override
   Stream<ChannelListState> mapEventToState(ChannelListEvent event) async* {
     try {
+      print("ChannelListBloc.mapEventToState($event)");
       if (event is LoadChannels) {
         yield* _loadChannels(event.categorySlug, event.channelLimit);
       } else if (event is LoadMyLiveFollowedChannels) {
@@ -194,6 +195,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
       chatBackgroundUrl: json['node']['chatBgUrl'] as String,
       thumbnail: json['node']['stream']['thumbnailUrl'] as String,
       username: json['node']['streamer']['username'] as String,
+      user_id: int.parse(json['node']['streamer']['id']),
       avatarUrl: json['node']['streamer']['avatarUrl'] as String,
       matureContent: json['node']['matureContent'] as bool,
       language: buildLanguageDisplayName(json['node']['language']),

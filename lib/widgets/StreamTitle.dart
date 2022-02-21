@@ -169,13 +169,13 @@ class _StreamTitleState extends State<StreamTitle> {
   }
 
   Widget _buttonContainer() {
-    return Padding(padding: EdgeInsets.zero);
+    // return Padding(padding: EdgeInsets.zero);
 
     return Column(
       children: [
         Padding(padding: EdgeInsets.only(bottom: 5)),
         ElevatedButton(
-          onPressed: _toggleMetadata,
+          onPressed: () {},
           child: Text("Follow"),
           style: ElevatedButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

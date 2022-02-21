@@ -22,6 +22,7 @@ query LiveChannels($categorySlug: String!) {
         }
 
         streamer {
+          id
           username
           avatarUrl
         }
@@ -57,6 +58,7 @@ query GetMyself {
           }
 
           streamer {
+            id
             username
             avatarUrl
           }
@@ -91,6 +93,7 @@ query GetHomepageChannels {
         }
 
         streamer {
+          id
           username
           avatarUrl
         }

@@ -76,4 +76,30 @@ class GlimeshRepository {
       variables: <String, dynamic>{"channelId": channelId, "country": country},
     ));
   }
+
+  // Follows
+  Future<QueryResult> getFollowers(int streamerId, int userId) {
+    return client.query(QueryOptions(
+      document: parseString(user_queries.isFollowing),
+      variables: <String, dynamic>{"streamerId": streamerId, "userId": userId},
+      fetchPolicy: FetchPolicy.noCache,
+    ));
+  }
+
+  Future<QueryResult> followUser(int streamerId, bool liveNotifications) {
+    return client.mutate(MutationOptions(
+      document: parseString(user_queries.followUser),
+      variables: <String, dynamic>{
+        "streamerId": streamerId,
+        "liveNotifications": liveNotifications
+      },
+    ));
+  }
+
+  Future<QueryResult> unfollowUser(int streamerId) {
+    return client.mutate(MutationOptions(
+      document: parseString(user_queries.unfollowUser),
+      variables: <String, dynamic>{"streamerId": streamerId},
+    ));
+  }
 }

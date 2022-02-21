@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/models.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AuthState extends InheritedWidget {
@@ -6,6 +7,7 @@ class AuthState extends InheritedWidget {
   final bool anonymous;
   final GraphQLClient? client;
   final Widget child;
+  final User? user;
 
   final Function(GraphQLClient) login;
   final VoidCallback logout;
@@ -17,7 +19,8 @@ class AuthState extends InheritedWidget {
       required this.login,
       required this.logout,
       required this.child,
-      required this.client})
+      required this.client,
+      this.user})
       : super(key: key, child: child);
 
   static AuthState? of(BuildContext context) {

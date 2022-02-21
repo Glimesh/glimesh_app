@@ -89,6 +89,7 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
   @override
   Stream<ChatMessagesState> mapEventToState(ChatMessagesEvent event) async* {
     try {
+      print("ChatMessagesBloc.mapEventToState($event)");
       if (event is LoadChatMessages) {
         // Load some existing chat messages
         final queryResults =
