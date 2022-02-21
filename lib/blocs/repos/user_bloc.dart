@@ -62,6 +62,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   @override
   Stream<UserState> mapEventToState(UserEvent event) async* {
     try {
+      print("UserBloc.mapEventToState($event)");
       if (event is LoadMyself) {
         yield* _mapMyselfToState();
       } else if (event is LoadUser) {

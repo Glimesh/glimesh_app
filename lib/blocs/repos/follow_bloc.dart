@@ -85,7 +85,7 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
   @override
   Stream<FollowState> mapEventToState(FollowEvent event) async* {
     try {
-      print(event);
+      print("FollowBloc.mapEventToState($event)");
       if (event is LoadFollowStatus) {
         final queryResults = await this
             .glimeshRepository
@@ -103,16 +103,26 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
           return;
         }
 
-        yield ChannelFollowed();
+        int count = queryResults.data!['followers']['count'] as int;
+        if (count > 0) {
+          yield ChannelFollowed();
+        }
       } else if (event is FollowChannel) {
-        // TODO: Error handling
-        this
+        final queryResults = await this
             .glimeshRepository
             .followUser(event.streamerId, event.liveNotifications);
+        if (queryResults.hasException) {
+          yield FollowNotLoaded(queryResults.exception!.graphqlErrors);
+          return;
+        }
         yield ChannelFollowed();
       } else if (event is UnfollowChannel) {
-        // TODO: Error handling
-        this.glimeshRepository.unfollowUser(event.streamerId);
+        final queryResults =
+            await this.glimeshRepository.unfollowUser(event.streamerId);
+        if (queryResults.hasException) {
+          yield FollowNotLoaded(queryResults.exception!.graphqlErrors);
+          return;
+        }
         yield ChannelNotFollowed();
       } else {
         // else if (event is LoadChannel) {

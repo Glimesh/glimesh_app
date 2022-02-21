@@ -13,13 +13,6 @@ class FollowButton extends StatelessWidget {
   Widget build(BuildContext context) {
     FollowBloc bloc = BlocProvider.of<FollowBloc>(context);
     AuthState? authState = AuthState.of(context);
-    if (authState!.authenticated) {
-      bloc.add(LoadFollowStatus(
-        streamerId: channel.user_id,
-        userId: authState.user!.id,
-      ));
-    }
-    print("FollowButton");
 
     return BlocBuilder(
       bloc: bloc,

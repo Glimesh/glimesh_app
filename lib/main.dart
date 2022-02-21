@@ -217,7 +217,18 @@ class GlimeshApp extends StatelessWidget {
               providers: [
                 BlocProvider<ChannelBloc>(create: (context) => bloc),
                 BlocProvider<FollowBloc>(
-                    create: (context) => FollowBloc(glimeshRepository: repo)),
+                  create: (context) {
+                    FollowBloc bloc = FollowBloc(glimeshRepository: repo);
+                    // If we're authenticated, show the initial bloc status
+                    if (authState.authenticated) {
+                      bloc.add(LoadFollowStatus(
+                        streamerId: channel.user_id,
+                        userId: authState.user!.id,
+                      ));
+                    }
+                    return bloc;
+                  },
+                ),
               ],
               child: ChannelScreen(channel: channel),
             );

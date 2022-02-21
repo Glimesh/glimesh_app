@@ -86,6 +86,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
   @override
   Stream<ChannelListState> mapEventToState(ChannelListEvent event) async* {
     try {
+      print("ChannelListBloc.mapEventToState($event)");
       if (event is LoadChannels) {
         yield* _loadChannels(event.categorySlug, event.channelLimit);
       } else if (event is LoadMyLiveFollowedChannels) {
