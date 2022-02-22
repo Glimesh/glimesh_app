@@ -10,14 +10,12 @@ import 'package:glimesh_app/models.dart';
 
 /* Events */
 @immutable
-abstract class ChannelEvent extends Equatable {
-  ChannelEvent([List props = const []]) : super();
-}
+abstract class ChannelEvent extends Equatable {}
 
 class LoadChannel extends ChannelEvent {
   final int channelId;
 
-  LoadChannel({required this.channelId}) : super([channelId]);
+  LoadChannel({required this.channelId});
 
   @override
   List<Object> get props => [this.channelId];
@@ -26,7 +24,7 @@ class LoadChannel extends ChannelEvent {
 class WatchChannel extends ChannelEvent {
   final int channelId;
 
-  WatchChannel({required this.channelId}) : super([channelId]);
+  WatchChannel({required this.channelId});
 
   @override
   List<Object> get props => [this.channelId];
@@ -34,9 +32,7 @@ class WatchChannel extends ChannelEvent {
 
 /* State */
 @immutable
-abstract class ChannelState extends Equatable {
-  ChannelState([List props = const []]) : super();
-}
+abstract class ChannelState extends Equatable {}
 
 class ChannelLoading extends ChannelState {
   @override
@@ -47,7 +43,7 @@ class ChannelLoading extends ChannelState {
 class ChannelLoaded extends ChannelState {
   final User channel;
 
-  ChannelLoaded({required this.channel}) : super([channel]);
+  ChannelLoaded({required this.channel});
 
   @override
   List<Object> get props => [channel];
@@ -57,7 +53,7 @@ class ChannelLoaded extends ChannelState {
 class ChannelReady extends ChannelState {
   final JanusEdgeRoute edgeRoute;
 
-  ChannelReady({required this.edgeRoute}) : super([edgeRoute]);
+  ChannelReady({required this.edgeRoute});
 
   @override
   List<Object> get props => [edgeRoute];
@@ -66,7 +62,7 @@ class ChannelReady extends ChannelState {
 class ChannelNotLoaded extends ChannelState {
   final List<GraphQLError>? errors;
 
-  ChannelNotLoaded([this.errors]) : super([errors]);
+  ChannelNotLoaded([this.errors]);
 
   @override
   List<Object?> get props => [this.errors];

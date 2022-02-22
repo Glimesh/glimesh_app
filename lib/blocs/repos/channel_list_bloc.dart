@@ -7,16 +7,13 @@ import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/lang_displaynames.dart';
 
 @immutable
-abstract class ChannelListEvent extends Equatable {
-  ChannelListEvent([List props = const []]) : super();
-}
+abstract class ChannelListEvent extends Equatable {}
 
 class LoadChannels extends ChannelListEvent {
   final String categorySlug;
   final int channelLimit;
 
-  LoadChannels({required this.categorySlug, this.channelLimit: 15})
-      : super([categorySlug, channelLimit]);
+  LoadChannels({required this.categorySlug, this.channelLimit: 15});
 
   @override
   String toString() => 'LoadChannels';
@@ -42,9 +39,7 @@ class LoadHomepageChannels extends ChannelListEvent {
 }
 
 @immutable
-abstract class ChannelListState extends Equatable {
-  ChannelListState([List props = const []]) : super();
-}
+abstract class ChannelListState extends Equatable {}
 
 class ChannelListLoading extends ChannelListState {
   @override
@@ -57,7 +52,7 @@ class ChannelListLoading extends ChannelListState {
 class ChannelListLoaded extends ChannelListState {
   final List<Channel> results;
 
-  ChannelListLoaded({required this.results}) : super([results]);
+  ChannelListLoaded({required this.results});
 
   @override
   List<Object> get props => [results];
@@ -66,7 +61,7 @@ class ChannelListLoaded extends ChannelListState {
 class ChannelListNotLoaded extends ChannelListState {
   final List<GraphQLError>? errors;
 
-  ChannelListNotLoaded([this.errors]) : super([errors]);
+  ChannelListNotLoaded([this.errors]);
 
   @override
   String toString() => 'ReposNotLoaded';

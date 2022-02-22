@@ -10,16 +10,13 @@ import 'package:glimesh_app/models.dart';
 
 /* Events */
 @immutable
-abstract class FollowEvent extends Equatable {
-  FollowEvent([List props = const []]) : super();
-}
+abstract class FollowEvent extends Equatable {}
 
 class LoadFollowStatus extends FollowEvent {
   final int streamerId;
   final int userId;
 
-  LoadFollowStatus({required this.streamerId, required this.userId})
-      : super([streamerId, userId]);
+  LoadFollowStatus({required this.streamerId, required this.userId});
 
   @override
   List<Object> get props => [this.streamerId, this.userId];
@@ -29,8 +26,7 @@ class FollowChannel extends FollowEvent {
   final int streamerId;
   final bool liveNotifications;
 
-  FollowChannel({required this.streamerId, required this.liveNotifications})
-      : super([streamerId, liveNotifications]);
+  FollowChannel({required this.streamerId, required this.liveNotifications});
 
   @override
   List<Object> get props => [this.streamerId, liveNotifications];
@@ -39,7 +35,7 @@ class FollowChannel extends FollowEvent {
 class UnfollowChannel extends FollowEvent {
   final int streamerId;
 
-  UnfollowChannel({required this.streamerId}) : super([streamerId]);
+  UnfollowChannel({required this.streamerId});
 
   @override
   List<Object> get props => [this.streamerId];
@@ -47,9 +43,7 @@ class UnfollowChannel extends FollowEvent {
 
 /* State */
 @immutable
-abstract class FollowState extends Equatable {
-  FollowState([List props = const []]) : super();
-}
+abstract class FollowState extends Equatable {}
 
 class ChannelFollowed extends FollowState {
   @override
@@ -70,7 +64,7 @@ class FollowLoading extends FollowState {
 class FollowNotLoaded extends FollowState {
   final List<GraphQLError>? errors;
 
-  FollowNotLoaded([this.errors]) : super([errors]);
+  FollowNotLoaded([this.errors]);
 
   @override
   List<Object?> get props => [this.errors];

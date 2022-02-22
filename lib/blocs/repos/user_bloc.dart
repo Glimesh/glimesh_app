@@ -6,9 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 @immutable
-abstract class UserEvent extends Equatable {
-  UserEvent([List props = const []]) : super();
-}
+abstract class UserEvent extends Equatable {}
 
 class LoadMyself extends UserEvent {
   LoadMyself() : super();
@@ -20,16 +18,14 @@ class LoadMyself extends UserEvent {
 class LoadUser extends UserEvent {
   final String username;
 
-  LoadUser({required this.username}) : super([username]);
+  LoadUser({required this.username});
 
   @override
   List<Object> get props => [this.username];
 }
 
 @immutable
-abstract class UserState extends Equatable {
-  UserState([List props = const []]) : super();
-}
+abstract class UserState extends Equatable {}
 
 class UserLoading extends UserState {
   @override
@@ -39,7 +35,7 @@ class UserLoading extends UserState {
 class UserLoaded extends UserState {
   final User user;
 
-  UserLoaded({required this.user}) : super([user]);
+  UserLoaded({required this.user});
 
   @override
   List<Object> get props => [user];
@@ -48,7 +44,7 @@ class UserLoaded extends UserState {
 class UserNotLoaded extends UserState {
   final List<GraphQLError>? errors;
 
-  UserNotLoaded([this.errors]) : super([errors]);
+  UserNotLoaded([this.errors]);
 
   @override
   List<Object?> get props => [this.errors];

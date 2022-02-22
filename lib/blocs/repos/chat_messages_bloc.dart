@@ -8,14 +8,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 @immutable
-abstract class ChatMessagesEvent extends Equatable {
-  ChatMessagesEvent([List props = const []]) : super();
-}
+abstract class ChatMessagesEvent extends Equatable {}
 
 class LoadChatMessages extends ChatMessagesEvent {
   final int channelId;
 
-  LoadChatMessages({required this.channelId}) : super([channelId]);
+  LoadChatMessages({required this.channelId});
 
   @override
   List<Object> get props => [this.channelId];
@@ -24,7 +22,7 @@ class LoadChatMessages extends ChatMessagesEvent {
 class NewChatMessage extends ChatMessagesEvent {
   final ChatMessage chatMessage;
 
-  NewChatMessage({required this.chatMessage}) : super([chatMessage]);
+  NewChatMessage({required this.chatMessage});
 
   @override
   List<Object> get props => [chatMessage];
@@ -34,8 +32,7 @@ class SendChatMessage extends ChatMessagesEvent {
   final int channelId;
   final String message;
 
-  SendChatMessage({required this.channelId, required this.message})
-      : super([channelId, message]);
+  SendChatMessage({required this.channelId, required this.message});
 
   @override
   List<Object> get props => [this.channelId, message];
