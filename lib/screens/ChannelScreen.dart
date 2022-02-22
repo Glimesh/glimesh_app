@@ -8,7 +8,6 @@ import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/models.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class ChannelScreen extends StatelessWidget {
   final Channel channel;
@@ -35,42 +34,7 @@ class ChannelScreen extends StatelessWidget {
 
         print("ChannelReady");
 
-        Widget chatWidget = Expanded(
-          child: Chat(
-            channel: channel,
-            chatMessagesStream: state.chatMessagesStream,
-          ),
-        );
-
-        Widget chatInputWidget = authState!.anonymous
-            ? Padding(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: "Please login to chat!",
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pushNamed(context, "/login"),
-                      child: Text("Login"),
-                    ),
-                  ],
-                ))
-            : ChatInput(
-                onSubmit: (message) => bloc.add(
-                    SendChatMessage(channelId: channel.id, message: message)));
+        Widget chatWidget = Chat(channel: channel);
 
         Widget videoPlayer = Stack(
           children: [
@@ -96,19 +60,9 @@ class ChannelScreen extends StatelessWidget {
             child: OrientationBuilder(
               builder: (context, orientation) {
                 if (orientation == Orientation.portrait) {
-                  return _buildStacked(
-                    edgeRoute.url,
-                    videoPlayer,
-                    chatWidget,
-                    chatInputWidget,
-                  );
+                  return _buildStacked(edgeRoute.url, videoPlayer, chatWidget);
                 } else {
-                  return _buildSidebar(
-                    edgeRoute.url,
-                    videoPlayer,
-                    chatWidget,
-                    chatInputWidget,
-                  );
+                  return _buildSidebar(edgeRoute.url, videoPlayer, chatWidget);
                 }
               },
             ),
@@ -124,7 +78,6 @@ class ChannelScreen extends StatelessWidget {
     String edgeUrl,
     Widget videoPlayer,
     Widget chatWidget,
-    Widget chatInputWidget,
   ) {
     return Column(
       children: [
@@ -135,8 +88,9 @@ class ChannelScreen extends StatelessWidget {
             allowMetadata: true,
           ),
         ),
-        chatWidget,
-        chatInputWidget,
+        Expanded(
+          child: chatWidget,
+        ),
       ],
     );
   }
@@ -145,7 +99,6 @@ class ChannelScreen extends StatelessWidget {
     String edgeUrl,
     Widget videoPlayer,
     Widget chatWidget,
-    Widget chatInputWidget,
   ) {
     return Row(children: [
       Expanded(
@@ -162,9 +115,7 @@ class ChannelScreen extends StatelessWidget {
       ),
       Expanded(
         flex: 3,
-        child: Column(
-          children: [chatWidget, chatInputWidget],
-        ),
+        child: chatWidget,
       ),
     ]);
   }

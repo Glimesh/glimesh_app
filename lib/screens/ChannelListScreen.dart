@@ -39,49 +39,48 @@ class ChannelListWidget extends StatelessWidget {
 
     return RefreshIndicator(
       child: BlocBuilder<ChannelListBloc, ChannelListState>(
-          bloc: bloc,
           builder: (BuildContext context, ChannelListState state) {
-            if (state is ChannelListLoading) {
-              return Container(
+        if (state is ChannelListLoading) {
+          return Container(
+            child: Center(
+              child: CircularProgressIndicator(
+                semanticsLabel: "Loading ...",
+              ),
+            ),
+          );
+        }
+
+        if (state is ChannelListNotLoaded) {
+          return Text("Error loading channels");
+        }
+
+        if (state is ChannelListLoaded) {
+          final List<Channel> channels = state.results;
+
+          if (channels.length == 0) {
+            return SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Container(
                 child: Center(
-                  child: CircularProgressIndicator(
-                    semanticsLabel: "Loading ...",
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/glimrip.png'),
+                      Padding(padding: EdgeInsets.only(top: 20)),
+                      Text("No live channels in this category."),
+                    ],
                   ),
                 ),
-              );
-            }
+                height: MediaQuery.of(context).size.height,
+              ),
+            );
+          }
 
-            if (state is ChannelListNotLoaded) {
-              return Text("Error loading channels");
-            }
+          return ChannelList(channels: channels);
+        }
 
-            if (state is ChannelListLoaded) {
-              final List<Channel> channels = state.results;
-
-              if (channels.length == 0) {
-                return SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Container(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/images/glimrip.png'),
-                          Padding(padding: EdgeInsets.only(top: 20)),
-                          Text("No live channels in this category."),
-                        ],
-                      ),
-                    ),
-                    height: MediaQuery.of(context).size.height,
-                  ),
-                );
-              }
-
-              return ChannelList(channels: channels);
-            }
-
-            return Text("Unexpected");
-          }),
+        return Text("Unexpected");
+      }),
       onRefresh: () async {
         bloc.add(LoadChannels(categorySlug: this.categorySlug));
       },

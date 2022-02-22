@@ -36,7 +36,7 @@ dependencies:
   #      ref: c04b3e79fb8f6f39ea6bb68fd85176b9928a72f4
   # janus_client: ^2.1.1-beta
   graphql_flutter: ^5.0.0
-  flutter_bloc: ^7.3.0
+  flutter_bloc: ^8.0.1
   equatable: ^2.0.3
   phoenix_wings: ^1.0.2
   gql_phoenix_link: ^0.1.0

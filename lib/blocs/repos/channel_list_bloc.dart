@@ -81,111 +81,78 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
   List<Channel> channels = [];
 
   ChannelListBloc({required this.glimeshRepository})
-      : super(ChannelListLoading());
-
-  @override
-  Stream<ChannelListState> mapEventToState(ChannelListEvent event) async* {
-    try {
-      print("ChannelListBloc.mapEventToState($event)");
-      if (event is LoadChannels) {
-        yield* _loadChannels(event.categorySlug, event.channelLimit);
-      } else if (event is LoadMyLiveFollowedChannels) {
-        yield* _loadMyLiveFollowedChannels();
-      } else if (event is LoadHomepageChannels) {
-        yield* _loadHomepageChannels();
-      } else {
-        // New event, who dis?
-      }
-    } catch (_, stackTrace) {
-      print('$_ $stackTrace');
-      yield state;
-    }
+      : super(ChannelListLoading()) {
+    on<LoadChannels>(_loadChannels);
+    on<LoadMyLiveFollowedChannels>(_loadMyLiveFollowedChannels);
+    on<LoadHomepageChannels>(_loadHomepageChannels);
   }
 
-  Stream<ChannelListState> _loadChannels(
-      String categorySlug, int channelLimit) async* {
-    try {
-      yield ChannelListLoading();
+  _loadChannels(LoadChannels event, Emitter emit) async {
+    emit(ChannelListLoading());
 
-      final queryResults =
-          await this.glimeshRepository.getLiveChannels(categorySlug);
+    final queryResults =
+        await this.glimeshRepository.getLiveChannels(event.categorySlug);
 
-      if (queryResults.hasException) {
-        yield ChannelListNotLoaded(queryResults.exception!.graphqlErrors);
-        return;
-      }
-
-      final List<dynamic> channels =
-          queryResults.data!['channels']['edges'] as List<dynamic>;
-
-      final List<Channel> listOfChannels =
-          channels.map(buildChannelFromJson).toList();
-
-      listOfChannels.shuffle();
-
-      print("ChannelListLoaded");
-
-      yield ChannelListLoaded(results: listOfChannels);
-    } catch (error) {
-      print(error);
-      yield ChannelListNotLoaded();
+    if (queryResults.hasException) {
+      emit(ChannelListNotLoaded(queryResults.exception!.graphqlErrors));
+      return;
     }
+
+    final List<dynamic> channels =
+        queryResults.data!['channels']['edges'] as List<dynamic>;
+
+    final List<Channel> listOfChannels =
+        channels.map(buildChannelFromJson).toList();
+
+    listOfChannels.shuffle();
+
+    emit(ChannelListLoaded(results: listOfChannels));
   }
 
-  Stream<ChannelListState> _loadMyLiveFollowedChannels() async* {
-    try {
-      yield ChannelListLoading();
+  _loadMyLiveFollowedChannels(
+      LoadMyLiveFollowedChannels event, Emitter emit) async {
+    emit(ChannelListLoading());
 
-      final queryResults =
-          await this.glimeshRepository.getMyLiveFollowedChannels();
+    final queryResults =
+        await this.glimeshRepository.getMyLiveFollowedChannels();
 
-      if (queryResults.hasException) {
-        yield ChannelListNotLoaded(queryResults.exception!.graphqlErrors);
-        return;
-      }
-
-      final List<dynamic> channels = queryResults.data!['myself']
-          ['followingLiveChannels']['edges'] as List<dynamic>;
-
-      final List<Channel> listOfChannels =
-          channels.map(buildChannelFromJson).toList();
-
-      yield ChannelListLoaded(results: listOfChannels);
-    } catch (error) {
-      print(error);
-      yield ChannelListNotLoaded();
+    if (queryResults.hasException) {
+      emit(ChannelListNotLoaded(queryResults.exception!.graphqlErrors));
+      return;
     }
+
+    final List<dynamic> channels = queryResults.data!['myself']
+        ['followingLiveChannels']['edges'] as List<dynamic>;
+
+    final List<Channel> listOfChannels =
+        channels.map(buildChannelFromJson).toList();
+
+    emit(ChannelListLoaded(results: listOfChannels));
   }
 
-  Stream<ChannelListState> _loadHomepageChannels() async* {
-    try {
-      yield ChannelListLoading();
+  _loadHomepageChannels(LoadHomepageChannels event, Emitter emit) async {
+    emit(ChannelListLoading());
 
-      final queryResults = await this.glimeshRepository.getHomepageChannels();
+    final queryResults = await this.glimeshRepository.getHomepageChannels();
 
-      if (queryResults.hasException) {
-        yield ChannelListNotLoaded(queryResults.exception!.graphqlErrors);
-        return;
-      }
-
-      final List<dynamic> channels =
-          queryResults.data!['homepageChannels']['edges'] as List<dynamic>;
-
-      // filter and then map here because channels can stop streaming and still be on the homepage,
-      // and this seemed like the best way instead of introducing nulls elsewhere.
-      final List<Channel> listOfChannels = channels
-          .where((c) => c['node']['stream'] != null)
-          .map(buildChannelFromJson)
-          .toList();
-
-      listOfChannels.shuffle();
-
-      yield ChannelListLoaded(results: listOfChannels);
-    } catch (error, s) {
-      print(error);
-      print(s);
-      yield ChannelListNotLoaded();
+    if (queryResults.hasException) {
+      emit(ChannelListNotLoaded(queryResults.exception!.graphqlErrors));
+      return;
     }
+
+    final List<dynamic> channels =
+        queryResults.data!['homepageChannels']['edges'] as List<dynamic>;
+
+    // filter and then map here because channels can stop streaming and still be on the homepage,
+    // and this seemed like the best way instead of introducing nulls elsewhere.
+    final List<Channel> listOfChannels = channels
+        .where((c) => c['node']['stream'] != null)
+        .map(buildChannelFromJson)
+        .toList();
+
+    listOfChannels.shuffle();
+
+    emit(ChannelListLoaded(results: listOfChannels));
   }
 
   Channel buildChannelFromJson(dynamic json) {

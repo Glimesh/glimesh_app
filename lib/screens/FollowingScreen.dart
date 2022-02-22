@@ -29,47 +29,45 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
     ChannelListBloc bloc = BlocProvider.of<ChannelListBloc>(context);
     bloc.add(LoadMyLiveFollowedChannels());
 
-    return RefreshIndicator(
-        child: BlocBuilder<ChannelListBloc, ChannelListState>(
-            bloc: bloc,
+    return RefreshIndicator(child:
+        BlocBuilder<ChannelListBloc, ChannelListState>(
             builder: (BuildContext context, ChannelListState state) {
-              if (state is ChannelListLoading) {
-                return Loading("Loading...");
-              }
+      if (state is ChannelListLoading) {
+        return Loading("Loading...");
+      }
 
-              if (state is ChannelListNotLoaded) {
-                return Text("Error loading channels");
-              }
+      if (state is ChannelListNotLoaded) {
+        return Text("Error loading channels");
+      }
 
-              if (state is ChannelListLoaded) {
-                final List<Channel> channels = state.results;
+      if (state is ChannelListLoaded) {
+        final List<Channel> channels = state.results;
 
-                if (channels.length == 0) {
-                  return SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    child: Container(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset('assets/images/glimrip.png'),
-                            Padding(padding: EdgeInsets.only(top: 20)),
-                            Text("No channels that you follow are live."),
-                          ],
-                        ),
-                      ),
-                      height: MediaQuery.of(context).size.height,
-                    ),
-                  );
-                }
+        if (channels.length == 0) {
+          return SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/glimrip.png'),
+                    Padding(padding: EdgeInsets.only(top: 20)),
+                    Text("No channels that you follow are live."),
+                  ],
+                ),
+              ),
+              height: MediaQuery.of(context).size.height,
+            ),
+          );
+        }
 
-                return ChannelList(channels: channels);
-              }
+        return ChannelList(channels: channels);
+      }
 
-              return Text("Unexpected");
-            }),
-        onRefresh: () async {
-          bloc.add(LoadMyLiveFollowedChannels());
-        });
+      return Text("Unexpected");
+    }), onRefresh: () async {
+      bloc.add(LoadMyLiveFollowedChannels());
+    });
   }
 }

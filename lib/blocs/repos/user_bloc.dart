@@ -57,62 +57,32 @@ class UserNotLoaded extends UserState {
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GlimeshRepository glimeshRepository;
 
-  UserBloc({required this.glimeshRepository}) : super(UserLoading());
-
-  @override
-  Stream<UserState> mapEventToState(UserEvent event) async* {
-    try {
-      print("UserBloc.mapEventToState($event)");
-      if (event is LoadMyself) {
-        yield* _mapMyselfToState();
-      } else if (event is LoadUser) {
-        yield* _mapUserToState(event.username);
-      } else {
-        // New event, who dis?
-      }
-    } catch (_, stackTrace) {
-      print('$_ $stackTrace');
-      yield state;
-    }
-  }
-
-  Stream<UserState> _mapMyselfToState() async* {
-    try {
-      yield UserLoading();
-
+  UserBloc({required this.glimeshRepository}) : super(UserLoading()) {
+    on<LoadMyself>((event, emit) async {
       final queryResults = await this.glimeshRepository.getMyself();
 
       if (queryResults.hasException) {
         print(queryResults.exception!.graphqlErrors);
-        yield UserNotLoaded(queryResults.exception!.graphqlErrors);
+        emit(UserNotLoaded(queryResults.exception!.graphqlErrors));
         return;
       }
 
       final dynamic user = queryResults.data!['myself'] as dynamic;
-      yield UserLoaded(user: buildUserFromJson(user));
-    } catch (error) {
-      print(error);
-      yield UserNotLoaded();
-    }
-  }
+      emit(UserLoaded(user: buildUserFromJson(user)));
+    });
 
-  Stream<UserState> _mapUserToState(String userName) async* {
-    try {
-      yield UserLoading();
-
-      final queryResults = await this.glimeshRepository.getUser(userName);
+    on<LoadUser>((event, emit) async {
+      final queryResults = await this.glimeshRepository.getUser(event.username);
 
       if (queryResults.hasException) {
-        yield UserNotLoaded(queryResults.exception!.graphqlErrors);
+        emit(UserNotLoaded(queryResults.exception!.graphqlErrors));
         return;
       }
 
       final dynamic user = queryResults.data!['user'] as dynamic;
 
-      yield UserLoaded(user: buildUserFromJson(user));
-    } catch (error) {
-      yield UserNotLoaded();
-    }
+      emit(UserLoaded(user: buildUserFromJson(user)));
+    });
   }
 
   User buildUserFromJson(dynamic json) {

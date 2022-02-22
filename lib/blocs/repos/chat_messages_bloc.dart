@@ -30,10 +30,20 @@ class NewChatMessage extends ChatMessagesEvent {
   List<Object> get props => [chatMessage];
 }
 
-@immutable
-abstract class ChatMessagesState extends Equatable {
-  ChatMessagesState([List props = const []]) : super();
+class SendChatMessage extends ChatMessagesEvent {
+  final int channelId;
+  final String message;
+
+  SendChatMessage({required this.channelId, required this.message})
+      : super([channelId, message]);
+
+  @override
+  List<Object> get props => [this.channelId, message];
 }
+
+/* State */
+@immutable
+abstract class ChatMessagesState extends Equatable {}
 
 class ChatMessagesLoading extends ChatMessagesState {
   @override
@@ -44,18 +54,28 @@ class ChatMessagesLoading extends ChatMessagesState {
 }
 
 class ChatMessagesLoaded extends ChatMessagesState {
-  @override
-  String toString() => "ChatMessagesLoaded";
+  final List<ChatMessage> messages;
+  final int count;
+
+  ChatMessagesLoaded({required this.messages, required this.count});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [count, messages];
+}
+
+class NewChatMessageLoaded extends ChatMessagesState {
+  NewChatMessageLoaded(this.message);
+
+  final ChatMessage message;
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class ChatSubscriptionLoaded extends ChatMessagesState {
   final Stream<List<ChatMessage>> chatMessageSubscription;
 
-  ChatSubscriptionLoaded({required this.chatMessageSubscription})
-      : super([chatMessageSubscription]);
+  ChatSubscriptionLoaded({required this.chatMessageSubscription});
 
   @override
   List<Object> get props => [chatMessageSubscription];
@@ -64,7 +84,7 @@ class ChatSubscriptionLoaded extends ChatMessagesState {
 class ChatMessagesNotLoaded extends ChatMessagesState {
   final List<GraphQLError>? errors;
 
-  ChatMessagesNotLoaded([this.errors]) : super([errors]);
+  ChatMessagesNotLoaded([this.errors]);
 
   @override
   String toString() => 'ChatMessagesNotLoaded';
@@ -76,70 +96,70 @@ class ChatMessagesNotLoaded extends ChatMessagesState {
 class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
   final GlimeshRepository glimeshRepository;
 
-  final _controller = StreamController<List<ChatMessage>>();
-  Stream<List<ChatMessage>> get chatMessagesStream => _controller.stream;
+  StreamSubscription<QueryResult>? subscriptionListener;
 
   List<ChatMessage> chatMessages = [];
 
   ChatMessagesBloc({required this.glimeshRepository})
-      : super(ChatMessagesLoading());
-
-  StreamSubscription<QueryResult>? subscriptionListener;
-
-  @override
-  Stream<ChatMessagesState> mapEventToState(ChatMessagesEvent event) async* {
-    try {
-      print("ChatMessagesBloc.mapEventToState($event)");
-      if (event is LoadChatMessages) {
-        // Load some existing chat messages
-        final queryResults =
-            await this.glimeshRepository.getSomeChatMessages(event.channelId);
-
-        if (!queryResults.hasException) {
-          final List<dynamic> messages = queryResults.data!['channel']
-              ['chatMessages']['edges'] as List<dynamic>;
-
-          final List<ChatMessage> existingChatMessages = messages
-              .map((dynamic e) => ChatMessage(
-                    username: e['node']['user']['username'] as String,
-                    avatarUrl: e['node']['user']['avatarUrl'] as String,
-                    tokens: _buildMessageTokensFromJson(e['node']['tokens']),
-                  ))
-              .toList();
-
-          chatMessages = existingChatMessages.reversed.toList();
-          _controller.add(chatMessages);
-        }
-
-        // Subscribe for more updates
-        Stream<QueryResult> subscription =
-            this.glimeshRepository.subscribeToChatMessages(event.channelId);
-
-        subscriptionListener = subscription.listen((event) {
-          dynamic data = event.data!['chatMessage'] as dynamic;
-
-          ChatMessage chatMessage = ChatMessage(
-            username: data['user']['username'] as String,
-            avatarUrl: data['user']['avatarUrl'] as String,
-            tokens: _buildMessageTokensFromJson(data['tokens']),
-          );
-
-          chatMessages.add(chatMessage);
-
-          // Introducing the slowest thing on the planet!
-          _controller.add(chatMessages.reversed.toList());
-        });
-
-        yield ChatSubscriptionLoaded(
-            chatMessageSubscription: chatMessagesStream);
-      } else {
-        print(event);
-        // New event, who dis?
+      : super(ChatMessagesLoading()) {
+    on<LoadChatMessages>((event, emit) async {
+      // Load some existing chat messages
+      final queryResults =
+          await this.glimeshRepository.getSomeChatMessages(event.channelId);
+      if (queryResults.hasException) {
+        print(queryResults.exception!.graphqlErrors);
+        emit(ChatMessagesNotLoaded(queryResults.exception!.graphqlErrors));
+        return;
       }
-    } catch (_, stackTrace) {
-      print('$_ $stackTrace');
-      yield state;
-    }
+
+      final List<dynamic> messages = queryResults.data!['channel']
+          ['chatMessages']['edges'] as List<dynamic>;
+
+      final List<ChatMessage> existingChatMessages = messages
+          .map((dynamic e) => ChatMessage(
+                username: e['node']['user']['username'] as String,
+                avatarUrl: e['node']['user']['avatarUrl'] as String,
+                tokens: _buildMessageTokensFromJson(e['node']['tokens']),
+              ))
+          .toList();
+      chatMessages = existingChatMessages.reversed.toList();
+
+      emit(
+        ChatMessagesLoaded(count: chatMessages.length, messages: chatMessages),
+      );
+
+      // Subscribe for more updates
+      Stream<QueryResult> subscription =
+          this.glimeshRepository.subscribeToChatMessages(event.channelId);
+
+      await emit.onEach(subscription, onData: (QueryResult event) {
+        dynamic data = event.data!['chatMessage'] as dynamic;
+
+        ChatMessage chatMessage = ChatMessage(
+          username: data['user']['username'] as String,
+          avatarUrl: data['user']['avatarUrl'] as String,
+          tokens: _buildMessageTokensFromJson(data['tokens']),
+        );
+
+        // Send new chat messages as new events
+        add(NewChatMessage(chatMessage: chatMessage));
+      });
+    });
+
+    on<NewChatMessage>((event, emit) async {
+      // In the future we should make this more efficient...
+      chatMessages.insert(0, event.chatMessage);
+      emit(ChatMessagesLoaded(
+        count: chatMessages.length,
+        messages: chatMessages,
+      ));
+    });
+
+    on<SendChatMessage>((event, emit) async {
+      // Currently this doesn't yield anything back since the subscription handler will automatically get it back from the server
+      // TODO: What we should add is yielding an error when it fails to send.
+      this.glimeshRepository.sendChatMessage(event.channelId, event.message);
+    });
   }
 
   List<MessageToken> _buildMessageTokensFromJson(List<dynamic> json) {
@@ -152,13 +172,5 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
         .toList();
 
     return tokens;
-  }
-
-  Future<void> close() {
-    _controller.close();
-
-    subscriptionListener!.cancel();
-
-    return super.close();
   }
 }

@@ -181,27 +181,26 @@ class CategoryListWidget extends StatelessWidget {
 
   Widget _buildSomeStreams(ChannelListBloc bloc) {
     return BlocBuilder<ChannelListBloc, ChannelListState>(
-        bloc: bloc,
         builder: (BuildContext context, ChannelListState state) {
-          if (state is ChannelListLoading) {
-            return Container(child: Loading("Loading Streams"));
-          }
+      if (state is ChannelListLoading) {
+        return Container(child: Loading("Loading Streams"));
+      }
 
-          if (state is ChannelListNotLoaded) {
-            return Container(child: Text("Error loading channels"));
-          }
+      if (state is ChannelListNotLoaded) {
+        return Container(child: Text("Error loading channels"));
+      }
 
-          if (state is ChannelListLoaded) {
-            final List<Channel> channels = state.results;
+      if (state is ChannelListLoaded) {
+        final List<Channel> channels = state.results;
 
-            if (channels.length == 0) {
-              return Center(child: Text("No live channels on the homepage"));
-            }
+        if (channels.length == 0) {
+          return Center(child: Text("No live channels on the homepage"));
+        }
 
-            return ChannelList(channels: channels);
-          }
+        return ChannelList(channels: channels);
+      }
 
-          return Text("unexpected");
-        });
+      return Text("unexpected");
+    });
   }
 }
