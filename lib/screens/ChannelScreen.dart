@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/components/Chat.dart';
-import 'package:glimesh_app/components/ChatInput.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
@@ -43,7 +42,13 @@ class ChannelScreen extends StatelessWidget {
               child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
             ),
             InkWell(
-              child: Icon(Icons.chevron_left),
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: Colors.white70,
+                ),
+              ),
               onTap: () => Navigator.pop(context),
             )
           ],
