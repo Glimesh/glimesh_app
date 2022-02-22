@@ -14,8 +14,7 @@ class FollowButton extends StatelessWidget {
     FollowBloc bloc = BlocProvider.of<FollowBloc>(context);
     AuthState? authState = AuthState.of(context);
 
-    return BlocBuilder(
-      bloc: bloc,
+    return BlocBuilder<FollowBloc, FollowState>(
       builder: (BuildContext context, FollowState state) {
         print("Builder got $state");
 

@@ -2,132 +2,110 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/auth.dart';
-import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
+import 'package:glimesh_app/components/Loading.dart';
+import 'package:glimesh_app/components/ChatInput.dart';
 import 'package:glimesh_app/models.dart';
-import 'package:glimesh_app/repository.dart';
-
-// class Chat extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     final authState = AuthState.of(context);
-
-//     return BlocProvider(
-//       create: (context) => ChannelBloc(
-//         glimeshRepository: GlimeshRepository(client: authState!.client!),
-//       ),
-//       child: ChatWidget(),
-//     );
-//   }
-// }
 
 class Chat extends StatelessWidget {
   final Channel channel;
-  final Stream<List<ChatMessage>> chatMessagesStream;
 
-  const Chat({required this.channel, required this.chatMessagesStream})
-      : super();
+  const Chat({required this.channel});
 
   @override
   Widget build(BuildContext context) {
-    print("Chat was rebuilt");
+    ChatMessagesBloc bloc = BlocProvider.of<ChatMessagesBloc>(context);
+    AuthState? authState = AuthState.of(context);
 
-    return StreamBuilder(
-      stream: chatMessagesStream,
-      builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
-        if (snapshot.hasError) {
-          print(snapshot.error);
-          return Center(
-            child: Text("Error"),
-          );
-        }
-
-        if (snapshot.hasData) {
-          final messages = snapshot.data!;
-
-          return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(channel.chatBackgroundUrl),
-                  repeat: ImageRepeat.repeat,
-                  alignment: Alignment.topLeft,
-                ),
+    return Column(
+      children: [
+        // Chat Messages Box
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(channel.chatBackgroundUrl),
+                repeat: ImageRepeat.repeat,
+                alignment: Alignment.topLeft,
               ),
-              child: ListView.builder(
-                itemCount: messages.length,
-                shrinkWrap: true,
-                reverse: true,
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return _buildChatMessage(messages[index]);
-                },
-              ));
-        }
-
-        return Text("Loading");
-      },
+            ),
+            child: ChatMessages(),
+          ),
+        ),
+        // Chat Input
+        _buildChatInput(
+          context,
+          authState!.anonymous,
+          (message) => bloc.add(SendChatMessage(
+            channelId: channel.id,
+            message: message,
+          )),
+        )
+      ],
     );
   }
 
-  // Widget _buildChatMessages(BuildContext context) {
-  //   return
-  // }
+  _buildChatInput(context, anonymous, onSubmit) {
+    if (anonymous) {
+      return Padding(
+        padding: EdgeInsets.all(5),
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  hintText: "Please login to chat!",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, "/login"),
+              child: Text("Login"),
+            ),
+          ],
+        ),
+      );
+    }
 
-  // Widget _buildChatMessages(BuildContext context) {
-  //   return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
-  //       bloc: bloc,
-  //       builder: (BuildContext context, ChatMessagesState state) {
-  //         if (state is ChatMessagesLoading) {
-  //           return Center(
-  //             child: CircularProgressIndicator(
-  //               semanticsLabel: "Loading ...",
-  //             ),
-  //           );
-  //         }
+    return ChatInput(onSubmit: onSubmit);
+  }
+}
 
-  //         if (state is ChatMessagesNotLoaded) {
-  //           return Text("Error loading channels");
-  //         }
+class ChatMessages extends StatelessWidget {
+  const ChatMessages({Key? key}) : super(key: key);
 
-  //         if (state is ChatSubscriptionLoaded) {
-  //           print("ChatSubscriptionLoaded in Chat.dart");
-  //           subscription = state.chatMessageSubscription;
+  @override
+  Widget build(BuildContext context) {
+    print("Rebuilding Chat Messages");
 
-  //           return StreamBuilder(
-  //               stream: subscription,
-  //               builder: (context, AsyncSnapshot<List<ChatMessage>> snapshot) {
-  //                 print("StreamBuilder is updated");
+    return BlocBuilder<ChatMessagesBloc, ChatMessagesState>(
+      builder: (context, state) {
+        print("Got new state $state");
+        if (state is ChatMessagesLoaded) {
+          return ListView.builder(
+            itemCount: state.messages.length,
+            shrinkWrap: true,
+            reverse: true,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return _buildChatMessage(state.messages[index]);
+            },
+          );
+        }
 
-  //                 if (snapshot.hasError) {
-  //                   print(snapshot.error);
-  //                   return Center(
-  //                     child: Text("Error"),
-  //                   );
-  //                 }
-
-  //                 if (snapshot.hasData) {
-  //                   final messages = snapshot.data!;
-
-  //                   return ListView.builder(
-  //                     itemCount: messages.length,
-  //                     shrinkWrap: true,
-  //                     reverse: true,
-  //                     padding: EdgeInsets.only(top: 10, bottom: 10),
-  //                     physics: BouncingScrollPhysics(),
-  //                     itemBuilder: (context, index) {
-  //                       return _buildChatMessage(messages[index]);
-  //                     },
-  //                   );
-  //                 }
-
-  //                 return Text("Loading");
-  //               });
-  //         }
-
-  //         return Text("Unexpected");
-  //       });
-  // }
+        return Loading("");
+      },
+    );
+  }
 
   Widget _buildChatMessage(ChatMessage message) {
     return Container(

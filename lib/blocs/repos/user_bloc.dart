@@ -6,9 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 @immutable
-abstract class UserEvent extends Equatable {
-  UserEvent([List props = const []]) : super();
-}
+abstract class UserEvent extends Equatable {}
 
 class LoadMyself extends UserEvent {
   LoadMyself() : super();
@@ -20,16 +18,14 @@ class LoadMyself extends UserEvent {
 class LoadUser extends UserEvent {
   final String username;
 
-  LoadUser({required this.username}) : super([username]);
+  LoadUser({required this.username});
 
   @override
   List<Object> get props => [this.username];
 }
 
 @immutable
-abstract class UserState extends Equatable {
-  UserState([List props = const []]) : super();
-}
+abstract class UserState extends Equatable {}
 
 class UserLoading extends UserState {
   @override
@@ -39,7 +35,7 @@ class UserLoading extends UserState {
 class UserLoaded extends UserState {
   final User user;
 
-  UserLoaded({required this.user}) : super([user]);
+  UserLoaded({required this.user});
 
   @override
   List<Object> get props => [user];
@@ -48,7 +44,7 @@ class UserLoaded extends UserState {
 class UserNotLoaded extends UserState {
   final List<GraphQLError>? errors;
 
-  UserNotLoaded([this.errors]) : super([errors]);
+  UserNotLoaded([this.errors]);
 
   @override
   List<Object?> get props => [this.errors];
@@ -57,62 +53,32 @@ class UserNotLoaded extends UserState {
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GlimeshRepository glimeshRepository;
 
-  UserBloc({required this.glimeshRepository}) : super(UserLoading());
-
-  @override
-  Stream<UserState> mapEventToState(UserEvent event) async* {
-    try {
-      print("UserBloc.mapEventToState($event)");
-      if (event is LoadMyself) {
-        yield* _mapMyselfToState();
-      } else if (event is LoadUser) {
-        yield* _mapUserToState(event.username);
-      } else {
-        // New event, who dis?
-      }
-    } catch (_, stackTrace) {
-      print('$_ $stackTrace');
-      yield state;
-    }
-  }
-
-  Stream<UserState> _mapMyselfToState() async* {
-    try {
-      yield UserLoading();
-
+  UserBloc({required this.glimeshRepository}) : super(UserLoading()) {
+    on<LoadMyself>((event, emit) async {
       final queryResults = await this.glimeshRepository.getMyself();
 
       if (queryResults.hasException) {
         print(queryResults.exception!.graphqlErrors);
-        yield UserNotLoaded(queryResults.exception!.graphqlErrors);
+        emit(UserNotLoaded(queryResults.exception!.graphqlErrors));
         return;
       }
 
       final dynamic user = queryResults.data!['myself'] as dynamic;
-      yield UserLoaded(user: buildUserFromJson(user));
-    } catch (error) {
-      print(error);
-      yield UserNotLoaded();
-    }
-  }
+      emit(UserLoaded(user: buildUserFromJson(user)));
+    });
 
-  Stream<UserState> _mapUserToState(String userName) async* {
-    try {
-      yield UserLoading();
-
-      final queryResults = await this.glimeshRepository.getUser(userName);
+    on<LoadUser>((event, emit) async {
+      final queryResults = await this.glimeshRepository.getUser(event.username);
 
       if (queryResults.hasException) {
-        yield UserNotLoaded(queryResults.exception!.graphqlErrors);
+        emit(UserNotLoaded(queryResults.exception!.graphqlErrors));
         return;
       }
 
       final dynamic user = queryResults.data!['user'] as dynamic;
 
-      yield UserLoaded(user: buildUserFromJson(user));
-    } catch (error) {
-      yield UserNotLoaded();
-    }
+      emit(UserLoaded(user: buildUserFromJson(user)));
+    });
   }
 
   User buildUserFromJson(dynamic json) {

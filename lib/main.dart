@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
+import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
@@ -207,15 +208,22 @@ class GlimeshApp extends StatelessWidget {
           glimeshRepository: repo,
         );
 
-        bloc.add(WatchChannel(channelId: channel.id));
-        print("WatchChannel BlocProvider build");
-
         return MaterialPageRoute(
           builder: (context) {
             print("MaterialPageRoute build");
             return MultiBlocProvider(
               providers: [
-                BlocProvider<ChannelBloc>(create: (context) => bloc),
+                // Channel Bloc
+                BlocProvider<ChannelBloc>(
+                  create: (context) =>
+                      bloc..add(WatchChannel(channelId: channel.id)),
+                ),
+                // ChatMessagesBloc
+                BlocProvider<ChatMessagesBloc>(
+                  create: (context) => ChatMessagesBloc(glimeshRepository: repo)
+                    ..add(LoadChatMessages(channelId: channel.id)),
+                ),
+                // Follow Bloc
                 BlocProvider<FollowBloc>(
                   create: (context) {
                     FollowBloc bloc = FollowBloc(glimeshRepository: repo);
