@@ -128,9 +128,9 @@ class _AuthWidgetState extends State<AuthWidget> {
     _fetchUserAndUpdate(newClient);
   }
 
-  _fetchUserAndUpdate(GraphQLClient client) async {
+  _fetchUserAndUpdate(GraphQLClient newClient) async {
     // This disgusting mess should be refactored...
-    GlimeshRepository repo = GlimeshRepository(client: client);
+    GlimeshRepository repo = GlimeshRepository(client: newClient);
     UserBloc bloc = UserBloc(glimeshRepository: repo);
     final queryResults = await repo.getMyself();
 
@@ -144,7 +144,7 @@ class _AuthWidgetState extends State<AuthWidget> {
     print(newUser);
 
     setState(() {
-      client = client;
+      client = newClient;
       authenticated = true;
       anonymous = false;
       user = newUser;
@@ -152,13 +152,13 @@ class _AuthWidgetState extends State<AuthWidget> {
   }
 
   logout() async {
+    _deleteClient();
     setState(() {
       authenticated = false;
       anonymous = false;
       client = null;
+      user = null;
     });
-
-    _deleteClient();
     _setupAnonymousClient();
   }
 
@@ -264,6 +264,8 @@ class GlimeshApp extends StatelessWidget {
       assert(false, 'Need to implement ${settings.name}');
       return null;
     };
+
+    print("New State for MaterialApp");
 
     return MaterialApp(
       title: 'Glimesh Alpha',

@@ -28,6 +28,11 @@ class User {
   final String? socialYoutube;
   final String? socialInstagram;
   List<Social> socials;
+
+  @override
+  String toString() {
+    return "User(id: $id, username: $username)";
+  }
 }
 
 class Social {
