@@ -4,7 +4,6 @@ import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';

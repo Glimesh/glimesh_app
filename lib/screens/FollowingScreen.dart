@@ -5,7 +5,6 @@ import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/repository.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
 
 class FollowingScreen extends StatelessWidget {

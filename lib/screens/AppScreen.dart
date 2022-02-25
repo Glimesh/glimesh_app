@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/Loading.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';

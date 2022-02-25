@@ -7,7 +7,6 @@ import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 class CategoryListScreen extends StatelessWidget {
   @override

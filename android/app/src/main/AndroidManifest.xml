@@ -1,8 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tv.glimesh.app">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
         <intent>
@@ -61,9 +59,15 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!-- Basic support for WebRTC -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
+    <!-- Support for Bluetooth headset listening? -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <!-- <activity android:name="com.example.glimesh_app.flutter_web_auth.CallbackActivity" >
         <intent-filter android:label="flutter_web_auth">
