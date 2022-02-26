@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:janus_streaming_client/JanusClient.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:logging/logging.dart';
 
@@ -26,6 +29,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
 
   bool _loading = true;
+  bool _errored = false;
 
   watchChannel(int channelId) {
     plugin!.send(data: {"request": "watch", "channelId": channelId});
@@ -53,6 +57,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
   }
 
   initJanusClient() async {
+    print("init janus client");
     setState(() {
       rest = RestJanusTransport(
         url: widget.edgeUrl,
@@ -64,8 +69,19 @@ class _FTLPlayerState extends State<FTLPlayer> {
       );
     });
 
-    session = await janus!.createSession();
-    plugin = await session!.attach("janus.plugin.ftl");
+    try {
+      session = await janus!.createSession();
+      plugin = await session!.attach("janus.plugin.ftl");
+    } catch (error) {
+      print(error);
+      await Sentry.captureMessage(
+          "Failed to attach session / plugin in FTLPlayer");
+      setState(() {
+        _errored = true;
+        _loading = false;
+      });
+      return;
+    }
     await this.watchChannel(widget.channel.id);
 
     plugin!.remoteStream!.listen((event) {
@@ -76,15 +92,41 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
     plugin!.messages!.listen((event) async {
       if (event.jsep != null) {
-        await plugin!.handleRemoteJsep(event.jsep!);
-        RTCSessionDescription answer = await plugin!.createAnswer();
-        plugin!.send(data: {"request": "start"}, jsep: answer);
+        try {
+          await plugin!.handleRemoteJsep(event.jsep!);
+          RTCSessionDescription answer = await plugin!.createAnswer();
+          plugin!.send(data: {"request": "start"}, jsep: answer);
 
-        await _setupSpeakerphone();
+          await _setupSpeakerphone();
 
+          setState(() {
+            _errored = false;
+            _loading = false;
+          });
+        } catch (error) {
+          print(error);
+          await Sentry.captureMessage("Failed to handle plugin answer");
+          setState(() {
+            _errored = true;
+            _loading = false;
+          });
+          return;
+        }
+      }
+    });
+
+    // Pathetic excuse for error handling...
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      if (plugin != null && plugin!.pollingActive == false) {
+        print("Polling has failed without telling us, resetting the widget");
+        await Sentry.captureMessage(
+            "Polling has failed without telling us, resetting the widget");
+        timer.cancel();
         setState(() {
+          _errored = true;
           _loading = false;
         });
+        initJanusClient();
       }
     });
   }
@@ -99,13 +141,20 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
   @override
   void dispose() {
-    Wakelock.disable();
+    if (Wakelock.enabled == true) {
+      Wakelock.disable();
+    }
 
-    plugin!.send(data: {"request": "stop"});
+    if (plugin != null) {
+      plugin!.send(data: {"request": "stop"});
+      plugin!.remoteStream = null;
+      plugin!.dispose();
+    }
 
-    plugin!.dispose();
-    session!.dispose();
-    plugin!.remoteStream = null;
+    if (session != null) {
+      session!.dispose();
+    }
+
     _remoteRenderer.srcObject = null;
     _remoteRenderer.dispose();
 
@@ -116,10 +165,14 @@ class _FTLPlayerState extends State<FTLPlayer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        RTCVideoView(
-          _remoteRenderer,
-          objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
-        ),
+        _errored
+            ? Center(
+                child: Text("Error loading video, please try again."),
+              )
+            : RTCVideoView(
+                _remoteRenderer,
+                objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitContain,
+              ),
         _loading ? Loading("Loading Video") : Padding(padding: EdgeInsets.zero),
       ],
     );

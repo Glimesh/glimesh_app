@@ -17,11 +17,24 @@ class ChannelScreen extends StatelessWidget {
     return BlocBuilder<ChannelBloc, ChannelState>(
         builder: (BuildContext context, ChannelState state) {
       if (state is ChannelLoading) {
-        return Scaffold(body: Loading("Loading Stream"));
+        return Scaffold(
+          body: SafeArea(
+            child: _backButtonContainer(context, Loading("Loading Stream")),
+          ),
+        );
       }
 
       if (state is ChannelNotLoaded) {
-        return Scaffold(body: Text("Error loading channels"));
+        return Scaffold(
+          body: SafeArea(
+            child: _backButtonContainer(
+              context,
+              Center(
+                child: Text("Error loading channels"),
+              ),
+            ),
+          ),
+        );
       }
 
       if (state is ChannelReady) {
@@ -57,6 +70,24 @@ class ChannelScreen extends StatelessWidget {
 
       return SizedBox();
     });
+  }
+
+  Widget _backButtonContainer(BuildContext context, Widget child) {
+    return Stack(
+      children: [
+        child,
+        InkWell(
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Icon(
+              Icons.chevron_left,
+              color: Colors.white70,
+            ),
+          ),
+          onTap: () => Navigator.pop(context),
+        )
+      ],
+    );
   }
 
   Widget _videoPlayer(context, url, {forceAspectRatio = true}) {
