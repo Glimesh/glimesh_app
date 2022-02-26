@@ -77,6 +77,7 @@ flutter:
     - assets/images/logo-with-text-sm.png
     - assets/images/logo-with-text.png
     - assets/images/glimrip.png
+    - assets/i18n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
