@@ -15,7 +15,10 @@ class ChannelListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${category.name} Streams"),
+        title: Text(context
+            .t("%{category} Streams")
+            .toString()
+            .replaceAll("%{category}", context.t(category.name))),
         backgroundColor: Colors.black.withOpacity(0.7),
       ),
       body: BlocProvider(
@@ -45,14 +48,14 @@ class ChannelListWidget extends StatelessWidget {
           return Container(
             child: Center(
               child: CircularProgressIndicator(
-                semanticsLabel: "Loading ...",
+                semanticsLabel: context.t("Loading ..."),
               ),
             ),
           );
         }
 
         if (state is ChannelListNotLoaded) {
-          return Text("Error loading channels");
+          return Text(context.t("Error loading channels"));
         }
 
         if (state is ChannelListLoaded) {

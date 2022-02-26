@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/models.dart';
@@ -20,11 +21,13 @@ class FollowButton extends StatelessWidget {
 
         if (state is ChannelFollowed) {
           return _unfollowButton(
+            context,
             () => bloc.add(UnfollowChannel(streamerId: channel.user_id)),
           );
         }
         if (state is ChannelNotFollowed) {
           return _followButton(
+            context,
             () => bloc.add(FollowChannel(
                 streamerId: channel.user_id, liveNotifications: false)),
           );
@@ -36,10 +39,10 @@ class FollowButton extends StatelessWidget {
     );
   }
 
-  _followButton(onPressed) {
+  _followButton(BuildContext context, onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text("Follow"),
+      child: Text(context.t("Follow")),
       style: ElevatedButton.styleFrom(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         padding: EdgeInsets.all(5),
@@ -47,10 +50,10 @@ class FollowButton extends StatelessWidget {
     );
   }
 
-  _unfollowButton(onPressed) {
+  _unfollowButton(BuildContext context, onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text("Unfollow"),
+      child: Text(context.t("Unfollow")),
       style: ElevatedButton.styleFrom(
         primary: Colors.blueGrey,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,

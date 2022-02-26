@@ -83,7 +83,7 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  "Explore Live Streams",
+                  context.t("Explore Live Streams"),
                   style: Theme.of(context).textTheme.headline4,
                   // style: TextStyle(fontSize: 20),
                   maxLines: 1,
@@ -95,7 +95,8 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                    "Experience real time interaction by visiting some of these selected streams!",
+                    context.t(
+                        "Experience real time interaction by visiting some of these selected streams!"),
                     style: Theme.of(context).textTheme.subtitle1),
               )
             ],
@@ -184,18 +185,19 @@ class CategoryListWidget extends StatelessWidget {
     return BlocBuilder<ChannelListBloc, ChannelListState>(
         builder: (BuildContext context, ChannelListState state) {
       if (state is ChannelListLoading) {
-        return Container(child: Loading("Loading Streams"));
+        return Container(child: Loading(context.t("Loading Streams")));
       }
 
       if (state is ChannelListNotLoaded) {
-        return Container(child: Text("Error loading channels"));
+        return Container(child: Text(context.t("Error loading channels")));
       }
 
       if (state is ChannelListLoaded) {
         final List<Channel> channels = state.results;
 
         if (channels.length == 0) {
-          return Center(child: Text("No live channels on the homepage"));
+          return Center(
+              child: Text(context.t("No live channels on the homepage")));
         }
 
         return ChannelList(channels: channels);

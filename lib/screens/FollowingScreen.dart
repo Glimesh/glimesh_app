@@ -33,11 +33,11 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
         BlocBuilder<ChannelListBloc, ChannelListState>(
             builder: (BuildContext context, ChannelListState state) {
       if (state is ChannelListLoading) {
-        return Loading("Loading...");
+        return Loading(context.t("Loading..."));
       }
 
       if (state is ChannelListNotLoaded) {
-        return Text("Error loading channels");
+        return Text(context.t("Error loading channels"));
       }
 
       if (state is ChannelListLoaded) {

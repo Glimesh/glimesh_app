@@ -7,6 +7,7 @@ import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class ChannelScreen extends StatelessWidget {
   final Channel channel;
@@ -18,11 +19,11 @@ class ChannelScreen extends StatelessWidget {
     return BlocBuilder<ChannelBloc, ChannelState>(
         builder: (BuildContext context, ChannelState state) {
       if (state is ChannelLoading) {
-        return Scaffold(body: Loading("Loading Stream"));
+        return Scaffold(body: Loading(context.t("Loading Stream")));
       }
 
       if (state is ChannelNotLoaded) {
-        return Scaffold(body: Text("Error loading channels"));
+        return Scaffold(body: Text(context.t("Error loading channels")));
       }
 
       if (state is ChannelReady) {

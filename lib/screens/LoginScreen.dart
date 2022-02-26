@@ -131,7 +131,8 @@ class LoginScreen extends StatelessWidget {
           Padding(padding: EdgeInsets.only(top: 20)),
           Center(
             child: Text(
-              "If you need to register, please visit Glimesh.tv on your phone or computer.",
+              context.t(
+                  "If you need to register, please visit Glimesh.tv on your phone or computer."),
               textAlign: center ? TextAlign.center : TextAlign.left,
             ),
           )

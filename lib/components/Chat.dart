@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/components/Loading.dart';
@@ -45,7 +46,7 @@ class Chat extends StatelessWidget {
     );
   }
 
-  _buildChatInput(context, anonymous, onSubmit) {
+  _buildChatInput(BuildContext context, anonymous, onSubmit) {
     if (anonymous) {
       return Padding(
         padding: EdgeInsets.all(5),
@@ -58,7 +59,7 @@ class Chat extends StatelessWidget {
               child: TextField(
                 readOnly: true,
                 decoration: InputDecoration(
-                  hintText: "Please login to chat!",
+                  hintText: context.t("Please login to chat!"),
                   border: InputBorder.none,
                 ),
               ),
@@ -68,7 +69,7 @@ class Chat extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, "/login"),
-              child: Text("Login"),
+              child: Text(context.t("Login")),
             ),
           ],
         ),

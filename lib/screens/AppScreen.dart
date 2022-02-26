@@ -85,7 +85,7 @@ class _AppScreenState extends State<AppScreen> {
                 },
               ),
             ),
-            _anonymousUserInfo(authState!.anonymous),
+            _anonymousUserInfo(context, authState!.anonymous),
             if (authState.authenticated == false)
               ListTile(
                 leading: Icon(Icons.login),
@@ -103,16 +103,16 @@ class _AppScreenState extends State<AppScreen> {
           ],
         ),
       ),
-      body: pages.isEmpty ? Loading("Loading") : pages[_selectedIndex],
+      body: pages.isEmpty ? Loading(context.t("Loading")) : pages[_selectedIndex],
       bottomNavigationBar:
           _bottomNavigationBar(context, authState.authenticated),
     );
   }
 
-  Widget _anonymousUserInfo(bool shown) {
+  Widget _anonymousUserInfo(BuildContext context, bool shown) {
     if (shown) {
       return ListTile(
-        title: Text("Login to experience the very best Glimesh has to offer!"),
+        title: Text(context.t("Login to experience the very best Glimesh has to offer!")),
       );
     } else {
       return SizedBox();
@@ -136,7 +136,7 @@ class _AppScreenState extends State<AppScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "Browse",
+            label: context.t("Browse"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
