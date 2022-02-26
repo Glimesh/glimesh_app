@@ -281,10 +281,10 @@ class GlimeshApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: [
+        Locale('en'),
         Locale('cs'),
         Locale('da'),
         Locale('de'),
-        Locale('en'),
         Locale('es'),
         Locale('es', 'AR'),
         Locale('es', 'MX'),
