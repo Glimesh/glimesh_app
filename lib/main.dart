@@ -303,8 +303,10 @@ class GlimeshApp extends StatelessWidget {
         Locale('sv'),
         Locale('tr'),
         Locale('vi'),
-        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
-        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+		// the two below are broken for some reason, getttext can see them, and the Material
+		// translations work, but trying to use them results in English text
+        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
+        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
       ],
       theme: ThemeData(
         brightness: Brightness.dark,
