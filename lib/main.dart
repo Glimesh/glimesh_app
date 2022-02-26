@@ -273,8 +273,6 @@ class GlimeshApp extends StatelessWidget {
       title: 'Glimesh Alpha',
       routes: routes,
       onGenerateRoute: generateRoutes,
-      // uncomment the below to change the lang easily in testing without changing the device language
-      /* locale: Locale('es', ''), */
       localizationsDelegates: [
         GettextLocalizationsDelegate(defaultLanguage: 'en'),
         GlobalMaterialLocalizations.delegate,
@@ -303,8 +301,8 @@ class GlimeshApp extends StatelessWidget {
         Locale('sv'),
         Locale('tr'),
         Locale('vi'),
-		// the two below are broken for some reason, getttext can see them, and the Material
-		// translations work, but trying to use them results in English text
+        // the two below are broken for some reason, getttext can see them, and the Material
+        // translations work, but trying to use them results in English text
         /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
         /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
       ],
