@@ -18,38 +18,67 @@ class ChannelScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChannelBloc, ChannelState>(
         builder: (BuildContext context, ChannelState state) {
+      print("BlocBuilder $state");
       if (state is ChannelLoading) {
-        return Scaffold(body: Loading(context.t("Loading Stream")));
+        return Scaffold(
+          body: SafeArea(
+            child: _backButtonContainer(context, Loading(context.t("Loading Stream"))),
+          ),
+        );
       }
 
       if (state is ChannelNotLoaded) {
-        return Scaffold(body: Text(context.t("Error loading channels")));
+        return Scaffold(
+          body: SafeArea(
+            child: _backButtonContainer(
+              context,
+              Center(
+                child: Text(context.t("Error loading channels")),
+              ),
+            ),
+          ),
+        );
       }
 
       if (state is ChannelReady) {
         final JanusEdgeRoute edgeRoute = state.edgeRoute;
 
         Widget chatWidget = Chat(channel: channel);
+        Widget videoWidget = Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
+            ),
+            InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: Colors.white70,
+                ),
+              ),
+              onTap: () => Navigator.pop(context),
+            )
+          ],
+        );
 
         return Scaffold(
           body: SafeArea(
-            child: OrientationBuilder(
-              builder: (context, orientation) {
-                if (orientation == Orientation.portrait) {
-                  return _buildStacked(
-                    _videoPlayer(context, edgeRoute.url),
-                    chatWidget,
-                  );
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                print("rebuild orientation");
+
+                if (constraints.maxWidth < 992) {
+                  print("showing stacked");
+                  return _buildStacked(videoWidget, chatWidget);
+                } else if (constraints.maxWidth < constraints.maxHeight) {
+                  print("showing video only");
+                  // Mobile phone but landscape?
+                  return videoWidget;
                 } else {
-                  double width = MediaQuery.of(context).size.width;
-                  // 1000 is arbitrary...
-                  if (width < 1000) {
-                    return _videoPlayer(context, edgeRoute.url,
-                        forceAspectRatio: false);
-                  } else {
-                    return _buildSidebar(
-                        _videoPlayer(context, edgeRoute.url), chatWidget);
-                  }
+                  print("showing sidebar");
+                  return _buildSidebar(videoWidget, chatWidget);
                 }
               },
             ),
@@ -61,17 +90,10 @@ class ChannelScreen extends StatelessWidget {
     });
   }
 
-  Widget _videoPlayer(context, url, {forceAspectRatio = true}) {
-    Widget ftlPlayer = FTLPlayer(channel: channel, edgeUrl: url);
-    Widget videoChild = forceAspectRatio
-        ? AspectRatio(
-            aspectRatio: 16 / 9,
-            child: ftlPlayer,
-          )
-        : Center(child: ftlPlayer);
-    final Widget subtree = Stack(
+  Widget _backButtonContainer(BuildContext context, Widget child) {
+    return Stack(
       children: [
-        videoChild,
+        child,
         InkWell(
           child: Padding(
             padding: EdgeInsets.all(5),
@@ -84,8 +106,6 @@ class ChannelScreen extends StatelessWidget {
         )
       ],
     );
-
-    return subtree;
   }
 
   Widget _buildStacked(
