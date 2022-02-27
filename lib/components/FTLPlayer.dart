@@ -76,10 +76,13 @@ class _FTLPlayerState extends State<FTLPlayer> {
       print(error);
       await Sentry.captureMessage(
           "Failed to attach session / plugin in FTLPlayer");
-      setState(() {
-        _errored = true;
-        _loading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _errored = true;
+          _loading = false;
+        });
+      }
       return;
     }
     await this.watchChannel(widget.channel.id);
@@ -104,12 +107,16 @@ class _FTLPlayerState extends State<FTLPlayer> {
             _loading = false;
           });
         } catch (error) {
+          // We can likely retry loading this stream with initJanusClient();
           print(error);
           await Sentry.captureMessage("Failed to handle plugin answer");
-          setState(() {
-            _errored = true;
-            _loading = false;
-          });
+
+          if (mounted) {
+            setState(() {
+              _errored = true;
+              _loading = false;
+            });
+          }
           return;
         }
       }
@@ -122,11 +129,11 @@ class _FTLPlayerState extends State<FTLPlayer> {
         await Sentry.captureMessage(
             "Polling has failed without telling us, resetting the widget");
         timer.cancel();
-        setState(() {
-          _errored = true;
-          _loading = false;
-        });
-        initJanusClient();
+
+        if (mounted) {
+          // If we're not mounted, we can just forget about it
+          initJanusClient();
+        }
       }
     });
   }
@@ -165,6 +172,11 @@ class _FTLPlayerState extends State<FTLPlayer> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Background layers that the video will take over when properly loaded
+        Image.network(widget.channel.thumbnail),
+        Container(
+          decoration: BoxDecoration(color: Colors.black45),
+        ),
         _errored
             ? Center(
                 child: Text("Error loading video, please try again."),
