@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
@@ -84,11 +85,11 @@ class _AppScreenState extends State<AppScreen> {
                 },
               ),
             ),
-            _anonymousUserInfo(authState!.anonymous),
+            _anonymousUserInfo(context, authState!.anonymous),
             if (authState.authenticated == false)
               ListTile(
                 leading: Icon(Icons.login),
-                title: Text('Login'),
+                title: Text(context.t('Login')),
                 onTap: () {
                   Navigator.pushNamed(context, '/login');
                 },
@@ -96,28 +97,29 @@ class _AppScreenState extends State<AppScreen> {
             if (authState.authenticated == true)
               ListTile(
                 leading: Icon(Icons.logout),
-                title: Text('Logout'),
+                title: Text(context.t('Sign Out')),
                 onTap: authState.logout,
               ),
           ],
         ),
       ),
-      body: pages.isEmpty ? Loading("Loading") : pages[_selectedIndex],
-      bottomNavigationBar: _bottomNavigationBar(authState.authenticated),
+      body: pages.isEmpty ? Loading(context.t("Loading")) : pages[_selectedIndex],
+      bottomNavigationBar:
+          _bottomNavigationBar(context, authState.authenticated),
     );
   }
 
-  Widget _anonymousUserInfo(bool shown) {
+  Widget _anonymousUserInfo(BuildContext context, bool shown) {
     if (shown) {
       return ListTile(
-        title: Text("Login to experience the very best Glimesh has to offer!"),
+        title: Text(context.t("Login to experience the very best Glimesh has to offer!")),
       );
     } else {
       return SizedBox();
     }
   }
 
-  Widget? _bottomNavigationBar(bool shown) {
+  Widget? _bottomNavigationBar(BuildContext context, bool shown) {
     if (shown) {
       return BottomNavigationBar(
         selectedItemColor: Colors.blue,
@@ -130,15 +132,15 @@ class _AppScreenState extends State<AppScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: "Profile",
+            label: context.t("Profile"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "Browse",
+            label: context.t("Browse"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: "Following",
+            label: context.t("Following"),
           ),
         ],
       );

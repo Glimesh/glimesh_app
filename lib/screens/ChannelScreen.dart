@@ -6,6 +6,8 @@ import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class ChannelScreen extends StatelessWidget {
   final Channel channel;
@@ -20,7 +22,7 @@ class ChannelScreen extends StatelessWidget {
       if (state is ChannelLoading) {
         return Scaffold(
           body: SafeArea(
-            child: _backButtonContainer(context, Loading("Loading Stream")),
+            child: _backButtonContainer(context, Loading(context.t("Loading Stream"))),
           ),
         );
       }
@@ -31,7 +33,7 @@ class ChannelScreen extends StatelessWidget {
             child: _backButtonContainer(
               context,
               Center(
-                child: Text("Error loading channels"),
+                child: Text(context.t("Error loading channels")),
               ),
             ),
           ),

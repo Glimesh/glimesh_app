@@ -5,6 +5,7 @@ import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/auth.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class ChannelListScreen extends StatelessWidget {
   @override
@@ -14,7 +15,10 @@ class ChannelListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${category.name} Streams"),
+        title: Text(context
+            .t("%{category} Streams")
+            .toString()
+            .replaceAll("%{category}", context.t(category.name))),
         backgroundColor: Colors.black.withOpacity(0.7),
       ),
       body: BlocProvider(
@@ -44,14 +48,14 @@ class ChannelListWidget extends StatelessWidget {
           return Container(
             child: Center(
               child: CircularProgressIndicator(
-                semanticsLabel: "Loading ...",
+                semanticsLabel: context.t("Loading ..."),
               ),
             ),
           );
         }
 
         if (state is ChannelListNotLoaded) {
-          return Text("Error loading channels");
+          return Text(context.t("Error loading channels"));
         }
 
         if (state is ChannelListLoaded) {
@@ -67,7 +71,7 @@ class ChannelListWidget extends StatelessWidget {
                     children: [
                       Image.asset('assets/images/glimrip.png'),
                       Padding(padding: EdgeInsets.only(top: 20)),
-                      Text("No live channels in this category."),
+                      Text(context.t("No streams found for selected filter.")),
                     ],
                   ),
                 ),

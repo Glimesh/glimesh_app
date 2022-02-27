@@ -6,6 +6,7 @@ import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class FollowingScreen extends StatelessWidget {
   @override
@@ -32,11 +33,11 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
         BlocBuilder<ChannelListBloc, ChannelListState>(
             builder: (BuildContext context, ChannelListState state) {
       if (state is ChannelListLoading) {
-        return Loading("Loading...");
+        return Loading(context.t("Loading..."));
       }
 
       if (state is ChannelListNotLoaded) {
-        return Text("Error loading channels");
+        return Text(context.t("Error loading channels"));
       }
 
       if (state is ChannelListLoaded) {
@@ -52,7 +53,7 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
                   children: [
                     Image.asset('assets/images/glimrip.png'),
                     Padding(padding: EdgeInsets.only(top: 20)),
-                    Text("No channels that you follow are live."),
+                    Text(context.t("None of the streams you follow are live.")),
                   ],
                 ),
               ),
@@ -60,7 +61,6 @@ class LiveFollowedChannelsWidget extends StatelessWidget {
             ),
           );
         }
-
         return ChannelList(channels: channels);
       }
 

@@ -7,6 +7,7 @@ import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
+import 'package:gettext_i18n/gettext_i18n.dart';
 
 class CategoryListScreen extends StatelessWidget {
   @override
@@ -50,7 +51,7 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  "Next-Gen Live Streaming!",
+                  "${context.t("Next-Gen")} ${context.t("Live Streaming!")}",
                   style: Theme.of(context).textTheme.headline4,
                   // style: TextStyle(fontSize: 20),
                   maxLines: 1,
@@ -62,7 +63,8 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                    "The first live streaming platform built around truly real time interactivity. Our streams are warp speed, our chat is blazing, and our community is thriving.",
+                    context.t(
+                        "The first live streaming platform built around truly real time interactivity. Our streams are warp speed, our chat is blazing, and our community is thriving."),
                     style: Theme.of(context).textTheme.subtitle1),
               )
             ],
@@ -81,7 +83,7 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  "Explore Live Streams",
+                  context.t("Explore Live Streams"),
                   style: Theme.of(context).textTheme.headline4,
                   // style: TextStyle(fontSize: 20),
                   maxLines: 1,
@@ -93,7 +95,8 @@ class CategoryListWidget extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                    "Experience real time interaction by visiting some of these selected streams!",
+                    context.t(
+                        "Experience real time interaction by visiting some of these selected streams!"),
                     style: Theme.of(context).textTheme.subtitle1),
               )
             ],
@@ -164,7 +167,7 @@ class CategoryListWidget extends StatelessWidget {
                 color: Colors.blue,
                 size: 50,
               ),
-              Text(category.name)
+              Text(context.t(category.name))
             ],
           ),
           style: ElevatedButton.styleFrom(
@@ -182,18 +185,19 @@ class CategoryListWidget extends StatelessWidget {
     return BlocBuilder<ChannelListBloc, ChannelListState>(
         builder: (BuildContext context, ChannelListState state) {
       if (state is ChannelListLoading) {
-        return Container(child: Loading("Loading Streams"));
+        return Container(child: Loading(context.t("Loading Streams")));
       }
 
       if (state is ChannelListNotLoaded) {
-        return Container(child: Text("Error loading channels"));
+        return Container(child: Text(context.t("Error loading channels")));
       }
 
       if (state is ChannelListLoaded) {
         final List<Channel> channels = state.results;
 
         if (channels.length == 0) {
-          return Center(child: Text("No live channels on the homepage"));
+          return Center(
+              child: Text(context.t("No live channels on the homepage")));
         }
 
         return ChannelList(channels: channels);
