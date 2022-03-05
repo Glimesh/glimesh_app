@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/language.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:glimesh_app/graphql/queries/channels.dart' as channel_queries;
 import 'package:glimesh_app/graphql/queries/chat.dart' as chat_queries;
 import 'package:glimesh_app/graphql/queries/user.dart' as user_queries;
@@ -102,4 +104,20 @@ class GlimeshRepository {
       variables: <String, dynamic>{"streamerId": streamerId},
     ));
   }
+}
+
+class SettingsRepository {
+	final SharedPreferences prefs;
+	SettingsRepository({required this.prefs});
+
+	Future<ThemeMode> getTheme() async {
+		// get the theme, or default to the system theme
+		var theme_idx = prefs.getInt("settings.theme") ?? 0;
+
+		return ThemeMode.values[theme_idx];
+	}
+
+	setTheme(ThemeMode theme) async {
+		await prefs.setInt("settings.theme", theme.index);
+	}
 }
