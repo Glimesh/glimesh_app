@@ -94,6 +94,10 @@ class _AppScreenState extends State<AppScreen> {
                   Navigator.pushNamed(context, '/login');
                 },
               ),
+            ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(context.t("Settings")),
+                onTap: () => Navigator.pushNamed(context, '/settings')),
             if (authState.authenticated == true)
               ListTile(
                 leading: Icon(Icons.logout),

@@ -19,6 +19,7 @@ import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
+import 'package:glimesh_app/screens/SettingsScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/glimesh.dart';
@@ -198,7 +199,8 @@ class GlimeshApp extends StatelessWidget {
 
     final routes = <String, WidgetBuilder>{
       '/channels': (context) => ChannelListScreen(),
-      '/login': (context) => LoginScreen()
+      '/login': (context) => LoginScreen(),
+      '/settings': (context) => SettingsScreen()
     };
 
     final generateRoutes = (settings) {
