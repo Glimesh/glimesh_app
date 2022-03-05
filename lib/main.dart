@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
+import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -192,10 +193,10 @@ class GlimeshApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = AuthState.of(context);
 
-    final whiteTextTheme = Theme.of(context).textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-        );
+    /* final whiteTextTheme = Theme.of(context).textTheme.apply( */
+    /*       bodyColor: Colors.white, */
+    /*       displayColor: Colors.white, */
+    /*     ); */
 
     final routes = <String, WidgetBuilder>{
       '/channels': (context) => ChannelListScreen(),
@@ -207,58 +208,62 @@ class GlimeshApp extends StatelessWidget {
 
     print("New State for MaterialApp");
 
-    return MaterialApp(
-      title: 'Glimesh Alpha',
-      routes: routes,
-      onGenerateRoute: generateRoutes,
-      localizationsDelegates: [
-        GettextLocalizationsDelegate(defaultLanguage: 'en'),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      supportedLocales: [
-        Locale('en'),
-        Locale('cs'),
-        Locale('da'),
-        Locale('de'),
-        Locale('es'),
-        Locale('es', 'AR'),
-        Locale('es', 'MX'),
-        Locale('fr'),
-        Locale('hu'),
-        Locale('it'),
-        Locale('ja'),
-        Locale('ko'),
-        Locale('nb'),
-        Locale('nl'),
-        Locale('no'),
-        Locale('pl'),
-        Locale('pt'),
-        Locale('pt', 'BR'),
-        Locale('ru'),
-        Locale('sv'),
-        Locale('tr'),
-        Locale('vi'),
-        // the two below are broken for some reason, getttext can see them, and the Material
-        // translations work, but trying to use them results in English text
-        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
-        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
-      ],
-      theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Color(0xff060818),
-        canvasColor: Color(0xff060818),
-        bottomAppBarColor: Color(0xff0e1726),
-        textTheme: whiteTextTheme,
-      ),
-      themeMode: ThemeMode.dark,
-      home: authState!.client != null
-          ? AppScreen(title: "Glimesh")
-          : Padding(padding: EdgeInsets.zero),
-    );
+    return BlocProvider(
+        create: (_) {
+          var bloc = SettingsBloc();
+          bloc..add(InitSettingsData());
+          return bloc;
+        },
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+            builder: (context, _) => MaterialApp(
+                  title: 'Glimesh Alpha',
+                  routes: routes,
+                  onGenerateRoute: generateRoutes,
+                  localizationsDelegates: [
+                    GettextLocalizationsDelegate(defaultLanguage: 'en'),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate
+                  ],
+                  supportedLocales: [
+                    Locale('en'),
+                    Locale('cs'),
+                    Locale('da'),
+                    Locale('de'),
+                    Locale('es'),
+                    Locale('es', 'AR'),
+                    Locale('es', 'MX'),
+                    Locale('fr'),
+                    Locale('hu'),
+                    Locale('it'),
+                    Locale('ja'),
+                    Locale('ko'),
+                    Locale('nb'),
+                    Locale('nl'),
+                    Locale('no'),
+                    Locale('pl'),
+                    Locale('pt'),
+                    Locale('pt', 'BR'),
+                    Locale('ru'),
+                    Locale('sv'),
+                    Locale('tr'),
+                    Locale('vi'),
+                    // the two below are broken for some reason, getttext can see them, and the Material
+                    // translations work, but trying to use them results in English text
+                    /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
+                    /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
+                  ],
+                  darkTheme: ThemeData(
+                    brightness: Brightness.dark,
+                    primaryColor: Color(0xff060818),
+                    canvasColor: Color(0xff060818),
+                    bottomAppBarColor: Color(0xff0e1726),
+                  ),
+                  themeMode:
+                      context.select((SettingsBloc bloc) => bloc.currentTheme),
+                  home: authState!.client != null
+                      ? AppScreen(title: "Glimesh")
+                      : Padding(padding: EdgeInsets.zero),
+                )));
   }
 
   MaterialPageRoute? _generateRoutes(settings, authState) {
