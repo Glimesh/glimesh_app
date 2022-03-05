@@ -107,17 +107,17 @@ class GlimeshRepository {
 }
 
 class SettingsRepository {
-	final SharedPreferences prefs;
-	SettingsRepository({required this.prefs});
+  final SharedPreferences prefs;
+  SettingsRepository({required this.prefs});
 
-	Future<ThemeMode> getTheme() async {
-		// get the theme, or default to the system theme
-		var theme_idx = prefs.getInt("settings.theme") ?? 0;
+  Future<ThemeMode> getTheme() async {
+    // get the theme, or default to the system theme
+    var theme_idx = prefs.getInt("settings.theme") ?? 0;
 
-		return ThemeMode.values[theme_idx];
-	}
+    return ThemeMode.values[theme_idx];
+  }
 
-	setTheme(ThemeMode theme) async {
-		await prefs.setInt("settings.theme", theme.index);
-	}
+  setTheme(ThemeMode theme) async {
+    await prefs.setInt("settings.theme", theme.index);
+  }
 }
