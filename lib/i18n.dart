@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 // opted to do this instead of pulling in a whole dep to do this, esp. since we only
 // use a few langs and they're readily available on the main repo.
+// Português Brasileiro is defined twice as pt_BR is the "correct" version, but for
+// some reason, when we ask for a stream language pt_br is returned - this should
+// probably be fixed in GlimeshWeb
 const Map<String, String> languages = {
   "en": "English",
   "es": "Español",
@@ -23,6 +26,7 @@ const Map<String, String> languages = {
   "pl": "Polski",
   "ro": "Limba Română",
   "pt_br": "Português Brasileiro",
+  "pt_BR": "Português Brasileiro",
   "pt": "Português",
   "zh_Hans": "中文 (简体)",
   "zh_Hant": "中文 (繁体)",
