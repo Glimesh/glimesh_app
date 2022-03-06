@@ -22,7 +22,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
       appBar: AppBar(title: Text(context.t('Settings'))),
       body: Container(
-        child: _buildThemeSelector(context),
+        child: Column(children: [
+          _buildThemeSelector(context),
+          _buildLocaleSelector(context)
+        ]),
         margin: EdgeInsets.all(4),
       ),
     );
@@ -51,6 +54,31 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             });
           },
         )
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    );
+  }
+
+  Widget _buildLocaleSelector(BuildContext context) {
+    final localeList = supportedLocales
+        .map((locale) => DropdownMenuItem(
+            value: locale,
+            child: Text(languages[locale.toString()] ?? locale.toString())))
+        .toList();
+
+    localeList.forEach((locale) => print(locale.value));
+
+    return Row(
+      children: [
+        Text(context.t("Language")),
+        DropdownButton<Locale>(
+            items: localeList,
+            value: context.select((SettingsBloc bloc) => bloc.currentLocale),
+            onChanged: (Locale? newLocale) {
+              context
+                  .read<SettingsBloc>()
+                  .add(ChangeLocale(locale: newLocale ?? Locale('en')));
+            }),
       ],
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
