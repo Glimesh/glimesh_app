@@ -24,6 +24,7 @@ import 'package:glimesh_app/screens/SettingsScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/glimesh.dart';
+import 'package:glimesh_app/i18n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -224,34 +225,7 @@ class GlimeshApp extends StatelessWidget {
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate
                   ],
-                  supportedLocales: [
-                    Locale('en'),
-                    Locale('cs'),
-                    Locale('da'),
-                    Locale('de'),
-                    Locale('es'),
-                    Locale('es', 'AR'),
-                    Locale('es', 'MX'),
-                    Locale('fr'),
-                    Locale('hu'),
-                    Locale('it'),
-                    Locale('ja'),
-                    Locale('ko'),
-                    Locale('nb'),
-                    Locale('nl'),
-                    Locale('no'),
-                    Locale('pl'),
-                    Locale('pt'),
-                    Locale('pt', 'BR'),
-                    Locale('ru'),
-                    Locale('sv'),
-                    Locale('tr'),
-                    Locale('vi'),
-                    // the two below are broken for some reason, getttext can see them, and the Material
-                    // translations work, but trying to use them results in English text
-                    /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
-                    /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
-                  ],
+                  supportedLocales: supportedLocales,
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,
                     primaryColor: Color(0xff060818),

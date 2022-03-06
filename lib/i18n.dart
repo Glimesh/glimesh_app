@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 // opted to do this instead of pulling in a whole dep to do this, esp. since we only
 // use a few langs and they're readily available on the main repo.
 const Map<String, String> languages = {
@@ -32,3 +34,32 @@ const Map<String, String> languages = {
   "sl": "slovenščina",
   "tr": "Türkçe",
 };
+
+const List<Locale> supportedLocales = [
+  Locale('en'),
+  Locale('cs'),
+  Locale('da'),
+  Locale('de'),
+  Locale('es'),
+  Locale('es', 'AR'),
+  Locale('es', 'MX'),
+  Locale('fr'),
+  Locale('hu'),
+  Locale('it'),
+  Locale('ja'),
+  Locale('ko'),
+  Locale('nb'),
+  Locale('nl'),
+  Locale('no'),
+  Locale('pl'),
+  Locale('pt'),
+  Locale('pt', 'BR'),
+  Locale('ru'),
+  Locale('sv'),
+  Locale('tr'),
+  Locale('vi'),
+  // the two below are broken for some reason, getttext can see them, and the Material
+  // translations work, but trying to use them results in English text
+  /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
+  /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
+];

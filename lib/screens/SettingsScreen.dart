@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
+import 'package:glimesh_app/i18n.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
