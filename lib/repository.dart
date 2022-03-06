@@ -120,4 +120,31 @@ class SettingsRepository {
   setTheme(ThemeMode theme) async {
     await prefs.setInt("settings.theme", theme.index);
   }
+
+  Future<Locale?> getLocale() async {
+    var locale_lang = prefs.getString("settings.locale.lang");
+    var locale_script = prefs.getString("settings.locale.script");
+    var locale_country = prefs.getString("settings.locale.country");
+
+    if (locale_lang == null) return null;
+
+    return Locale.fromSubtags(
+        languageCode: locale_lang,
+        scriptCode: locale_script,
+        countryCode: locale_country);
+  }
+
+  setLocale(Locale locale) async {
+    prefs.setString("settings.locale.lang", locale.languageCode);
+
+    var locale_script = locale.scriptCode;
+    var locale_country = locale.countryCode;
+
+    locale_script == null
+        ? prefs.remove("settings.locale.script")
+        : prefs.setString("settings.locale.script", locale_script);
+    locale_country == null
+        ? prefs.remove("settings.locale.country")
+        : prefs.setString("settings.locale.country", locale_country);
+  }
 }
