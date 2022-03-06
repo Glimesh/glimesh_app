@@ -22,16 +22,26 @@ class ChangeTheme extends SettingsEvent {
   List<Object> get props => [this.appTheme];
 }
 
+class ChangeLocale extends SettingsEvent {
+  final Locale locale;
+
+  ChangeLocale({required this.locale});
+
+  @override
+  List<Object> get props => [this.locale];
+}
+
 @immutable
 abstract class SettingsState extends Equatable {}
 
 class InitialState extends SettingsState {
   final ThemeMode theme;
+  final Locale locale;
 
-  InitialState({required this.theme});
+  InitialState({required this.theme, required this.locale});
 
   @override
-  List<Object> get props => [theme];
+  List<Object> get props => [theme, locale];
 }
 
 class ThemeChanged extends SettingsState {
@@ -43,22 +53,39 @@ class ThemeChanged extends SettingsState {
   List<Object> get props => [newTheme];
 }
 
+class LocaleChanged extends SettingsState {
+  final Locale newLocale;
+
+  LocaleChanged(this.newLocale);
+
+  @override
+  List<Object> get props => [newLocale];
+}
+
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   late SettingsRepository repo;
 
   ThemeMode currentTheme = ThemeMode.system;
+  Locale currentLocale = Locale("en");
 
-  SettingsBloc() : super(InitialState(theme: ThemeMode.system)) {
+  SettingsBloc()
+      : super(InitialState(theme: ThemeMode.system, locale: Locale('en'))) {
     on<InitSettingsData>((_, emit) async {
       var prefs = await SharedPreferences.getInstance();
       repo = SettingsRepository(prefs: prefs);
       currentTheme = await repo.getTheme();
-      emit(InitialState(theme: currentTheme));
+      currentLocale = await repo.getLocale() ?? Locale('en');
+      emit(InitialState(theme: currentTheme, locale: currentLocale));
     });
     on<ChangeTheme>((event, emit) async {
       currentTheme = event.appTheme;
       await repo.setTheme(currentTheme);
       emit(ThemeChanged(currentTheme));
+    });
+    on<ChangeLocale>((event, emit) async {
+      currentLocale = event.locale;
+      await repo.setLocale(currentLocale);
+      emit(LocaleChanged(currentLocale));
     });
   }
 }
