@@ -47,11 +47,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 value: ThemeMode.dark, child: Text(context.t("Dark"))),
           ],
           onChanged: (ThemeMode? newValue) {
-            setState(() {
-              context
-                  .read<SettingsBloc>()
-                  .add(ChangeTheme(appTheme: newValue ?? ThemeMode.system));
-            });
+            context
+                .read<SettingsBloc>()
+                .add(ChangeTheme(appTheme: newValue ?? ThemeMode.system));
           },
         )
       ],
