@@ -64,8 +64,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             child: Text(languages[locale.toString()] ?? locale.toString())))
         .toList();
 
-    localeList.forEach((locale) => print(locale.value));
-
     return Row(
       children: [
         Text(context.t("Language")),
