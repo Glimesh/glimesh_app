@@ -225,6 +225,8 @@ class GlimeshApp extends StatelessWidget {
                     GlobalMaterialLocalizations.delegate,
                     GlobalWidgetsLocalizations.delegate
                   ],
+                  locale:
+                      context.select((SettingsBloc bloc) => bloc.currentLocale),
                   supportedLocales: supportedLocales,
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,
