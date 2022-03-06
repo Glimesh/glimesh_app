@@ -51,7 +51,6 @@ class _AppScreenState extends State<AppScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Colors.black.withOpacity(0.7),
         // leading: IconButton(icon: const Icon(Icons.menu), onPressed: () => {}),
         actions: [
           // IconButton(

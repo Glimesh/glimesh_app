@@ -19,7 +19,6 @@ class ChannelListScreen extends StatelessWidget {
             .t("%{category} Streams")
             .toString()
             .replaceAll("%{category}", context.t(category.name))),
-        backgroundColor: Colors.black.withOpacity(0.7),
       ),
       body: BlocProvider(
         create: (context) => ChannelListBloc(

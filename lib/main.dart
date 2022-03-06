@@ -228,12 +228,19 @@ class GlimeshApp extends StatelessWidget {
                   locale:
                       context.select((SettingsBloc bloc) => bloc.currentLocale),
                   supportedLocales: supportedLocales,
+                  theme: ThemeData(
+                      brightness: Brightness.light,
+                      appBarTheme: AppBarTheme(
+                          color: Colors.white, foregroundColor: Colors.black),
+                      textTheme:
+                          TextTheme(headline4: TextStyle(color: Colors.black))),
                   darkTheme: ThemeData(
-                    brightness: Brightness.dark,
-                    primaryColor: Color(0xff060818),
-                    canvasColor: Color(0xff060818),
-                    bottomAppBarColor: Color(0xff0e1726),
-                  ),
+                      brightness: Brightness.dark,
+                      canvasColor: Color(0xff060818),
+                      bottomAppBarColor: Color(0xff0e1726),
+                      appBarTheme: AppBarTheme(color: Colors.black),
+                      textTheme:
+                          TextTheme(headline4: TextStyle(color: Colors.white))),
                   themeMode:
                       context.select((SettingsBloc bloc) => bloc.currentTheme),
                   home: authState!.client != null
