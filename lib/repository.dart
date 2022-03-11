@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/language.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:glimesh_app/graphql/queries/channels.dart' as channel_queries;
 import 'package:glimesh_app/graphql/queries/chat.dart' as chat_queries;
 import 'package:glimesh_app/graphql/queries/user.dart' as user_queries;
@@ -101,5 +103,48 @@ class GlimeshRepository {
       document: parseString(user_queries.unfollowUser),
       variables: <String, dynamic>{"streamerId": streamerId},
     ));
+  }
+}
+
+class SettingsRepository {
+  final SharedPreferences prefs;
+  SettingsRepository({required this.prefs});
+
+  Future<ThemeMode> getTheme() async {
+    // get the theme, or default to the system theme
+    var theme_idx = prefs.getInt("settings.theme") ?? 0;
+
+    return ThemeMode.values[theme_idx];
+  }
+
+  setTheme(ThemeMode theme) async {
+    await prefs.setInt("settings.theme", theme.index);
+  }
+
+  Future<Locale?> getLocale() async {
+    var locale_lang = prefs.getString("settings.locale.lang");
+    var locale_script = prefs.getString("settings.locale.script");
+    var locale_country = prefs.getString("settings.locale.country");
+
+    if (locale_lang == null) return null;
+
+    return Locale.fromSubtags(
+        languageCode: locale_lang,
+        scriptCode: locale_script,
+        countryCode: locale_country);
+  }
+
+  setLocale(Locale locale) async {
+    prefs.setString("settings.locale.lang", locale.languageCode);
+
+    var locale_script = locale.scriptCode;
+    var locale_country = locale.countryCode;
+
+    locale_script == null
+        ? prefs.remove("settings.locale.script")
+        : prefs.setString("settings.locale.script", locale_script);
+    locale_country == null
+        ? prefs.remove("settings.locale.country")
+        : prefs.setString("settings.locale.country", locale_country);
   }
 }

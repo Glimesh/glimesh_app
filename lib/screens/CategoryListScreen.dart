@@ -155,7 +155,7 @@ class CategoryListWidget extends StatelessWidget {
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(10),
-        child: ElevatedButton(
+        child: OutlinedButton(
           onPressed: () => Navigator.pushNamed(
             context,
             '/channels',
@@ -171,10 +171,12 @@ class CategoryListWidget extends StatelessWidget {
               Text(context.t(category.name))
             ],
           ),
-          style: ElevatedButton.styleFrom(
+          style: OutlinedButton.styleFrom(
             side: BorderSide(width: 1, color: Colors.grey),
             textStyle: Theme.of(context).textTheme.headline6,
-            primary: Colors.transparent,
+            primary: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
             padding: EdgeInsets.all(20),
           ),
         ),

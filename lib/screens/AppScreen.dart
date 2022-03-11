@@ -55,7 +55,6 @@ class _AppScreenState extends State<AppScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Colors.black.withOpacity(0.7),
         // leading: IconButton(icon: const Icon(Icons.menu), onPressed: () => {}),
         actions: [
           // IconButton(
@@ -98,6 +97,10 @@ class _AppScreenState extends State<AppScreen> {
                   Navigator.pushNamed(context, '/login');
                 },
               ),
+            ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(context.t("Settings")),
+                onTap: () => Navigator.pushNamed(context, '/settings')),
             if (authState.authenticated == true)
               ListTile(
                 leading: Icon(Icons.logout),
