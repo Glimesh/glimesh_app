@@ -7,6 +7,8 @@ import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
 import 'package:glimesh_app/auth.dart';
 
+import 'package:glimesh_app/track.dart';
+
 class AppScreen extends StatefulWidget {
   AppScreen({Key? key, required this.title}) : super(key: key);
 
@@ -33,6 +35,8 @@ class _AppScreenState extends State<AppScreen> {
   @override
   void initState() {
     super.initState();
+
+    track.event();
 
     setState(() {
       pages = [
@@ -106,7 +110,8 @@ class _AppScreenState extends State<AppScreen> {
           ],
         ),
       ),
-      body: pages.isEmpty ? Loading(context.t("Loading")) : pages[_selectedIndex],
+      body:
+          pages.isEmpty ? Loading(context.t("Loading")) : pages[_selectedIndex],
       bottomNavigationBar:
           _bottomNavigationBar(context, authState.authenticated),
     );
@@ -115,7 +120,8 @@ class _AppScreenState extends State<AppScreen> {
   Widget _anonymousUserInfo(BuildContext context, bool shown) {
     if (shown) {
       return ListTile(
-        title: Text(context.t("Login to experience the very best Glimesh has to offer!")),
+        title: Text(context
+            .t("Login to experience the very best Glimesh has to offer!")),
       );
     } else {
       return SizedBox();

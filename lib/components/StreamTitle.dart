@@ -75,6 +75,7 @@ class _StreamTitleState extends State<StreamTitle> {
         padding: EdgeInsets.all(20),
         child: ListView(
           children: [
+            _buildTitleTag(),
             _buildSubcategoryTag(),
             _buildTags(context),
             _buildLanguageTag(context),
@@ -82,6 +83,13 @@ class _StreamTitleState extends State<StreamTitle> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTitleTag() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text("Title"), Chip(label: Text(widget.channel.title))],
     );
   }
 

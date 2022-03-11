@@ -7,6 +7,7 @@ import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
+import 'package:glimesh_app/track.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -252,6 +253,8 @@ class GlimeshApp extends StatelessWidget {
       final ChannelBloc bloc = ChannelBloc(
         glimeshRepository: repo,
       );
+      
+      track.event(page: "${channel.username}");
 
       return MaterialPageRoute(
         builder: (context) {
@@ -291,6 +294,8 @@ class GlimeshApp extends StatelessWidget {
 
     if (settings.name == '/profile') {
       final String username = settings.arguments as String;
+      
+      track.event(page: "${username}/profile");
 
       return MaterialPageRoute(
         builder: (context) {

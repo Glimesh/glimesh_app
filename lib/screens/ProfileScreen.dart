@@ -153,6 +153,10 @@ class ProfileWidget extends StatelessWidget {
   }
 
   Widget _buildChannelOrProfileButton(BuildContext context) {
+    // For now hiding the follow button
+    return Padding(
+      padding: EdgeInsets.zero,
+    );
     if (isMyProfile)
       return Padding(
         padding: EdgeInsets.zero,

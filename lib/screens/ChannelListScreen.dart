@@ -6,12 +6,15 @@ import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
+import 'package:glimesh_app/track.dart';
 
 class ChannelListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Category category = ModalRoute.of(context)!.settings.arguments as Category;
     final authState = AuthState.of(context);
+
+    track.event(page: "streams/${category.slug}");
 
     return Scaffold(
       appBar: AppBar(
