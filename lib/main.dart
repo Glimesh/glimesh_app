@@ -194,11 +194,6 @@ class GlimeshApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = AuthState.of(context);
 
-    /* final whiteTextTheme = Theme.of(context).textTheme.apply( */
-    /*       bodyColor: Colors.white, */
-    /*       displayColor: Colors.white, */
-    /*     ); */
-
     final routes = <String, WidgetBuilder>{
       '/channels': (context) => ChannelListScreen(),
       '/login': (context) => LoginScreen(),
