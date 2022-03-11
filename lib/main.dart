@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
+import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -19,9 +20,11 @@ import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
+import 'package:glimesh_app/screens/SettingsScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/glimesh.dart';
+import 'package:glimesh_app/i18n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -191,135 +194,118 @@ class GlimeshApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = AuthState.of(context);
 
-    final whiteTextTheme = Theme.of(context).textTheme.apply(
-          bodyColor: Colors.white,
-          displayColor: Colors.white,
-        );
-
     final routes = <String, WidgetBuilder>{
       '/channels': (context) => ChannelListScreen(),
-      '/login': (context) => LoginScreen()
+      '/login': (context) => LoginScreen(),
+      '/settings': (context) => SettingsScreen()
     };
 
-    final generateRoutes = (settings) {
-      if (settings.name == '/channel') {
-        final Channel channel = settings.arguments as Channel;
-        final GlimeshRepository repo =
-            GlimeshRepository(client: authState!.client!);
-        final ChannelBloc bloc = ChannelBloc(
-          glimeshRepository: repo,
-        );
-
-        return MaterialPageRoute(
-          builder: (context) {
-            print("MaterialPageRoute build");
-            return MultiBlocProvider(
-              providers: [
-                // Channel Bloc
-                BlocProvider<ChannelBloc>(
-                  create: (context) =>
-                      bloc..add(WatchChannel(channelId: channel.id)),
-                ),
-                // ChatMessagesBloc
-                BlocProvider<ChatMessagesBloc>(
-                  create: (context) => ChatMessagesBloc(glimeshRepository: repo)
-                    ..add(LoadChatMessages(channelId: channel.id)),
-                ),
-                // Follow Bloc
-                BlocProvider<FollowBloc>(
-                  create: (context) {
-                    FollowBloc bloc = FollowBloc(glimeshRepository: repo);
-                    // If we're authenticated, show the initial bloc status
-                    if (authState.authenticated) {
-                      bloc.add(LoadFollowStatus(
-                        streamerId: channel.user_id,
-                        userId: authState.user!.id,
-                      ));
-                    }
-                    return bloc;
-                  },
-                ),
-              ],
-              child: ChannelScreen(channel: channel),
-            );
-          },
-        );
-      }
-
-      if (settings.name == '/profile') {
-        final String username = settings.arguments as String;
-
-        return MaterialPageRoute(
-          builder: (context) {
-            return BlocProvider(
-              create: (context) => UserBloc(
-                glimeshRepository:
-                    GlimeshRepository(client: authState!.client!),
-              ),
-              child: UserProfileScreen(username: username),
-            );
-          },
-        );
-      }
-
-      // Fail if we're missing any routes.
-      assert(false, 'Need to implement ${settings.name}');
-      return null;
-    };
+    final generateRoutes = (settings) => _generateRoutes(settings, authState);
 
     print("New State for MaterialApp");
 
-    return MaterialApp(
-      title: 'Glimesh Alpha',
-      routes: routes,
-      onGenerateRoute: generateRoutes,
-      localizationsDelegates: [
-        GettextLocalizationsDelegate(defaultLanguage: 'en'),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
-      supportedLocales: [
-        Locale('en'),
-        Locale('cs'),
-        Locale('da'),
-        Locale('de'),
-        Locale('es'),
-        Locale('es', 'AR'),
-        Locale('es', 'MX'),
-        Locale('fr'),
-        Locale('hu'),
-        Locale('it'),
-        Locale('ja'),
-        Locale('ko'),
-        Locale('nb'),
-        Locale('nl'),
-        Locale('no'),
-        Locale('pl'),
-        Locale('pt'),
-        Locale('pt', 'BR'),
-        Locale('ru'),
-        Locale('sv'),
-        Locale('tr'),
-        Locale('vi'),
-        // the two below are broken for some reason, getttext can see them, and the Material
-        // translations work, but trying to use them results in English text
-        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'), */
-        /* Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'), */
-      ],
-      theme: ThemeData(
-        brightness: Brightness.dark,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Color(0xff060818),
-        canvasColor: Color(0xff060818),
-        bottomAppBarColor: Color(0xff0e1726),
-        textTheme: whiteTextTheme,
-      ),
-      themeMode: ThemeMode.dark,
-      home: authState!.client != null
-          ? AppScreen(title: "Glimesh")
-          : Padding(padding: EdgeInsets.zero),
-    );
+    return BlocProvider(
+        create: (_) {
+          var bloc = SettingsBloc();
+          bloc..add(InitSettingsData());
+          return bloc;
+        },
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+            builder: (context, _) => MaterialApp(
+                  title: 'Glimesh Alpha',
+                  routes: routes,
+                  onGenerateRoute: generateRoutes,
+                  localizationsDelegates: [
+                    GettextLocalizationsDelegate(defaultLanguage: 'en'),
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate
+                  ],
+                  locale:
+                      context.select((SettingsBloc bloc) => bloc.currentLocale),
+                  supportedLocales: supportedLocales,
+                  theme: ThemeData(
+                      brightness: Brightness.light,
+                      appBarTheme: AppBarTheme(
+                          color: Colors.white, foregroundColor: Colors.black),
+                      textTheme:
+                          TextTheme(headline4: TextStyle(color: Colors.black))),
+                  darkTheme: ThemeData(
+                      brightness: Brightness.dark,
+                      canvasColor: Color(0xff060818),
+                      bottomAppBarColor: Color(0xff0e1726),
+                      appBarTheme: AppBarTheme(color: Colors.black),
+                      textTheme:
+                          TextTheme(headline4: TextStyle(color: Colors.white))),
+                  themeMode:
+                      context.select((SettingsBloc bloc) => bloc.currentTheme),
+                  home: authState!.client != null
+                      ? AppScreen(title: "Glimesh")
+                      : Padding(padding: EdgeInsets.zero),
+                )));
+  }
+
+  MaterialPageRoute? _generateRoutes(settings, authState) {
+    if (settings.name == '/channel') {
+      final Channel channel = settings.arguments as Channel;
+      final GlimeshRepository repo =
+          GlimeshRepository(client: authState!.client!);
+      final ChannelBloc bloc = ChannelBloc(
+        glimeshRepository: repo,
+      );
+
+      return MaterialPageRoute(
+        builder: (context) {
+          print("MaterialPageRoute build");
+          return MultiBlocProvider(
+            providers: [
+              // Channel Bloc
+              BlocProvider<ChannelBloc>(
+                create: (context) =>
+                    bloc..add(WatchChannel(channelId: channel.id)),
+              ),
+              // ChatMessagesBloc
+              BlocProvider<ChatMessagesBloc>(
+                create: (context) => ChatMessagesBloc(glimeshRepository: repo)
+                  ..add(LoadChatMessages(channelId: channel.id)),
+              ),
+              // Follow Bloc
+              BlocProvider<FollowBloc>(
+                create: (context) {
+                  FollowBloc bloc = FollowBloc(glimeshRepository: repo);
+                  // If we're authenticated, show the initial bloc status
+                  if (authState.authenticated) {
+                    bloc.add(LoadFollowStatus(
+                      streamerId: channel.user_id,
+                      userId: authState.user!.id,
+                    ));
+                  }
+                  return bloc;
+                },
+              ),
+            ],
+            child: ChannelScreen(channel: channel),
+          );
+        },
+      );
+    }
+
+    if (settings.name == '/profile') {
+      final String username = settings.arguments as String;
+
+      return MaterialPageRoute(
+        builder: (context) {
+          return BlocProvider(
+            create: (context) => UserBloc(
+              glimeshRepository: GlimeshRepository(client: authState!.client!),
+            ),
+            child: UserProfileScreen(username: username),
+          );
+        },
+      );
+    }
+
+    // Fail if we're missing any routes.
+    assert(false, 'Need to implement ${settings.name}');
+    return null;
   }
 }

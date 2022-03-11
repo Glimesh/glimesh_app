@@ -98,7 +98,7 @@ class ChatMessages extends StatelessWidget {
             padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return _buildChatMessage(state.messages[index]);
+              return _buildChatMessage(context, state.messages[index]);
             },
           );
         }
@@ -108,7 +108,7 @@ class ChatMessages extends StatelessWidget {
     );
   }
 
-  Widget _buildChatMessage(ChatMessage message) {
+  Widget _buildChatMessage(BuildContext context, ChatMessage message) {
     return Container(
       padding: EdgeInsets.all(3),
       child: Align(
@@ -116,7 +116,9 @@ class ChatMessages extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Color(0xFF0E1826),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color(0xFF0E1826)
+                : Colors.white70,
           ),
           padding: EdgeInsets.all(10),
           child: Text.rich(

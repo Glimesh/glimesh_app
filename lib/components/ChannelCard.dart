@@ -32,7 +32,9 @@ class ChannelCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
-              color: Colors.black54,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black54
+                  : Colors.white.withOpacity(0.85),
             ),
             padding: EdgeInsets.all(0),
             child: StreamTitle(channel: channel, allowMetadata: false),

@@ -64,6 +64,8 @@ class ChannelScreen extends StatelessWidget {
         );
 
         return Scaffold(
+          // appBar here with 0 height just to make the background of the status bar black
+          appBar: AppBar(toolbarHeight: 0.0),
           body: SafeArea(
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {

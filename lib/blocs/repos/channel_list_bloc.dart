@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
-import 'package:glimesh_app/lang_displaynames.dart';
+import 'package:glimesh_app/i18n.dart';
 
 @immutable
 abstract class ChannelListEvent extends Equatable {}
