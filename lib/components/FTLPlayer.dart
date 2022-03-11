@@ -176,6 +176,7 @@ class _FTLPlayerState extends State<FTLPlayer> {
         Image.network(widget.channel.thumbnail),
         Container(
           decoration: BoxDecoration(color: Colors.black45),
+          child: Loading("Loading Video"),
         ),
         _errored
             ? Center(

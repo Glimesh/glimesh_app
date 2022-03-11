@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +11,12 @@ import 'package:glimesh_app/lang_displaynames.dart';
 @immutable
 abstract class ChannelListEvent extends Equatable {}
 
-class LoadChannels extends ChannelListEvent {
+abstract class AlwaysRefreshingChannelListEvent extends ChannelListEvent {
+  @override
+  List<Object> get props => [Random().nextInt(1000)];
+}
+
+class LoadChannels extends AlwaysRefreshingChannelListEvent {
   final String categorySlug;
   final int channelLimit;
 
@@ -17,25 +24,16 @@ class LoadChannels extends ChannelListEvent {
 
   @override
   String toString() => 'LoadChannels';
-
-  @override
-  List<Object> get props => [this.categorySlug, this.channelLimit];
 }
 
-class LoadMyLiveFollowedChannels extends ChannelListEvent {
+class LoadMyLiveFollowedChannels extends AlwaysRefreshingChannelListEvent {
   @override
   String toString() => 'LoadMyLiveFollowedChannels';
-
-  @override
-  List<Object> get props => [];
 }
 
-class LoadHomepageChannels extends ChannelListEvent {
+class LoadHomepageChannels extends AlwaysRefreshingChannelListEvent {
   @override
   String toString() => 'LoadHomepageChannels';
-
-  @override
-  List<Object> get props => [];
 }
 
 @immutable
@@ -55,7 +53,7 @@ class ChannelListLoaded extends ChannelListState {
   ChannelListLoaded({required this.results});
 
   @override
-  List<Object> get props => [results];
+  List<Object> get props => results.map((e) => e.id).toList();
 }
 
 class ChannelListNotLoaded extends ChannelListState {
@@ -85,10 +83,13 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
   _loadChannels(LoadChannels event, Emitter emit) async {
     emit(ChannelListLoading());
 
+    print("inside");
+
     final queryResults =
         await this.glimeshRepository.getLiveChannels(event.categorySlug);
 
     if (queryResults.hasException) {
+      print(queryResults.hasException);
       emit(ChannelListNotLoaded(queryResults.exception!.graphqlErrors));
       return;
     }
@@ -100,6 +101,12 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
         channels.map(buildChannelFromJson).toList();
 
     listOfChannels.shuffle();
+
+    print('map');
+    listOfChannels.forEach((e) {
+      print(e.id);
+      print(e.title);
+    });
 
     emit(ChannelListLoaded(results: listOfChannels));
   }

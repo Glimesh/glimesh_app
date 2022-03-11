@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/track.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -14,11 +15,27 @@ class LoginScreen extends StatelessWidget {
     authState = AuthState.of(context);
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
+    track.event(page: "users/log_in");
+
     return Scaffold(
       body: SafeArea(
-        child: horizontalTablet
-            ? _buildHorizontal(context)
-            : _buildVertical(context),
+        child: Stack(
+          children: [
+            horizontalTablet
+                ? _buildHorizontal(context)
+                : _buildVertical(context),
+            InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.chevron_left,
+                  color: Colors.white70,
+                ),
+              ),
+              onTap: () => Navigator.pop(context),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -37,22 +54,7 @@ class LoginScreen extends StatelessWidget {
                 child: _loginButton(context, true),
               ),
             ),
-            FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.done:
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Version: ${snapshot.data!.version}+${snapshot.data!.buildNumber}',
-                      ),
-                    );
-                  default:
-                    return const SizedBox();
-                }
-              },
-            ),
+            _versionWidget(),
           ],
         ));
   }
@@ -68,28 +70,36 @@ class LoginScreen extends StatelessWidget {
         Expanded(
           child: _loginButton(context, false),
         ),
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Text(
-                    'Version: ${snapshot.data!.version}+${snapshot.data!.buildNumber}',
-                  ),
-                );
-              default:
-                return const SizedBox();
-            }
-          },
-        ),
+        _versionWidget()
       ],
     );
   }
 
+  Widget _versionWidget() {
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            return Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                'Version: ${snapshot.data!.version}+${snapshot.data!.buildNumber}',
+                style: Theme.of(context).textTheme.caption,
+              ),
+            );
+          default:
+            return const SizedBox();
+        }
+      },
+    );
+  }
+
   Widget _logo() {
-    return Image.asset('assets/images/logo-with-text.png');
+    return Padding(
+      padding: EdgeInsets.only(left: 20, right: 20),
+      child: Image.asset('assets/images/logo-with-text.png'),
+    );
   }
 
   Widget _loginButton(BuildContext context, bool center) {
@@ -125,17 +135,10 @@ class LoginScreen extends StatelessWidget {
                 // Later once "state" is figured out, this can be just .pop to go back to the last page
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               },
-              child: Text(context.t("Login")),
+              child: Text(context.t("Login or Register")),
             ),
           ),
           Padding(padding: EdgeInsets.only(top: 20)),
-          Center(
-            child: Text(
-              context.t(
-                  "If you need to register, please visit Glimesh.tv on your phone or computer."),
-              textAlign: center ? TextAlign.center : TextAlign.left,
-            ),
-          )
         ],
       ),
     );
