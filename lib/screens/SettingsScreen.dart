@@ -24,7 +24,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       body: Container(
         child: Column(children: [
           _buildThemeSelector(context),
-          _buildLocaleSelector(context)
+          _buildLocaleSelector(context),
+          _buildMatureWarningToggle(context),
         ]),
         margin: EdgeInsets.all(4),
       ),
@@ -78,5 +79,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       ],
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
+  }
+
+  Widget _buildMatureWarningToggle(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text(context.t("Bypass Mature Content Warning")),
+      Switch(
+        value: context.select((SettingsBloc bloc) => bloc.bypassMatureWarning),
+        onChanged: (newVal) {
+          context
+              .read<SettingsBloc>()
+              .add(ChangeBypassMatureWarning(shouldBypass: newVal));
+        },
+      ),
+    ]);
   }
 }
