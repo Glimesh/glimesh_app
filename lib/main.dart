@@ -263,8 +263,10 @@ class GlimeshApp extends StatelessWidget {
             providers: [
               // Channel Bloc
               BlocProvider<ChannelBloc>(
-                create: (context) =>
-                    bloc..add(WatchChannel(channelId: channel.id)),
+                create: (context) => bloc
+                  ..add(ShowMatureWarning(
+                      channel: channel,
+                      settingsBloc: context.read<SettingsBloc>())),
               ),
               // ChatMessagesBloc
               BlocProvider<ChatMessagesBloc>(
