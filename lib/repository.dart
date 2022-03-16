@@ -147,4 +147,12 @@ class SettingsRepository {
         ? prefs.remove("settings.locale.country")
         : prefs.setString("settings.locale.country", locale_country);
   }
+
+  Future<bool> getShouldBypassMatureWarning() async {
+    return prefs.getBool("settings.bypassMatureWarning") ?? false;
+  }
+
+  setShouldBypassMatureWarning(bool value) async {
+    prefs.setBool("settings.bypassMatureWarning", value);
+  }
 }

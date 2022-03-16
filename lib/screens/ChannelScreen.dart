@@ -5,6 +5,7 @@ import 'package:glimesh_app/components/Chat.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
+import 'package:glimesh_app/components/MatureWarning.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
@@ -23,6 +24,18 @@ class ChannelScreen extends StatelessWidget {
         return Scaffold(
           body: SafeArea(
             child: _backButtonContainer(context, Loading(context.t("Loading Stream"))),
+          ),
+        );
+      }
+
+      if (state is ChannelShowMatureWarning) {
+        return Scaffold(
+          body: SafeArea(
+            child: MatureWarning(onAccept: () {
+              context
+                  .read<ChannelBloc>()
+                  .add(WatchChannel(channelId: channel.id));
+            }),
           ),
         );
       }

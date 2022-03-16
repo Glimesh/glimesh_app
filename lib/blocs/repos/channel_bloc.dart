@@ -7,6 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 
 /* Events */
 @immutable
@@ -30,9 +31,24 @@ class WatchChannel extends ChannelEvent {
   List<Object> get props => [this.channelId];
 }
 
+class ShowMatureWarning extends ChannelEvent {
+  final Channel channel;
+  final SettingsBloc settingsBloc;
+
+  ShowMatureWarning({required this.channel, required this.settingsBloc});
+
+  @override
+  List<Object?> get props => [this.channel, this.settingsBloc];
+}
+
 /* State */
 @immutable
 abstract class ChannelState extends Equatable {}
+
+class ChannelShowMatureWarning extends ChannelState {
+  @override
+  List<Object?> get props => [];
+}
 
 class ChannelLoading extends ChannelState {
   @override
@@ -78,6 +94,15 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
       emit(ChannelReady(
         edgeRoute: edgeRoute,
       ));
+    });
+
+    on<ShowMatureWarning>((event, emit) async {
+      if (event.settingsBloc.bypassMatureWarning ||
+          !event.channel.matureContent) {
+        this.add(WatchChannel(channelId: event.channel.id));
+      } else {
+        emit(ChannelShowMatureWarning());
+      }
     });
   }
 
