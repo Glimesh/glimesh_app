@@ -232,11 +232,13 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_webrtc:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_webrtc
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: glim-botch
+      resolved-ref: c9d2ccf8d7572e633fb9afc7b2224512481635eb
+      url: "https://github.com/ponkey364/flutter-webrtc.git"
+    source: git
     version: "0.7.1"
   font_awesome_flutter:
     dependency: "direct main"
