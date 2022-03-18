@@ -23,7 +23,8 @@ class ChannelScreen extends StatelessWidget {
       if (state is ChannelLoading) {
         return Scaffold(
           body: SafeArea(
-            child: _backButtonContainer(context, Loading(context.t("Loading Stream"))),
+            child: _backButtonContainer(
+                context, Loading(context.t("Loading Stream"))),
           ),
         );
       }
@@ -31,11 +32,17 @@ class ChannelScreen extends StatelessWidget {
       if (state is ChannelShowMatureWarning) {
         return Scaffold(
           body: SafeArea(
-            child: MatureWarning(onAccept: () {
-              context
-                  .read<ChannelBloc>()
-                  .add(WatchChannel(channelId: channel.id));
-            }),
+            child: _backButtonContainer(
+              context,
+              MatureWarning(
+                onAccept: () {
+                  context
+                      .read<ChannelBloc>()
+                      .add(WatchChannel(channelId: channel.id));
+                },
+              ),
+              darken: true,
+            ),
           ),
         );
       }
@@ -105,7 +112,13 @@ class ChannelScreen extends StatelessWidget {
     });
   }
 
-  Widget _backButtonContainer(BuildContext context, Widget child) {
+  Widget _backButtonContainer(BuildContext context, Widget child,
+      {bool darken = false}) {
+    // On dark mode, there's no point in darkening it
+    if (Theme.of(context).brightness == Brightness.dark) {
+      darken = false;
+    }
+
     return Stack(
       children: [
         child,
@@ -114,7 +127,7 @@ class ChannelScreen extends StatelessWidget {
             padding: EdgeInsets.all(5),
             child: Icon(
               Icons.chevron_left,
-              color: Colors.white70,
+              color: darken ? Colors.black87 : Colors.white70,
             ),
           ),
           onTap: () => Navigator.pop(context),

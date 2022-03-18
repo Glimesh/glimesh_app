@@ -14,16 +14,20 @@ class MatureWarning extends StatelessWidget {
       children: [
         Text(
           context.t("Mature Content Warning"),
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headline5,
+          textAlign: TextAlign.center,
         ),
         Text(
           context.t(
               "The streamer has flagged this channel as only appropriate for Mature Audiences."),
           style: Theme.of(context).textTheme.subtitle1,
+          textAlign: TextAlign.center,
         ),
+        Padding(padding: EdgeInsets.only(top: 10)),
         Text(
           context.t("Do you wish to continue?"),
           style: Theme.of(context).textTheme.subtitle1,
+          textAlign: TextAlign.center,
         ),
         Padding(
           child: OutlinedButton(
@@ -32,10 +36,6 @@ class MatureWarning extends StatelessWidget {
           ),
           padding: EdgeInsets.symmetric(vertical: 8),
         ),
-        ElevatedButton(
-          child: Text(context.t("Go Back")),
-          onPressed: () => Navigator.pop(context),
-        )
       ],
     ));
   }

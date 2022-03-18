@@ -95,7 +95,6 @@ class ChatMessages extends StatelessWidget {
             itemCount: state.messages.length,
             shrinkWrap: true,
             reverse: true,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return _buildChatMessage(context, state.messages[index]);
@@ -110,15 +109,15 @@ class ChatMessages extends StatelessWidget {
 
   Widget _buildChatMessage(BuildContext context, ChatMessage message) {
     return Container(
-      padding: EdgeInsets.all(3),
+      padding: EdgeInsets.all(2),
       child: Align(
         alignment: Alignment.topLeft,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
             color: Theme.of(context).brightness == Brightness.dark
-                ? Color(0xFF0E1826)
-                : Colors.white70,
+                ? Color(0xFF0E1826).withOpacity(0.90)
+                : Colors.white.withOpacity(0.90),
           ),
           padding: EdgeInsets.all(10),
           child: Text.rich(
