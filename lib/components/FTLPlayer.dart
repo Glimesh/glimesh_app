@@ -44,9 +44,9 @@ class _FTLPlayerState extends State<FTLPlayer> {
 
   _setupSpeakerphone() async {
     if (plugin != null && plugin!.remoteStream != null) {
-      plugin!.remoteStream!.forEach((stream) {
-        stream.getAudioTracks()[0].enableSpeakerphone(true);
-      });
+      // plugin!.remoteStream!.forEach((stream) {
+      //   stream.getAudioTracks()[0].enableSpeakerphone(true);
+      // });
 
       // MediaStream? remoteStream = await plugin!.remoteStream!.first;
       // if (remoteStream.active != null && remoteStream.active!) {
