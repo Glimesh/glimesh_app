@@ -65,8 +65,7 @@ dev_dependencies:
 dependency_overrides:
   flutter_webrtc:
     git:
-      url: https://github.com/ponkey364/flutter-webrtc.git
-      ref: glim-botch
+      url: https://github.com/glimesh/flutter-webrtc.git
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

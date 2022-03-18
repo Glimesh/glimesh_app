@@ -141,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  dart_webrtc:
+    dependency: transitive
+    description:
+      name: dart_webrtc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   dbus:
     dependency: transitive
     description:
@@ -235,9 +242,9 @@ packages:
     dependency: "direct overridden"
     description:
       path: "."
-      ref: glim-botch
-      resolved-ref: c9d2ccf8d7572e633fb9afc7b2224512481635eb
-      url: "https://github.com/ponkey364/flutter-webrtc.git"
+      ref: HEAD
+      resolved-ref: "94e94f679e350611882bfa9eed7b833e1c150974"
+      url: "https://github.com/glimesh/flutter-webrtc.git"
     source: git
     version: "0.7.1"
   font_awesome_flutter:
@@ -868,6 +875,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  webrtc_interface:
+    dependency: transitive
+    description:
+      name: webrtc_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   win32:
     dependency: transitive
     description:
