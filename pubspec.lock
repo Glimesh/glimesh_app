@@ -246,7 +246,7 @@ packages:
       resolved-ref: "94e94f679e350611882bfa9eed7b833e1c150974"
       url: "https://github.com/glimesh/flutter-webrtc.git"
     source: git
-    version: "0.7.1"
+    version: "0.8.3"
   font_awesome_flutter:
     dependency: "direct main"
     description:

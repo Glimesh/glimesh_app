@@ -18,8 +18,24 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    increment_build_number(xcodeproj: "Runner.xcodeproj")
-    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+    # Make sure we're building a fresh build
+    # Note: The app is built twice. The first build builds against the latest Flutter toolchain, while the second build builds the actual .ipa file that will be uploaded to Testflight.
+    build_number = number_of_commits()
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "ios", 
+        "--release", 
+        "--no-codesign", 
+        "--build-number=#{build_number}",
+        "--dart-define=GLIMESH_API_URL=https://glimesh.tv",
+        "--dart-define=GLIMESH_WS_API_URL=wss://glimesh.tv",
+        "--dart-define=GLIMESH_REDIRECT_URL=tv.glimesh.app://login-callback", 
+        "--dart-define=GLIMESH_CLIENT_ID=9f12525f-7c10-4c08-b857-61e75b0d2ab7"
+      )
+    end
+
+    build_ios_app(workspace: "Runner.xcworkspace", scheme: "Runner")
     upload_to_testflight
   end
 end

@@ -16,9 +16,9 @@ PODS:
   - path_provider_ios (0.0.1):
     - Flutter
   - Reachability (3.2)
-  - Sentry (7.5.2):
-    - Sentry/Core (= 7.5.2)
-  - Sentry/Core (7.5.2)
+  - Sentry (7.5.4):
+    - Sentry/Core (= 7.5.4)
+  - Sentry/Core (7.5.4)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -95,7 +95,7 @@ SPEC CHECKSUMS:
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: 95788d2baa9cc904151c9ac41101c67d9f25e09e
+  Sentry: 5c5dd4005f3b7b9765d5a8871232cddbd0d888b7
   sentry_flutter: 4cd99764f9fe01c9415790d1f3fb1c7fd3a5cbe9
   shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
@@ -107,4 +107,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 9388b2ab4c98804a24fefc585efd110a078cf07c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

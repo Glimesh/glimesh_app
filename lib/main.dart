@@ -253,7 +253,7 @@ class GlimeshApp extends StatelessWidget {
       final ChannelBloc bloc = ChannelBloc(
         glimeshRepository: repo,
       );
-      
+
       track.event(page: "${channel.username}");
 
       return MaterialPageRoute(
@@ -296,7 +296,7 @@ class GlimeshApp extends StatelessWidget {
 
     if (settings.name == '/profile') {
       final String username = settings.arguments as String;
-      
+
       track.event(page: "${username}/profile");
 
       return MaterialPageRoute(

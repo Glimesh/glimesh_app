@@ -23,8 +23,20 @@ platform :android do
 
   desc "Submit a new Beta Build to Google Play Beta"
   lane :beta do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store(track: 'beta')
+    # gradle(task: "clean assembleRelease")
+    # upload_to_play_store(track: 'beta')
+    build_number = number_of_commits()
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "appbundle", 
+      "--build-number=#{build_number}",
+      "--dart-define=GLIMESH_API_URL=https://glimesh.tv",
+      "--dart-define=GLIMESH_WS_API_URL=wss://glimesh.tv",
+      "--dart-define=GLIMESH_REDIRECT_URL=tv.glimesh.app://login-callback", 
+      "--dart-define=GLIMESH_CLIENT_ID=9f12525f-7c10-4c08-b857-61e75b0d2ab7")
+    end
+    upload_to_play_store(track: 'Alpha', aab: '../build/app/outputs/bundle/release/app-release.aab')
   
     # sh "your_script.sh"
     # You can also use other beta testing services here

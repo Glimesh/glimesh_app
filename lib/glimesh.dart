@@ -33,8 +33,6 @@ class Glimesh {
     final oauthClient = await createOauthClient();
     final token = oauthClient.credentials.accessToken;
 
-    print("Got access token: " + token);
-
     final _socketUrl =
         "$glimeshWsApiUrl/api/graph/websocket?vsn=2.0.0&token=$token";
     final channel = PhoenixLink.createChannel(websocketUri: _socketUrl);
