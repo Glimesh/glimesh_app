@@ -21,6 +21,7 @@ class ChannelScreen extends StatefulWidget {
 
 class _ChannelScreenState extends State<ChannelScreen> {
   final Channel channel;
+  bool isChatOnlyMode = false;
 
   _ChannelScreenState({required this.channel}) : super();
 
@@ -91,6 +92,10 @@ class _ChannelScreenState extends State<ChannelScreen> {
             )
           ],
         );
+
+        if (isChatOnlyMode) {
+          return _buildChatOnlyMode(chatWidget);
+        }
 
         return Scaffold(
           // appBar here with 0 height just to make the background of the status bar black
@@ -187,5 +192,29 @@ class _ChannelScreenState extends State<ChannelScreen> {
         child: chatWidget,
       ),
     ]);
+  }
+
+  Widget _buildChatOnlyMode(Widget chatWidget) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(context.t("Chat-Only Mode")),
+          actions: [
+            Padding(
+              child: ElevatedButton(
+                child: Text(context.t("Exit Chat-Only Mode")),
+                onPressed: () {
+                  setState(() {
+                    isChatOnlyMode = false;
+                  });
+                },
+              ),
+              padding: EdgeInsets.all(8),
+            )
+          ],
+        ),
+        body: Column(children: [
+          Container(child: StreamTitle(channel: channel, allowMetadata: true)),
+          Expanded(child: chatWidget),
+        ]));
   }
 }
