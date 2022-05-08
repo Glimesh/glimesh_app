@@ -77,20 +77,24 @@ class _ChannelScreenState extends State<ChannelScreen> {
         Widget chatWidget = Chat(channel: channel);
         Widget videoWidget = Stack(
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
-            ),
             InkWell(
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: Icon(
-                  Icons.chevron_left,
-                  color: Colors.white70,
-                ),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
               ),
-              onTap: () => Navigator.pop(context),
-            )
+              onTap: () {
+                setState(() {
+                  showControls = !showControls;
+                });
+
+                Future.delayed(const Duration(seconds: 10), () {
+                  setState(() {
+                    showControls = false;
+                  });
+                });
+              },
+            ),
+            _controlsContainer(context),
           ],
         );
 
