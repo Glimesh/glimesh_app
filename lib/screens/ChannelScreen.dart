@@ -10,10 +10,19 @@ import 'package:glimesh_app/models.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
 
-class ChannelScreen extends StatelessWidget {
+class ChannelScreen extends StatefulWidget {
   final Channel channel;
 
-  ChannelScreen({Key? key, required this.channel}) : super(key: key);
+  const ChannelScreen({Key? key, required this.channel}) : super(key: key);
+
+  @override
+  State<ChannelScreen> createState() => _ChannelScreenState(channel: channel);
+}
+
+class _ChannelScreenState extends State<ChannelScreen> {
+  final Channel channel;
+
+  _ChannelScreenState({required this.channel}) : super();
 
   @override
   Widget build(BuildContext context) {
