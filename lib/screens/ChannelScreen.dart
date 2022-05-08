@@ -174,7 +174,8 @@ class _ChannelScreenState extends State<ChannelScreen> {
           child: Row(children: [
             IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.chevron_left)),
+                icon: Icon(Icons.chevron_left),
+                color: Colors.white),
             Spacer(),
             IconButton(
                 onPressed: () {
@@ -182,7 +183,8 @@ class _ChannelScreenState extends State<ChannelScreen> {
                     isChatOnlyMode = true;
                   });
                 },
-                icon: Icon(Icons.chat)),
+                icon: Icon(Icons.chat),
+                color: Colors.white),
           ]),
         ));
   }
