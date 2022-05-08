@@ -238,7 +238,7 @@ class _ChannelScreenState extends State<ChannelScreen> {
           actions: [
             Padding(
               child: ElevatedButton(
-                child: Text(context.t("Exit Chat-Only Mode")),
+                child: Text(context.t("Exit")),
                 onPressed: () {
                   setState(() {
                     isChatOnlyMode = false;
