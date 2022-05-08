@@ -22,6 +22,7 @@ class ChannelScreen extends StatefulWidget {
 class _ChannelScreenState extends State<ChannelScreen> {
   final Channel channel;
   bool isChatOnlyMode = false;
+  bool showControls = true;
 
   _ChannelScreenState({required this.channel}) : super();
 
@@ -148,6 +149,27 @@ class _ChannelScreenState extends State<ChannelScreen> {
         )
       ],
     );
+  }
+
+  Widget _controlsContainer(BuildContext context) {
+    return Visibility(
+        visible: showControls,
+        child: Container(
+          color: Colors.black45,
+          child: Row(children: [
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.chevron_left)),
+            Spacer(),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    isChatOnlyMode = true;
+                  });
+                },
+                icon: Icon(Icons.chat)),
+          ]),
+        ));
   }
 
   Widget _buildStacked(
