@@ -249,9 +249,10 @@ class _ChannelScreenState extends State<ChannelScreen> {
             )
           ],
         ),
-        body: Column(children: [
+        body: SafeArea(
+            child: Column(children: [
           Container(child: StreamTitle(channel: channel, allowMetadata: true)),
           Expanded(child: chatWidget),
-        ]));
+        ])));
   }
 }
