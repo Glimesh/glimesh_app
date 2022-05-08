@@ -27,6 +27,17 @@ class _ChannelScreenState extends State<ChannelScreen> {
   _ChannelScreenState({required this.channel}) : super();
 
   @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        showControls = false;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChannelBloc, ChannelState>(
         builder: (BuildContext context, ChannelState state) {
