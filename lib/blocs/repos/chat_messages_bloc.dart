@@ -116,6 +116,8 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
           .map((dynamic e) => ChatMessage(
               username: e['node']['user']['username'] as String,
               avatarUrl: e['node']['user']['avatarUrl'] as String,
+              isSystemMessage: e['node']['isFollowedMessage'] ||
+                  e['node']['isSubscriptionMessage'],
               tokens: _buildMessageTokensFromJson(e['node']['tokens']),
               metadata: _buildMessageMetadataFromJson(e['node']['metadata'])))
           .toList();
@@ -135,6 +137,8 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
         ChatMessage chatMessage = ChatMessage(
             username: data['user']['username'] as String,
             avatarUrl: data['user']['avatarUrl'] as String,
+            isSystemMessage: data['node']['isFollowedMessage'] ||
+                data['node']['isSubscriptionMessage'],
             tokens: _buildMessageTokensFromJson(data['tokens']),
             metadata: _buildMessageMetadataFromJson(data['metadata']));
 

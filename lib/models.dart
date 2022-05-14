@@ -81,12 +81,14 @@ class ChatMessage {
     required this.avatarUrl,
     required this.tokens,
     this.metadata,
+    required this.isSystemMessage,
   });
 
   final String username;
   final String avatarUrl;
   final List<MessageToken> tokens;
   final MessageMetadata? metadata;
+  final bool isSystemMessage;
 }
 
 class Category {
