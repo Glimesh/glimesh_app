@@ -123,15 +123,7 @@ class ChatMessages extends StatelessWidget {
           child: Text.rich(
             TextSpan(children: [
               ..._buildUserBadges(message.metadata),
-              WidgetSpan(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 5),
-                  child: CircleAvatar(
-                    radius: 10,
-                    backgroundImage: NetworkImage(message.avatarUrl),
-                  ),
-                ),
-              ),
+              _buildAvatar(message),
               TextSpan(
                 text: message.username + ": ",
                 style: TextStyle(
@@ -221,5 +213,40 @@ class ChatMessages extends StatelessWidget {
     if (meta.platformFounderSubscriber) return Colors.yellow.shade700;
 
     return null;
+  }
+
+  WidgetSpan _buildAvatar(ChatMessage message) {
+    if (message.metadata != null) {
+      if (message.metadata!.platformFounderSubscriber ||
+          message.metadata!.platformSupporterSubscriber) {
+        return WidgetSpan(
+          child: Padding(
+            padding: EdgeInsets.only(right: 5),
+            child: DecoratedBox(
+              child: Padding(
+                  child: CircleAvatar(
+                    radius: 9,
+                    backgroundImage: NetworkImage(message.avatarUrl),
+                  ),
+                  padding: EdgeInsets.all(1)),
+              decoration: ShapeDecoration(
+                  shape: CircleBorder(
+                      side:
+                          BorderSide(color: Colors.yellow.shade700, width: 1))),
+            ),
+          ),
+        );
+      }
+    }
+
+    return WidgetSpan(
+      child: Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: CircleAvatar(
+          radius: 10,
+          backgroundImage: NetworkImage(message.avatarUrl),
+        ),
+      ),
+    );
   }
 }
