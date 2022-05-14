@@ -57,16 +57,36 @@ class MessageToken {
   final String? src;
 }
 
+class MessageMetadata {
+  const MessageMetadata({
+    required this.admin,
+    required this.moderator,
+    required this.platformFounderSubscriber,
+    required this.platformSupporterSubscriber,
+    required this.streamer,
+    required this.subscriber,
+  });
+
+  final bool admin;
+  final bool moderator;
+  final bool platformFounderSubscriber;
+  final bool platformSupporterSubscriber;
+  final bool streamer;
+  final bool subscriber;
+}
+
 class ChatMessage {
   const ChatMessage({
     required this.username,
     required this.avatarUrl,
     required this.tokens,
+    this.metadata,
   });
 
   final String username;
   final String avatarUrl;
   final List<MessageToken> tokens;
+  final MessageMetadata? metadata;
 }
 
 class Category {
