@@ -122,9 +122,10 @@ class ChatMessages extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: Text.rich(
             TextSpan(children: [
+              ..._buildUserBadges(message.metadata),
               WidgetSpan(
                 child: Padding(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.only(right: 5),
                   child: CircleAvatar(
                     radius: 10,
                     backgroundImage: NetworkImage(message.avatarUrl),
@@ -179,5 +180,38 @@ class ChatMessages extends StatelessWidget {
       image: CachedNetworkImageProvider(url),
       filterQuality: FilterQuality.medium,
     );
+  }
+
+  List<InlineSpan> _buildUserBadges(MessageMetadata? meta) {
+    if (meta == null) return List.empty();
+
+    var badges = <InlineSpan>[];
+
+    if (meta.admin) badges.add(_badge(Icons.verified_user, Colors.red));
+    if (meta.moderator)
+      badges.add(_badge(Icons.security, Colors.blue.shade700));
+    if (meta.streamer) badges.add(_badge(Icons.tv, Colors.blue));
+    if (meta.subscriber)
+      badges.add(_badge(Icons.emoji_events, Colors.purple.shade800));
+
+    return badges;
+  }
+
+  WidgetSpan _badge(IconData icon, Color color) {
+    return WidgetSpan(
+        child: Padding(
+      child: DecoratedBox(
+        child: Padding(
+            child: Icon(
+              icon,
+              size: 16,
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.all(2)),
+        decoration:
+            BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
+      ),
+      padding: EdgeInsets.only(right: 4),
+    ));
   }
 }
