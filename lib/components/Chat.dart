@@ -182,7 +182,7 @@ class ChatMessages extends StatelessWidget {
 
     var badges = <InlineSpan>[];
 
-    if (meta.admin) badges.add(_badge(Icons.verified_user, Colors.red));
+    if (meta.admin) badges.add(_badge(Icons.business, Colors.red));
     if (meta.moderator)
       badges.add(_badge(Icons.security, Colors.blue.shade700));
     if (meta.streamer) badges.add(_badge(Icons.tv, Colors.blue));
