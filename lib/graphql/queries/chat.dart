@@ -5,6 +5,8 @@ query GetSomeChatMessages($channelId: ID!) {
       edges {
         node {
           id
+		  isFollowedMessage
+		  isSubscriptionMessage
           tokens {
             type
             ...on EmoteToken {
@@ -34,6 +36,8 @@ query GetSomeChatMessages($channelId: ID!) {
 const String chatMessagesSubscription = r'''
 subscription ChatMessages($channelId: ID!) {
   chatMessage(channelId: $channelId) {
+	isFollowedMessage
+	isSubscriptionMessage
     tokens {
       type
       ... on EmoteToken {
