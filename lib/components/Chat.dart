@@ -134,7 +134,8 @@ class ChatMessages extends StatelessWidget {
               ),
               TextSpan(
                 text: message.username + ": ",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                    fontSize: 16, color: _getNameColour(message.metadata)),
               ),
               ..._buildTokens(message.tokens)
             ]),
@@ -213,5 +214,12 @@ class ChatMessages extends StatelessWidget {
       ),
       padding: EdgeInsets.only(right: 4),
     ));
+  }
+
+  Color? _getNameColour(MessageMetadata? meta) {
+    if (meta == null) return null;
+    if (meta.platformFounderSubscriber) return Colors.yellow.shade700;
+
+    return null;
   }
 }
