@@ -16,6 +16,14 @@ query GetSomeChatMessages($channelId: ID!) {
             username
             avatarUrl
           }
+		  metadata {
+			admin
+			moderator
+			platformFounderSubscriber
+			platformSupporterSubscriber
+			streamer
+			subscriber
+		  }
         }
       }
     }
@@ -37,6 +45,14 @@ subscription ChatMessages($channelId: ID!) {
       username
       avatarUrl
     }
+	metadata {
+	  admin
+	  moderator
+	  platformFounderSubscriber
+	  platformSupporterSubscriber
+	  streamer
+	  subscriber
+	}
   }
 }
 ''';
