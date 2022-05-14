@@ -115,6 +115,8 @@ class ChatMessages extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
+            border:
+                message.isSystemMessage ? Border.all(color: Colors.cyan) : null,
             color: Theme.of(context).brightness == Brightness.dark
                 ? Color(0xFF0E1826).withOpacity(0.90)
                 : Colors.white.withOpacity(0.90),
@@ -125,7 +127,7 @@ class ChatMessages extends StatelessWidget {
               ..._buildUserBadges(message.metadata),
               _buildAvatar(message),
               TextSpan(
-                text: message.username + ": ",
+                text: message.username + (message.isSystemMessage ? "" : ": "),
                 style: TextStyle(
                     fontSize: 16, color: _getNameColour(message.metadata)),
               ),
