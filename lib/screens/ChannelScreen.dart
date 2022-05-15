@@ -10,10 +10,32 @@ import 'package:glimesh_app/models.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
 
-class ChannelScreen extends StatelessWidget {
+class ChannelScreen extends StatefulWidget {
   final Channel channel;
 
-  ChannelScreen({Key? key, required this.channel}) : super(key: key);
+  const ChannelScreen({Key? key, required this.channel}) : super(key: key);
+
+  @override
+  State<ChannelScreen> createState() => _ChannelScreenState(channel: channel);
+}
+
+class _ChannelScreenState extends State<ChannelScreen> {
+  final Channel channel;
+  bool isChatOnlyMode = false;
+  bool showControls = true;
+
+  _ChannelScreenState({required this.channel}) : super();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        showControls = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,22 +88,30 @@ class ChannelScreen extends StatelessWidget {
         Widget chatWidget = Chat(channel: channel);
         Widget videoWidget = Stack(
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
-            ),
             InkWell(
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: Icon(
-                  Icons.chevron_left,
-                  color: Colors.white70,
-                ),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
               ),
-              onTap: () => Navigator.pop(context),
-            )
+              onTap: () {
+                setState(() {
+                  showControls = !showControls;
+                });
+
+                Future.delayed(const Duration(seconds: 10), () {
+                  setState(() {
+                    showControls = false;
+                  });
+                });
+              },
+            ),
+            _controlsContainer(context),
           ],
         );
+
+        if (isChatOnlyMode) {
+          return _buildChatOnlyMode(chatWidget);
+        }
 
         return Scaffold(
           // appBar here with 0 height just to make the background of the status bar black
@@ -136,6 +166,29 @@ class ChannelScreen extends StatelessWidget {
     );
   }
 
+  Widget _controlsContainer(BuildContext context) {
+    return Visibility(
+        visible: showControls,
+        child: Container(
+          color: Colors.black45,
+          child: Row(children: [
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.chevron_left),
+                color: Colors.white),
+            Spacer(),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    isChatOnlyMode = true;
+                  });
+                },
+                icon: Icon(Icons.chat),
+                color: Colors.white),
+          ]),
+        ));
+  }
+
   Widget _buildStacked(
     Widget videoPlayer,
     Widget chatWidget,
@@ -178,5 +231,30 @@ class ChannelScreen extends StatelessWidget {
         child: chatWidget,
       ),
     ]);
+  }
+
+  Widget _buildChatOnlyMode(Widget chatWidget) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(context.t("Chat-Only Mode")),
+          actions: [
+            Padding(
+              child: ElevatedButton(
+                child: Text(context.t("Exit")),
+                onPressed: () {
+                  setState(() {
+                    isChatOnlyMode = false;
+                  });
+                },
+              ),
+              padding: EdgeInsets.all(8),
+            )
+          ],
+        ),
+        body: SafeArea(
+            child: Column(children: [
+          Container(child: StreamTitle(channel: channel, allowMetadata: true)),
+          Expanded(child: chatWidget),
+        ])));
   }
 }
