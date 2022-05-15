@@ -114,10 +114,12 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
 
       final List<ChatMessage> existingChatMessages = messages
           .map((dynamic e) => ChatMessage(
-                username: e['node']['user']['username'] as String,
-                avatarUrl: e['node']['user']['avatarUrl'] as String,
-                tokens: _buildMessageTokensFromJson(e['node']['tokens']),
-              ))
+              username: e['node']['user']['username'] as String,
+              avatarUrl: e['node']['user']['avatarUrl'] as String,
+              isSystemMessage: e['node']['isFollowedMessage'] ||
+                  e['node']['isSubscriptionMessage'],
+              tokens: _buildMessageTokensFromJson(e['node']['tokens']),
+              metadata: _buildMessageMetadataFromJson(e['node']['metadata'])))
           .toList();
       chatMessages = existingChatMessages.reversed.toList();
 
@@ -133,10 +135,12 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
         dynamic data = event.data!['chatMessage'] as dynamic;
 
         ChatMessage chatMessage = ChatMessage(
-          username: data['user']['username'] as String,
-          avatarUrl: data['user']['avatarUrl'] as String,
-          tokens: _buildMessageTokensFromJson(data['tokens']),
-        );
+            username: data['user']['username'] as String,
+            avatarUrl: data['user']['avatarUrl'] as String,
+            isSystemMessage: data['node']['isFollowedMessage'] ||
+                data['node']['isSubscriptionMessage'],
+            tokens: _buildMessageTokensFromJson(data['tokens']),
+            metadata: _buildMessageMetadataFromJson(data['metadata']));
 
         // Send new chat messages as new events
         add(NewChatMessage(chatMessage: chatMessage));
@@ -169,5 +173,18 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
         .toList();
 
     return tokens;
+  }
+
+  MessageMetadata? _buildMessageMetadataFromJson(dynamic json) {
+    if (json == null) return null;
+
+    return MessageMetadata(
+      admin: json['admin'],
+      moderator: json['moderator'],
+      platformFounderSubscriber: json['platformFounderSubscriber'],
+      platformSupporterSubscriber: json['platformSupporterSubscriber'],
+      streamer: json['streamer'],
+      subscriber: json['subscriber'],
+    );
   }
 }

@@ -115,6 +115,8 @@ class ChatMessages extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
+            border:
+                message.isSystemMessage ? Border.all(color: Colors.cyan) : null,
             color: Theme.of(context).brightness == Brightness.dark
                 ? Color(0xFF0E1826).withOpacity(0.90)
                 : Colors.white.withOpacity(0.90),
@@ -122,18 +124,12 @@ class ChatMessages extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: Text.rich(
             TextSpan(children: [
-              WidgetSpan(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 10),
-                  child: CircleAvatar(
-                    radius: 10,
-                    backgroundImage: NetworkImage(message.avatarUrl),
-                  ),
-                ),
-              ),
+              ..._buildUserBadges(message.metadata),
+              _buildAvatar(message),
               TextSpan(
-                text: message.username + ": ",
-                style: TextStyle(fontSize: 16),
+                text: message.username + (message.isSystemMessage ? "" : ": "),
+                style: TextStyle(
+                    fontSize: 16, color: _getNameColour(message.metadata)),
               ),
               ..._buildTokens(message.tokens)
             ]),
@@ -178,6 +174,81 @@ class ChatMessages extends StatelessWidget {
     return Image(
       image: CachedNetworkImageProvider(url),
       filterQuality: FilterQuality.medium,
+    );
+  }
+
+  List<InlineSpan> _buildUserBadges(MessageMetadata? meta) {
+    if (meta == null) return List.empty();
+
+    var badges = <InlineSpan>[];
+
+    if (meta.admin) badges.add(_badge(Icons.business, Colors.red));
+    if (meta.moderator)
+      badges.add(_badge(Icons.security, Colors.blue.shade700));
+    if (meta.streamer) badges.add(_badge(Icons.tv, Colors.blue));
+    if (meta.subscriber)
+      badges.add(_badge(Icons.emoji_events, Colors.purple.shade800));
+
+    return badges;
+  }
+
+  WidgetSpan _badge(IconData icon, Color color) {
+    return WidgetSpan(
+        child: Padding(
+      child: DecoratedBox(
+        child: Padding(
+            child: Icon(
+              icon,
+              size: 16,
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.all(2)),
+        decoration:
+            BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
+      ),
+      padding: EdgeInsets.only(right: 4),
+    ));
+  }
+
+  Color? _getNameColour(MessageMetadata? meta) {
+    if (meta == null) return null;
+    if (meta.platformFounderSubscriber) return Colors.yellow.shade700;
+
+    return null;
+  }
+
+  WidgetSpan _buildAvatar(ChatMessage message) {
+    if (message.metadata != null) {
+      if (message.metadata!.platformFounderSubscriber ||
+          message.metadata!.platformSupporterSubscriber) {
+        return WidgetSpan(
+          child: Padding(
+            padding: EdgeInsets.only(right: 5),
+            child: DecoratedBox(
+              child: Padding(
+                  child: CircleAvatar(
+                    radius: 9,
+                    backgroundImage: NetworkImage(message.avatarUrl),
+                  ),
+                  padding: EdgeInsets.all(1)),
+              decoration: ShapeDecoration(
+                  shape: CircleBorder(
+                      side:
+                          BorderSide(color: Colors.yellow.shade700, width: 1))),
+            ),
+          ),
+        );
+      }
+    }
+
+    return WidgetSpan(
+      child: Padding(
+        padding: EdgeInsets.only(right: 5),
+        child: CircleAvatar(
+          radius: 10,
+          backgroundImage: NetworkImage(message.avatarUrl),
+        ),
+      ),
     );
   }
 }
