@@ -137,8 +137,8 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
         ChatMessage chatMessage = ChatMessage(
             username: data['user']['username'] as String,
             avatarUrl: data['user']['avatarUrl'] as String,
-            isSystemMessage: data['node']['isFollowedMessage'] ||
-                data['node']['isSubscriptionMessage'],
+            isSystemMessage: data['isFollowedMessage'] ||
+                data['isSubscriptionMessage'],
             tokens: _buildMessageTokensFromJson(data['tokens']),
             metadata: _buildMessageMetadataFromJson(data['metadata']));
 
