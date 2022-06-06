@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,4 +15,12 @@ jobs:
           flutter-version: "2.8.1"
       - run: flutter pub get
       - run: flutter analyze
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "2.8.1"
+      - run: flutter pub get
       - run: flutter test
