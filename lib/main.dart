@@ -9,8 +9,6 @@ import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:glimesh_app/track.dart';
-import 'package:gql_phoenix_link/gql_phoenix_link.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
@@ -25,7 +23,6 @@ import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/screens/SettingsScreen.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/repository.dart';
-import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/i18n.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -84,99 +81,6 @@ Future<void> main() async {
     },
     appRunner: () => runApp(GlimeshApp()),
   );
-}
-
-class AuthWidget extends StatefulWidget {
-  @override
-  _AuthWidgetState createState() => _AuthWidgetState();
-}
-
-class _AuthWidgetState extends State<AuthWidget> {
-  bool authenticated = false;
-  bool anonymous = false;
-  User? user;
-  GraphQLClient? client;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _checkExistingAuth();
-  }
-
-  _checkExistingAuth() async {
-    // Check if we have a saved token
-    String? clientToken = await Glimesh.getGlimeshToken();
-    if (clientToken == null) {
-      // If not use an anonymous client
-      _setupAnonymousClient();
-    } else {
-      // If so set auth state and bypass
-      _setupAuthenticatedClient();
-    }
-  }
-
-  _setupAnonymousClient() async {
-    client = await Glimesh.anonymousClient();
-    setState(() {
-      client = client;
-      authenticated = false;
-      anonymous = true;
-    });
-  }
-
-  _setupAuthenticatedClient() async {
-    client = await Glimesh.client();
-
-    _fetchUserAndUpdate(client!);
-  }
-
-  login(GraphQLClient newClient) async {
-    _fetchUserAndUpdate(newClient);
-  }
-
-  _fetchUserAndUpdate(GraphQLClient newClient) async {
-    var newUser = await Glimesh.fetchUser(newClient);
-
-    setState(() {
-      client = newClient;
-      authenticated = true;
-      anonymous = false;
-      user = newUser;
-    });
-  }
-
-  logout() async {
-    _deleteClient();
-    setState(() {
-      authenticated = false;
-      anonymous = false;
-      client = null;
-      user = null;
-    });
-    _setupAnonymousClient();
-  }
-
-  void _deleteClient() {
-    if (client != null && client!.link is PhoenixLink) {
-      PhoenixLink link = client!.link as PhoenixLink;
-      link.channel.close();
-    }
-    Glimesh.deleteOauthClient();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AuthState(
-      authenticated: authenticated,
-      anonymous: anonymous,
-      client: client,
-      login: login,
-      logout: logout,
-      user: user,
-      child: GlimeshApp(),
-    );
-  }
 }
 
 class GlimeshApp extends StatelessWidget {

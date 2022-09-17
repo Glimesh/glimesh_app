@@ -1,41 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/components/Loading.dart';
-import 'package:glimesh_app/blocs/repos/auth_bloc.dart' as auth_bloc;
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-class AuthState extends InheritedWidget {
-  final bool authenticated;
-  final bool anonymous;
-  final GraphQLClient? client;
-  final Widget child;
-  final User? user;
-
-  final Function(GraphQLClient) login;
-  final VoidCallback logout;
-
-  AuthState(
-      {Key? key,
-      required this.authenticated,
-      required this.anonymous,
-      required this.login,
-      required this.logout,
-      required this.child,
-      required this.client,
-      this.user})
-      : super(key: key, child: child);
-
-  static AuthState? of(BuildContext context) {
-    return (context.dependOnInheritedWidgetOfExactType<AuthState>());
-  }
-
-  @override
-  bool updateShouldNotify(AuthState oldWidget) {
-    return authenticated != oldWidget.authenticated;
-  }
-}
 
 class AuthWrapper extends StatelessWidget {
   final Widget child;
@@ -44,16 +11,16 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<auth_bloc.AuthBloc, auth_bloc.AuthState>(
+    return BlocBuilder<AuthBloc, AuthState>(
         builder: (BuildContext context, state) {
-      if (state is auth_bloc.AuthFailure) {
+      if (state is AuthFailure) {
         return const MaterialApp(
             home: Scaffold(
                 body: Text(
                     "Failed to authenticate - check your internet connection and try again.")));
       }
 
-      if (state is auth_bloc.AuthClientAcquired) return child;
+      if (state is AuthClientAcquired) return child;
 
       // state is AuthInitial, AuthLoading or else
       return MaterialApp(
