@@ -137,7 +137,6 @@ class _AuthWidgetState extends State<AuthWidget> {
   _fetchUserAndUpdate(GraphQLClient newClient) async {
     // This disgusting mess should be refactored...
     GlimeshRepository repo = GlimeshRepository(client: newClient);
-    UserBloc bloc = UserBloc(glimeshRepository: repo);
     final queryResults = await repo.getMyself();
 
     if (queryResults.hasException) {
@@ -146,7 +145,7 @@ class _AuthWidgetState extends State<AuthWidget> {
     }
 
     final dynamic userRaw = queryResults.data!['myself'] as dynamic;
-    User newUser = bloc.buildUserFromJson(userRaw);
+    User newUser = User.buildFromJson(userRaw);
     print(newUser);
 
     setState(() {
