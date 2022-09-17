@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/models.dart';
 
 enum ClientType {
@@ -79,7 +80,30 @@ class AuthClientAcquired extends AuthState {
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
-    on<AppLoaded>((event, emit) async {});
+    on<AppLoaded>((event, emit) async {
+      bool hasExistingAuth = await Glimesh.hasExistingAuth();
+
+      emit(AuthLoading());
+      if (hasExistingAuth) {
+        var client = await Glimesh.client();
+
+        User? user = await Glimesh.fetchUser(client);
+
+        if (user == null) {
+          emit(AuthFailure(message: "failed"));
+        } else {
+          emit(AuthClientAcquired(
+              clientType: ClientType.authenticated,
+              client: client,
+              user: user));
+        }
+      } else {
+        // set up an anon client
+        var client = await Glimesh.anonymousClient();
+        emit(AuthClientAcquired(
+            clientType: ClientType.anonymous, client: client));
+      }
+    });
 
     on<UserLoggedIn>((event, emit) async {});
 
