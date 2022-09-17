@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gql_phoenix_link/gql_phoenix_link.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/glimesh.dart';
 import 'package:glimesh_app/models.dart';
@@ -105,8 +106,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<UserLoggedIn>((event, emit) async {});
+    on<UserLoggedIn>((event, emit) async {
+      emit(AuthLoading());
+      User? user = await Glimesh.fetchUser(event.client);
 
-    on<UserLoggedOut>((event, emit) async {});
+      emit(AuthClientAcquired(
+          clientType: ClientType.authenticated,
+          client: event.client,
+          user: user));
+    });
+
+    on<UserLoggedOut>((event, emit) async {
+      emit(AuthLoading());
+      await Glimesh.deleteOauthClient();
+
+      var client = await Glimesh.anonymousClient();
+      emit(
+          AuthClientAcquired(clientType: ClientType.anonymous, client: client));
+    });
   }
 }
