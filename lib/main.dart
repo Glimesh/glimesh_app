@@ -82,7 +82,7 @@ Future<void> main() async {
       options.dsn =
           'https://45aff967b80a4b7ba9052619a2fc2012@o966048.ingest.sentry.io/5996892';
     },
-    appRunner: () => runApp(AuthWidget()),
+    appRunner: () => runApp(GlimeshApp()),
   );
 }
 
@@ -182,8 +182,6 @@ class _AuthWidgetState extends State<AuthWidget> {
 class GlimeshApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState.of(context);
-
     final routes = <String, WidgetBuilder>{
       '/channels': (context) => ChannelListScreen(),
       '/login': (context) => LoginScreen(),
