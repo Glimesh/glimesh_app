@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
@@ -193,12 +194,19 @@ class GlimeshApp extends StatelessWidget {
 
     print("New State for MaterialApp");
 
-    return BlocProvider(
-        create: (_) {
-          var bloc = SettingsBloc();
-          bloc..add(InitSettingsData());
-          return bloc;
-        },
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<SettingsBloc>(create: (BuildContext context) {
+            var bloc = SettingsBloc();
+            bloc.add(InitSettingsData());
+            return bloc;
+          }),
+          BlocProvider<AuthBloc>(create: (BuildContext context) {
+            var bloc = AuthBloc();
+            bloc.add(AppLoaded());
+            return bloc;
+          }),
+        ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
             builder: (context, _) => MaterialApp(
                   title: 'Glimesh Alpha',
