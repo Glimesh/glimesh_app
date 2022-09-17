@@ -4,6 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:oauth2/oauth2.dart' as oauth2;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:glimesh_app/models.dart';
+import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/auth/handshake.dart';
 
 mixin Anonymous {}
@@ -120,5 +122,27 @@ class Glimesh {
     }
 
     return null;
+  }
+
+  static Future<bool> hasExistingAuth() async {
+    String? clientToken = await Glimesh.getGlimeshToken();
+
+    if (clientToken == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static Future<User?> fetchUser(GraphQLClient client) async {
+    var repo = GlimeshRepository(client: client);
+    var result = await repo.getMyself();
+
+    if (result.hasException) {
+      print(result.exception!.graphqlErrors);
+      return null;
+    }
+
+    return User.buildFromJson(result.data!['myself']);
   }
 }
