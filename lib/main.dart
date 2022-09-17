@@ -190,7 +190,7 @@ class GlimeshApp extends StatelessWidget {
       '/settings': (context) => SettingsScreen()
     };
 
-    final generateRoutes = (settings) => _generateRoutes(settings, authState);
+    final generateRoutes = (settings) => _generateRoutes(settings);
 
     print("New State for MaterialApp");
 
@@ -241,7 +241,7 @@ class GlimeshApp extends StatelessWidget {
                 )));
   }
 
-  MaterialPageRoute? _generateRoutes(settings, authState) {
+  MaterialPageRoute? _generateRoutes(settings) {
     if (settings.name == '/channel') {
       final Channel channel = settings.arguments as Channel;
 
