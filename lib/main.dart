@@ -244,50 +244,51 @@ class GlimeshApp extends StatelessWidget {
   MaterialPageRoute? _generateRoutes(settings, authState) {
     if (settings.name == '/channel') {
       final Channel channel = settings.arguments as Channel;
-      final GlimeshRepository repo =
-          GlimeshRepository(client: authState!.client!);
-      final ChannelBloc bloc = ChannelBloc(
-        glimeshRepository: repo,
-      );
-
-      track.event(page: "${channel.username}");
 
       return MaterialPageRoute(
-        builder: (context) {
-          print("MaterialPageRoute build");
-          return MultiBlocProvider(
-            providers: [
-              // Channel Bloc
-              BlocProvider<ChannelBloc>(
-                create: (context) => bloc
-                  ..add(ShowMatureWarning(
-                      channel: channel,
-                      settingsBloc: context.read<SettingsBloc>())),
-              ),
-              // ChatMessagesBloc
-              BlocProvider<ChatMessagesBloc>(
-                create: (context) => ChatMessagesBloc(glimeshRepository: repo)
-                  ..add(LoadChatMessages(channelId: channel.id)),
-              ),
-              // Follow Bloc
-              BlocProvider<FollowBloc>(
-                create: (context) {
-                  FollowBloc bloc = FollowBloc(glimeshRepository: repo);
-                  // If we're authenticated, show the initial bloc status
-                  if (authState.authenticated) {
-                    bloc.add(LoadFollowStatus(
-                      streamerId: channel.user_id,
-                      userId: authState.user!.id,
-                    ));
-                  }
-                  return bloc;
-                },
-              ),
-            ],
-            child: ChannelScreen(channel: channel),
-          );
-        },
-      );
+          builder: (_) => AuthWrapper(
+                child: BlocBuilder<AuthBloc, AuthState>(builder: (_, state) {
+                  var authState = state as AuthClientAcquired;
+
+                  final GlimeshRepository repo =
+                      GlimeshRepository(client: authState.client);
+                  final ChannelBloc bloc = ChannelBloc(
+                    glimeshRepository: repo,
+                  );
+
+                  track.event(page: "${channel.username}");
+
+                  return MultiBlocProvider(providers: [
+                    // Channel Bloc
+                    BlocProvider<ChannelBloc>(
+                      create: (context) => bloc
+                        ..add(ShowMatureWarning(
+                            channel: channel,
+                            settingsBloc: context.read<SettingsBloc>())),
+                    ),
+                    // ChatMessagesBloc
+                    BlocProvider<ChatMessagesBloc>(
+                      create: (context) =>
+                          ChatMessagesBloc(glimeshRepository: repo)
+                            ..add(LoadChatMessages(channelId: channel.id)),
+                    ),
+                    // Follow Bloc
+                    BlocProvider<FollowBloc>(
+                      create: (context) {
+                        FollowBloc bloc = FollowBloc(glimeshRepository: repo);
+                        // If we're authenticated, show the initial bloc status
+                        if (authState.isAuthenticated()) {
+                          bloc.add(LoadFollowStatus(
+                            streamerId: channel.user_id,
+                            userId: authState.user!.id,
+                          ));
+                        }
+                        return bloc;
+                      },
+                    ),
+                  ], child: ChannelScreen(channel: channel));
+                }),
+              ));
     }
 
     if (settings.name == '/profile') {
@@ -296,14 +297,13 @@ class GlimeshApp extends StatelessWidget {
       track.event(page: "${username}/profile");
 
       return MaterialPageRoute(
-        builder: (context) {
-          return BlocProvider(
-            create: (context) => UserBloc(
-              glimeshRepository: GlimeshRepository(client: authState!.client!),
-            ),
-            child: UserProfileScreen(username: username),
-          );
-        },
+        builder: (_) => AuthWrapper(
+            child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (_, state) => BlocProvider(
+                    create: (_) => UserBloc(
+                        glimeshRepository: GlimeshRepository(
+                            client: (state as AuthClientAcquired).client)),
+                    child: UserProfileScreen(username: username)))),
       );
     }
 
