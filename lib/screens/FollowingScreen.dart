@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/components/Loading.dart';
@@ -12,14 +12,14 @@ import 'package:glimesh_app/track.dart';
 class FollowingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState.of(context);
+    final authState = context.read<AuthBloc>().state as AuthClientAcquired;
 
     track.event(page: "streams/following");
 
     return Scaffold(
       body: BlocProvider(
         create: (context) => ChannelListBloc(
-          glimeshRepository: GlimeshRepository(client: authState!.client!),
+          glimeshRepository: GlimeshRepository(client: authState.client),
         ),
         child: LiveFollowedChannelsWidget(),
       ),
