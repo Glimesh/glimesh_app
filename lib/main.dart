@@ -190,8 +190,6 @@ class GlimeshApp extends StatelessWidget {
       '/settings': (context) => SettingsScreen()
     };
 
-    final generateRoutes = (settings) => _generateRoutes(settings);
-
     print("New State for MaterialApp");
 
     return MultiBlocProvider(
@@ -208,37 +206,34 @@ class GlimeshApp extends StatelessWidget {
           }),
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
-            builder: (context, _) => MaterialApp(
-                  title: 'Glimesh Alpha',
-                  routes: routes,
-                  onGenerateRoute: generateRoutes,
-                  localizationsDelegates: [
-                    GettextLocalizationsDelegate(defaultLanguage: 'en'),
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate
-                  ],
-                  locale:
-                      context.select((SettingsBloc bloc) => bloc.currentLocale),
-                  supportedLocales: supportedLocales,
-                  theme: ThemeData(
-                      brightness: Brightness.light,
-                      appBarTheme: AppBarTheme(
-                          color: Colors.white, foregroundColor: Colors.black),
-                      textTheme:
-                          TextTheme(headline4: TextStyle(color: Colors.black))),
-                  darkTheme: ThemeData(
-                      brightness: Brightness.dark,
-                      canvasColor: Color(0xff060818),
-                      bottomAppBarColor: Color(0xff0e1726),
-                      appBarTheme: AppBarTheme(color: Colors.black),
-                      textTheme:
-                          TextTheme(headline4: TextStyle(color: Colors.white))),
-                  themeMode:
-                      context.select((SettingsBloc bloc) => bloc.currentTheme),
-                  home: authState!.client != null
-                      ? AppScreen(title: "Glimesh")
-                      : Padding(padding: EdgeInsets.zero),
-                )));
+          builder: (context, _) => MaterialApp(
+              title: 'Glimesh Alpha',
+              routes: routes,
+              onGenerateRoute: _generateRoutes,
+              localizationsDelegates: [
+                GettextLocalizationsDelegate(defaultLanguage: 'en'),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate
+              ],
+              locale: context.select((SettingsBloc bloc) => bloc.currentLocale),
+              supportedLocales: supportedLocales,
+              theme: ThemeData(
+                  brightness: Brightness.light,
+                  appBarTheme: AppBarTheme(
+                      color: Colors.white, foregroundColor: Colors.black),
+                  textTheme:
+                      TextTheme(headline4: TextStyle(color: Colors.black))),
+              darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  canvasColor: Color(0xff060818),
+                  bottomAppBarColor: Color(0xff0e1726),
+                  appBarTheme: AppBarTheme(color: Colors.black),
+                  textTheme:
+                      TextTheme(headline4: TextStyle(color: Colors.white))),
+              themeMode:
+                  context.select((SettingsBloc bloc) => bloc.currentTheme),
+              home: AuthWrapper(child: AppScreen(title: "Glimesh"))),
+        ));
   }
 
   MaterialPageRoute? _generateRoutes(settings) {
