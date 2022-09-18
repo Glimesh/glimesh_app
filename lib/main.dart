@@ -138,7 +138,7 @@ class GlimeshApp extends StatelessWidget {
         ));
   }
 
-  MaterialPageRoute? _generateRoutes(settings) {
+  MaterialPageRoute? _generateRoutes(RouteSettings settings) {
     if (settings.name == '/channel') {
       final Channel channel = settings.arguments as Channel;
 
