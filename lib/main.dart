@@ -188,8 +188,9 @@ class GlimeshApp extends StatelessWidget {
               ));
     }
 
-    if (settings.name == '/profile') {
-      final String username = settings.arguments as String;
+    // profile screen
+    if (settings.name?.endsWith('/profile') ?? false) {
+      final String username = settings.name!.split('/')[1];
 
       track.event(page: "${username}/profile");
 

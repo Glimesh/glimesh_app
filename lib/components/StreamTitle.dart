@@ -46,8 +46,8 @@ class _StreamTitleState extends State<StreamTitle> {
                     backgroundImage: NetworkImage(widget.channel.avatarUrl),
                   ),
                   onTap: () {
-                    Navigator.pushNamed(context, "/profile",
-                        arguments: widget.channel.username);
+                    Navigator.pushNamed(
+                        context, "/${widget.channel.username}/profile");
                   }),
             ),
             Expanded(
