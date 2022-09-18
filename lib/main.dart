@@ -8,6 +8,7 @@ import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
+import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/track.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +88,6 @@ class GlimeshApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routes = <String, WidgetBuilder>{
-      '/channels': (context) => ChannelListScreen(),
       '/login': (context) => LoginScreen(),
       '/settings': (context) => SettingsScreen()
     };
@@ -139,6 +139,18 @@ class GlimeshApp extends StatelessWidget {
   }
 
   MaterialPageRoute? _generateRoutes(RouteSettings settings) {
+    // category screen
+    if (settings.name?.startsWith('/streams') ?? false) {
+      final categorySlug = settings.name!.split('/')[2];
+      final category = categories[categorySlug];
+
+      if (category == null) return null;
+
+      return MaterialPageRoute(
+          builder: (_) =>
+              AuthWrapper(child: ChannelListScreen(category: category)));
+    }
+
     if (settings.name == '/channel') {
       final Channel channel = settings.arguments as Channel;
 

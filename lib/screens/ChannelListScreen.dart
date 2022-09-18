@@ -9,9 +9,12 @@ import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/track.dart';
 
 class ChannelListScreen extends StatelessWidget {
+  final Category category;
+
+  const ChannelListScreen({required this.category, Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    Category category = ModalRoute.of(context)!.settings.arguments as Category;
     final authState = context.read<AuthBloc>().state as AuthClientAcquired;
 
     track.event(page: "streams/${category.slug}");

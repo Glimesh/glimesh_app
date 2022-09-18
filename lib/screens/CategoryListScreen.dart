@@ -160,8 +160,7 @@ class CategoryListWidget extends StatelessWidget {
         child: OutlinedButton(
           onPressed: () => Navigator.pushNamed(
             context,
-            '/channels',
-            arguments: category,
+            '/streams/${category.slug}',
           ),
           child: Column(
             children: [
