@@ -10,6 +10,17 @@ import 'package:glimesh_app/repository.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/track.dart';
 
+const Map<String, Category> categories = {
+  "gaming":
+      Category(name: "Gaming", slug: "gaming", icon: Icons.sports_esports),
+  "art": Category(name: "Art", slug: "art", icon: Icons.color_lens),
+  "music": Category(name: "Music", slug: "music", icon: Icons.music_note),
+  "tech": Category(name: "Tech", slug: "tech", icon: Icons.memory),
+  "irl": Category(name: "IRL", slug: "irl", icon: Icons.photo_camera),
+  "education":
+      Category(name: "Education", slug: "education", icon: Icons.school)
+};
+
 class CategoryListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -107,20 +118,11 @@ class CategoryListWidget extends StatelessWidget {
     );
   }
 
-  List<Category> categories = [
-    Category(name: "Gaming", slug: "gaming", icon: Icons.sports_esports),
-    Category(name: "Art", slug: "art", icon: Icons.color_lens),
-    Category(name: "Music", slug: "music", icon: Icons.music_note),
-    Category(name: "Tech", slug: "tech", icon: Icons.memory),
-    Category(name: "IRL", slug: "irl", icon: Icons.photo_camera),
-    Category(name: "Education", slug: "education", icon: Icons.school)
-  ];
-
   Widget _buildButtons(BuildContext context) {
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     List<Widget> buttons = [];
-    categories.forEach((category) {
+    categories.values.forEach((category) {
       buttons.add(buildButton(context, category));
     });
 
