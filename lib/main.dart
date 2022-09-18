@@ -17,7 +17,7 @@ import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/screens/LoginScreen.dart';
 import 'package:glimesh_app/screens/ChannelListScreen.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
-import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/components/AuthWrapper.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:glimesh_app/screens/ChannelScreen.dart';
 import 'package:glimesh_app/screens/SettingsScreen.dart';
