@@ -122,11 +122,11 @@ class ChatMessage {
 }
 
 class Category {
-  String name;
-  String slug;
-  IconData icon;
+  final String name;
+  final String slug;
+  final IconData icon;
 
-  Category({
+  const Category({
     required this.name,
     required this.slug,
     this.icon = Icons.question_answer,
