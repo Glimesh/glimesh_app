@@ -139,6 +139,12 @@ class GlimeshApp extends StatelessWidget {
   }
 
   MaterialPageRoute? _generateRoutes(RouteSettings settings) {
+    // events screen (for when events get added to the API)
+    if (settings.name == '/events') {
+      // for future expansion
+      return null;
+    }
+
     // category screen
     if (settings.name?.startsWith('/streams') ?? false) {
       final categorySlug = settings.name!.split('/')[2];
