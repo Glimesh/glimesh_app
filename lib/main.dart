@@ -157,6 +157,23 @@ class GlimeshApp extends StatelessWidget {
               AuthWrapper(child: ChannelListScreen(category: category)));
     }
 
+    // profile screen
+    if (settings.name?.endsWith('/profile') ?? false) {
+      final String username = settings.name!.split('/')[1];
+
+      track.event(page: "${username}/profile");
+
+      return MaterialPageRoute(
+        builder: (_) => AuthWrapper(
+            child: BlocBuilder<AuthBloc, AuthState>(
+                builder: (_, state) => BlocProvider(
+                    create: (_) => UserBloc(
+                        glimeshRepository: GlimeshRepository(
+                            client: (state as AuthClientAcquired).client)),
+                    child: UserProfileScreen(username: username)))),
+      );
+    }
+
     if (settings.name == '/channel') {
       final Channel channel = settings.arguments as Channel;
 
@@ -204,23 +221,6 @@ class GlimeshApp extends StatelessWidget {
                   ], child: ChannelScreen(channel: channel));
                 }),
               ));
-    }
-
-    // profile screen
-    if (settings.name?.endsWith('/profile') ?? false) {
-      final String username = settings.name!.split('/')[1];
-
-      track.event(page: "${username}/profile");
-
-      return MaterialPageRoute(
-        builder: (_) => AuthWrapper(
-            child: BlocBuilder<AuthBloc, AuthState>(
-                builder: (_, state) => BlocProvider(
-                    create: (_) => UserBloc(
-                        glimeshRepository: GlimeshRepository(
-                            client: (state as AuthClientAcquired).client)),
-                    child: UserProfileScreen(username: username)))),
-      );
     }
 
     // Fail if we're missing any routes.
