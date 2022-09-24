@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/components/Loading.dart';
@@ -152,6 +154,16 @@ class ChatMessages extends StatelessWidget {
             child: Padding(
                 child: SizedBox(child: _drawEmote(token), width: emoteSize),
                 padding: EdgeInsets.symmetric(horizontal: 4)));
+      }
+
+      if (token.tokenType == "url" && token.url != null) {
+        return TextSpan(
+            text: token.text,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () async {
+                launch(token.url!);
+              },
+            style: const TextStyle(fontSize: 16, color: Colors.blue));
       }
 
       // we don't know the token type, or it's just text, just return the text for now.
