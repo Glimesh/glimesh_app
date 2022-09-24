@@ -50,11 +50,13 @@ class MessageToken {
     required this.tokenType,
     required this.text,
     this.src,
+    this.url,
   });
 
   final String tokenType;
   final String text;
   final String? src;
+  final String? url;
 }
 
 class MessageMetadata {

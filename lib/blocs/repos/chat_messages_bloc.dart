@@ -169,6 +169,7 @@ class ChatMessagesBloc extends Bloc<ChatMessagesEvent, ChatMessagesState> {
               tokenType: token['type'] as String,
               text: token['text'] as String,
               src: token['src'] as String?,
+              url: token['url'] as String?,
             ))
         .toList();
 
