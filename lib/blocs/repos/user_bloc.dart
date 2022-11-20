@@ -63,8 +63,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return;
       }
 
-      final dynamic user = queryResults.data!['myself'] as dynamic;
-      emit(UserLoaded(user: buildUserFromJson(user)));
+      final dynamic user = queryResults.data!['myself'];
+      emit(UserLoaded(user: User.buildFromJson(user)));
     });
 
     on<LoadUser>((event, emit) async {
@@ -75,39 +75,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         return;
       }
 
-      final dynamic user = queryResults.data!['user'] as dynamic;
+      final dynamic user = queryResults.data!['user'];
 
-      emit(UserLoaded(user: buildUserFromJson(user)));
+      emit(UserLoaded(user: User.buildFromJson(user)));
     });
-  }
-
-  User buildUserFromJson(dynamic json) {
-    return User(
-      id: int.parse(json['id']),
-      username: json['username'] as String,
-      teamRole: json['teamRole'] as String?,
-      avatarUrl: json['avatarUrl'] as String,
-      countFollowers: json['countFollowers'] as int,
-      countFollowing: json['countFollowing'] as int,
-      profileContentMd: json['profileContentMd'] as String?,
-      socialDiscord: json['socialDiscord'] as String?,
-      socialGuilded: json['socialGuilded'] as String?,
-      socialYoutube: json['socialYoutube'] as String?,
-      socialInstagram: json['socialInstagram'] as String?,
-      socials: buildSocialsFromJson(json['socials']),
-    );
-  }
-
-  List<Social> buildSocialsFromJson(dynamic json) {
-    List<Social> socials = [];
-
-    for (var js in json) {
-      socials.add(Social(
-        platform: js['platform'] as String,
-        username: js['username'] as String,
-      ));
-    }
-
-    return socials;
   }
 }

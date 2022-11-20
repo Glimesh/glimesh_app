@@ -33,6 +33,27 @@ class User {
   String toString() {
     return "User(id: $id, username: $username)";
   }
+
+  static User buildFromJson(dynamic json) {
+    return User(
+      id: int.parse(json['id']),
+      username: json['username'] as String,
+      teamRole: json['teamRole'] as String?,
+      avatarUrl: json['avatarUrl'] as String,
+      countFollowers: json['countFollowers'] as int,
+      countFollowing: json['countFollowing'] as int,
+      profileContentMd: json['profileContentMd'] as String?,
+      socialDiscord: json['socialDiscord'] as String?,
+      socialGuilded: json['socialGuilded'] as String?,
+      socialYoutube: json['socialYoutube'] as String?,
+      socialInstagram: json['socialInstagram'] as String?,
+      socials: User._buildSocialsFromJson(json['socials']),
+    );
+  }
+
+  static List<Social> _buildSocialsFromJson(List<dynamic> json) {
+    return json.map((soc) => Social.buildFromJson(soc)).toList();
+  }
 }
 
 class Social {
@@ -43,6 +64,13 @@ class Social {
 
   final String platform;
   final String username;
+
+  static Social buildFromJson(dynamic json) {
+    return Social(
+      platform: json['platform'] as String,
+      username: json['username'] as String,
+    );
+  }
 }
 
 class MessageToken {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
-import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/components/ChatInput.dart';
@@ -16,7 +16,7 @@ class Chat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChatMessagesBloc bloc = BlocProvider.of<ChatMessagesBloc>(context);
-    AuthState? authState = AuthState.of(context);
+    final authState = context.read<AuthBloc>().state as AuthClientAcquired;
 
     return Column(
       children: [
@@ -36,7 +36,7 @@ class Chat extends StatelessWidget {
         // Chat Input
         _buildChatInput(
           context,
-          authState!.anonymous,
+          authState.isAnon(),
           (message) => bloc.add(SendChatMessage(
             channelId: channel.id,
             message: message,

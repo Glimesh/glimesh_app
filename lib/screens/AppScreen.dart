@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
-import 'package:glimesh_app/auth.dart';
 
 import 'package:glimesh_app/track.dart';
 
@@ -50,7 +51,8 @@ class _AppScreenState extends State<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState.of(context);
+    final authBloc = context.watch<AuthBloc>();
+    final authState = authBloc.state as AuthClientAcquired;
 
     return Scaffold(
       appBar: AppBar(
@@ -88,8 +90,8 @@ class _AppScreenState extends State<AppScreen> {
                 },
               ),
             ),
-            _anonymousUserInfo(context, authState!.anonymous),
-            if (authState.authenticated == false)
+            _anonymousUserInfo(context, authState.isAnon()),
+            if (authState.isAnon())
               ListTile(
                 leading: Icon(Icons.login),
                 title: Text(context.t('Login')),
@@ -101,11 +103,13 @@ class _AppScreenState extends State<AppScreen> {
                 leading: Icon(Icons.settings),
                 title: Text(context.t("Settings")),
                 onTap: () => Navigator.pushNamed(context, '/settings')),
-            if (authState.authenticated == true)
+            if (authState.isAuthenticated())
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text(context.t('Sign Out')),
-                onTap: authState.logout,
+                onTap: () {
+                  authBloc.add(UserLoggedOut());
+                },
               ),
           ],
         ),
@@ -113,7 +117,7 @@ class _AppScreenState extends State<AppScreen> {
       body:
           pages.isEmpty ? Loading(context.t("Loading")) : pages[_selectedIndex],
       bottomNavigationBar:
-          _bottomNavigationBar(context, authState.authenticated),
+          _bottomNavigationBar(context, authState.isAuthenticated()),
     );
   }
 
