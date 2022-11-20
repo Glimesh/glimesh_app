@@ -12,6 +12,9 @@ query GetSomeChatMessages($channelId: ID!) {
             ...on EmoteToken {
               src
             }
+            ...on UrlToken {
+              url
+            }
             text
           }
           user {
@@ -42,6 +45,9 @@ subscription ChatMessages($channelId: ID!) {
       type
       ... on EmoteToken {
         src
+      }
+      ...on UrlToken {
+        url
       }
       text
     }
