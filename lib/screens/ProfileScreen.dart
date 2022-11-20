@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/blocs/repos/user_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/models.dart';
@@ -33,12 +33,12 @@ class UserProfileScreen extends StatelessWidget {
 class MyProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authState = AuthState.of(context);
+    final authState = context.read<AuthBloc>().state as AuthClientAcquired;
 
     return Container(
       child: BlocProvider(
         create: (context) => UserBloc(
-          glimeshRepository: GlimeshRepository(client: authState!.client!),
+          glimeshRepository: GlimeshRepository(client: authState.client),
         ),
         child: _MyProfileWidget(),
       ),

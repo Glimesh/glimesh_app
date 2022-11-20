@@ -1,21 +1,10 @@
 import 'dart:async';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:sentry/sentry.dart';
-
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:glimesh_app/auth/handshake.dart';
 
 AuthHandshake getHandshake() => MobileHandshake();
 
 class MobileHandshake extends AuthHandshake {
-  _redirect(Uri authorizationUrl) async {
-    if (await canLaunch(authorizationUrl.toString())) {
-      await launch(authorizationUrl.toString());
-    } else {
-      await Sentry.captureMessage('Failed to launch oauth window');
-    }
-  }
-
   String redirectUrl() {
     return String.fromEnvironment("GLIMESH_REDIRECT_URL",
         defaultValue: "tv.glimesh.app://login-callback");
@@ -23,20 +12,14 @@ class MobileHandshake extends AuthHandshake {
 
   Future<Uri> authorize(Uri authorizationUrl) async {
     var completer = new Completer<Uri>();
+    final result = await FlutterWebAuth.authenticate(
+        url: authorizationUrl.toString(), callbackUrlScheme: "tv.glimesh.app");
 
-    await _redirect(authorizationUrl);
-
-    StreamSubscription? _sub;
-    _sub = uriLinkStream.listen((Uri? uri) {
-      if (uri.toString().startsWith(redirectUrl())) {
-        _sub!.cancel();
-        closeWebView();
-        completer.complete(uri);
-      }
-    }, onError: (err) {
-      _sub!.cancel();
-      completer.completeError(err);
-    });
+    if (result.toString().startsWith(redirectUrl())) {
+      completer.complete(Uri.parse(result));
+    } else {
+      completer.completeError("invalid redirect");
+    }
 
     return completer.future;
   }

@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/glimesh.dart';
-import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/track.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
-  AuthState? authState;
-
   @override
   Widget build(BuildContext context) {
-    authState = AuthState.of(context);
     bool horizontalTablet = MediaQuery.of(context).size.width > 992;
 
     track.event(page: "users/log_in");
@@ -103,10 +101,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget _loginButton(BuildContext context, bool center) {
-    if (authState == null) {
-      return Padding(padding: EdgeInsets.zero);
-    }
-
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +124,7 @@ class LoginScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () async {
                 GraphQLClient client = await Glimesh.client();
-                authState!.login(client);
+                context.read<AuthBloc>().add(UserLoggedIn(client: client));
 
                 // Later once "state" is figured out, this can be just .pop to go back to the last page
                 Navigator.popUntil(context, ModalRoute.withName('/'));

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
-import 'package:glimesh_app/auth.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/models.dart';
 
@@ -13,8 +12,6 @@ class FollowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FollowBloc bloc = BlocProvider.of<FollowBloc>(context);
-    AuthState? authState = AuthState.of(context);
-
     return BlocBuilder<FollowBloc, FollowState>(
       builder: (BuildContext context, FollowState state) {
         print("Builder got $state");

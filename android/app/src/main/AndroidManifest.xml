@@ -50,9 +50,20 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tv.glimesh.app" android:host="login-callback" />
+                <data android:scheme="tv.glimesh.app" />
             </intent-filter>
         </activity>
+
+       <activity
+           android:name="com.linusu.flutter_web_auth.CallbackActivity"
+           android:exported="true">
+           <intent-filter>
+               <action android:name="android.intent.action.VIEW" />
+               <category android:name="android.intent.category.DEFAULT" />
+               <category android:name="android.intent.category.BROWSABLE" />
+               <data android:scheme="tv.glimesh.app" android:host="login-callback" />
+           </intent-filter>
+       </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

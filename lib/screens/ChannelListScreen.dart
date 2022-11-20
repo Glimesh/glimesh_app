@@ -4,7 +4,7 @@ import 'package:glimesh_app/blocs/repos/channel_list_bloc.dart';
 import 'package:glimesh_app/components/ChannelList.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
-import 'package:glimesh_app/auth.dart';
+import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
 import 'package:glimesh_app/track.dart';
 
@@ -12,7 +12,7 @@ class ChannelListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Category category = ModalRoute.of(context)!.settings.arguments as Category;
-    final authState = AuthState.of(context);
+    final authState = context.read<AuthBloc>().state as AuthClientAcquired;
 
     track.event(page: "streams/${category.slug}");
 
@@ -25,7 +25,7 @@ class ChannelListScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => ChannelListBloc(
-          glimeshRepository: GlimeshRepository(client: authState!.client!),
+          glimeshRepository: GlimeshRepository(client: authState.client),
         ),
         child: ChannelListWidget(categorySlug: category.slug),
       ),
