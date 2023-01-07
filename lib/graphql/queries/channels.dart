@@ -103,6 +103,36 @@ query GetHomepageChannels {
 }
 ''';
 
+const String queryChannelFromUsername = r'''
+query GetChannelFromUsername($username: String!) {
+	channel(streamerUsername: $username) {
+		id
+		title
+		chatBgUrl
+		language
+		matureContent
+
+		stream {
+			thumbnailUrl
+		}
+
+		subcategory {
+			name
+		}
+
+		tags {
+			name
+		}
+
+		streamer {
+			id
+			username
+			avatarUrl
+		}
+	}
+}
+''';
+
 const String watchChannel = r'''
 mutation WatchChannel($channelId: ID!, $country: String!) {
   watchChannel(channelId: $channelId, country: $country) {

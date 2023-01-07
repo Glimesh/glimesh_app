@@ -43,6 +43,11 @@ class GlimeshRepository {
         document: parseString(channel_queries.queryHomepageChannels)));
   }
 
+  Future<QueryResult> getChannelFromUsername(String username) async {
+    return client.query(QueryOptions(
+        document: parseString(channel_queries.queryChannelFromUsername), variables: {"username": username}));
+  }
+
   // fetchPolicy is set the noCache here due to issue #950 on graphql-flutter
   // which seems to be causing issues with fragments?
   // also, this fixes having old chat messages shown, which is nice
