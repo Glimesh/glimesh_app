@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glimesh_app/i18n.dart';
 
 class User {
   User({
@@ -137,6 +138,14 @@ class Subcategory {
   const Subcategory({required this.name});
 
   final String name;
+
+  static Subcategory? buildFromJson(dynamic json) {
+    if (json == null) {
+      return null;
+    }
+
+    return Subcategory(name: json["name"] as String);
+  }
 }
 
 class Tag {
@@ -174,6 +183,24 @@ class Channel {
 
   List<Tag> tags = [];
   final Subcategory? subcategory;
+
+  static Channel buildFromJson(dynamic json) {
+    return Channel(
+      id: int.parse(json['id']),
+      title: json['title'] as String,
+      chatBackgroundUrl: json['chatBgUrl'] as String,
+      thumbnail: json['stream']['thumbnailUrl'] as String,
+      username: json['streamer']['username'] as String,
+      user_id: int.parse(json['streamer']['id']),
+      avatarUrl: json['streamer']['avatarUrl'] as String,
+      matureContent: json['matureContent'] as bool,
+      language: languages[json['language'] as String? ?? ''],
+      subcategory: Subcategory.buildFromJson(json['subcategory']),
+      tags: (json['tags'] as List<dynamic>)
+          .map((dynamic e) => Tag(name: e['name'] as String))
+          .toList(),
+    );
+  }
 }
 
 class JanusEdgeRoute {

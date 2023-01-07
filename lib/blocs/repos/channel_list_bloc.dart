@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:glimesh_app/models.dart';
-import 'package:glimesh_app/i18n.dart';
 
 @immutable
 abstract class ChannelListEvent extends Equatable {}
@@ -158,44 +157,6 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
   }
 
   Channel buildChannelFromJson(dynamic json) {
-    return Channel(
-      id: int.parse(json['node']['id']),
-      title: json['node']['title'] as String,
-      chatBackgroundUrl: json['node']['chatBgUrl'] as String,
-      thumbnail: json['node']['stream']['thumbnailUrl'] as String,
-      username: json['node']['streamer']['username'] as String,
-      user_id: int.parse(json['node']['streamer']['id']),
-      avatarUrl: json['node']['streamer']['avatarUrl'] as String,
-      matureContent: json['node']['matureContent'] as bool,
-      language: buildLanguageDisplayName(json['node']['language']),
-      subcategory: buildSubcategoryFromJson(json['node']['subcategory']),
-      tags: buildTagsFromJson(json['node']['tags']),
-    );
-  }
-
-  String? buildString(dynamic input) {
-    if (input == null) {
-      return null;
-    }
-
-    return input as String;
-  }
-
-  Subcategory? buildSubcategoryFromJson(dynamic subcategory) {
-    if (subcategory == null) {
-      return null;
-    }
-
-    return Subcategory(name: subcategory["name"] as String);
-  }
-
-  List<Tag> buildTagsFromJson(List<dynamic> tags) {
-    return tags.map((dynamic e) => Tag(name: e['name'] as String)).toList();
-  }
-
-  String? buildLanguageDisplayName(String? locale) {
-    if (locale == null) return null;
-
-    return languages[locale];
+    return Channel.buildFromJson(json['node']);
   }
 }
