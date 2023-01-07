@@ -7,9 +7,11 @@ import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/blocs/repos/chat_messages_bloc.dart';
 import 'package:glimesh_app/blocs/repos/follow_bloc.dart';
 import 'package:glimesh_app/blocs/repos/settings_bloc.dart';
+import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/screens/AppScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/track.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
@@ -193,9 +195,40 @@ class GlimeshApp extends StatelessWidget {
               ));
     }
 
-    // Fail if we're missing any routes.
-    assert(false, 'Need to implement ${settings.name}');
-    return null;
+    // otherwise, assume that this is a channel for deep link purposes.
+    final String username = settings.name!.split('/')[1];
+    return MaterialPageRoute(
+        builder: (_) => AuthWrapper(child: BlocBuilder<AuthBloc, AuthState>(
+              builder: (_, state) {
+                var authState = state as AuthClientAcquired;
+
+                final GlimeshRepository repo =
+                    GlimeshRepository(client: authState.client);
+                final ChannelBloc bloc = ChannelBloc(
+                  glimeshRepository: repo,
+                );
+
+                var queryFuture = repo.getChannelFromUsername(username);
+
+                return FutureBuilder(
+                    future: queryFuture,
+                    builder: (context, AsyncSnapshot<QueryResult> snap) {
+                      if (snap.hasData) {
+                        Channel channel =
+                            Channel.buildFromJson(snap.data!.data!['channel']);
+                        // how do we refactor this mess?
+                        return _buildChannel(channel, bloc, repo, authState);
+                      }
+
+                      if (snap.hasError) {
+                        print(snap.error);
+                      }
+
+                      return Scaffold(
+                          body: Loading(context.t("Loading Stream")));
+                    });
+              },
+            )));
   }
 
   Widget _buildChannel(
