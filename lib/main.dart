@@ -188,37 +188,7 @@ class GlimeshApp extends StatelessWidget {
                     glimeshRepository: repo,
                   );
 
-                  track.event(page: "${channel.username}");
-
-                  return MultiBlocProvider(providers: [
-                    // Channel Bloc
-                    BlocProvider<ChannelBloc>(
-                      create: (context) => bloc
-                        ..add(ShowMatureWarning(
-                            channel: channel,
-                            settingsBloc: context.read<SettingsBloc>())),
-                    ),
-                    // ChatMessagesBloc
-                    BlocProvider<ChatMessagesBloc>(
-                      create: (context) =>
-                          ChatMessagesBloc(glimeshRepository: repo)
-                            ..add(LoadChatMessages(channelId: channel.id)),
-                    ),
-                    // Follow Bloc
-                    BlocProvider<FollowBloc>(
-                      create: (context) {
-                        FollowBloc bloc = FollowBloc(glimeshRepository: repo);
-                        // If we're authenticated, show the initial bloc status
-                        if (authState.isAuthenticated()) {
-                          bloc.add(LoadFollowStatus(
-                            streamerId: channel.user_id,
-                            userId: authState.user!.id,
-                          ));
-                        }
-                        return bloc;
-                      },
-                    ),
-                  ], child: ChannelScreen(channel: channel));
+                  return _buildChannel(channel, bloc, repo, authState);
                 }),
               ));
     }
@@ -226,5 +196,39 @@ class GlimeshApp extends StatelessWidget {
     // Fail if we're missing any routes.
     assert(false, 'Need to implement ${settings.name}');
     return null;
+  }
+
+  Widget _buildChannel(
+      Channel channel,
+      ChannelBloc channelBloc,
+      GlimeshRepository repo,
+      AuthClientAcquired authState,
+      ) {
+    track.event(page: channel.username);
+
+    return MultiBlocProvider(providers: [
+      BlocProvider<ChannelBloc>(
+        create: (context) => channelBloc
+          ..add(ShowMatureWarning(
+              channel: channel, settingsBloc: context.read<SettingsBloc>())),
+      ),
+      BlocProvider<ChatMessagesBloc>(
+        create: (context) => ChatMessagesBloc(glimeshRepository: repo)
+          ..add(LoadChatMessages(channelId: channel.id)),
+      ),
+      BlocProvider<FollowBloc>(
+        create: (context) {
+          FollowBloc followBloc = FollowBloc(glimeshRepository: repo);
+          // If we're authenticated, show the initial bloc status
+          if (authState.isAuthenticated()) {
+            followBloc.add(LoadFollowStatus(
+              streamerId: channel.user_id,
+              userId: authState.user!.id,
+            ));
+          }
+          return followBloc;
+        },
+      ),
+    ], child: ChannelScreen(channel: channel));
   }
 }
