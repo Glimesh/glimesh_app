@@ -79,7 +79,8 @@ class _StreamTitleState extends State<StreamTitle> {
             _buildSubcategoryTag(),
             _buildTags(context),
             _buildLanguageTag(context),
-            _buildMatureTag()
+            _buildMatureTag(),
+            _buildBackendTag(),
           ],
         ),
       ),
@@ -140,6 +141,13 @@ class _StreamTitleState extends State<StreamTitle> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [Text("Content"), Chip(label: Text("Mature"))],
+    );
+  }
+
+  Widget _buildBackendTag() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [Text("Backend"), Chip(label: Text(widget.channel.backend))],
     );
   }
 
