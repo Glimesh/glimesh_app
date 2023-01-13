@@ -51,7 +51,7 @@ class _WHEPPlayerState extends State<WHEPPlayer> {
     };
 
     var endpoint =
-        Uri.https("rtrouter.fly.dev", "v1/whep/endpoint/${widget.channel.id}");
+        Uri.https("live.glimesh.tv", "v1/whep/endpoint/${widget.channel.id}");
     log("POST ${endpoint.toString()}");
     var response = await http.post(
       endpoint,
