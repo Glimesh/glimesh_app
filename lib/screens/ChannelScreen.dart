@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:glimesh_app/blocs/repos/channel_bloc.dart';
 import 'package:glimesh_app/components/Chat.dart';
 import 'package:glimesh_app/components/FTLPlayer.dart';
+import 'package:glimesh_app/components/WHEPPlayer.dart';
 import 'package:glimesh_app/components/StreamTitle.dart';
 import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/components/MatureWarning.dart';
@@ -91,7 +92,9 @@ class _ChannelScreenState extends State<ChannelScreen> {
             InkWell(
               child: AspectRatio(
                 aspectRatio: 16 / 9,
-                child: FTLPlayer(channel: channel, edgeUrl: edgeRoute.url),
+                child: channel.backend == "ftl"
+                    ? FTLPlayer(channel: channel, edgeUrl: edgeRoute.url)
+                    : WHEPPlayer(channel: channel, edgeUrl: edgeRoute.url),
               ),
               onTap: () {
                 setState(() {
