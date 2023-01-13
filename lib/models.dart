@@ -149,6 +149,7 @@ class Channel {
   Channel({
     required this.id,
     required this.title,
+    required this.backend,
     required this.thumbnail,
     required this.chatBackgroundUrl,
     required this.username,
@@ -162,6 +163,7 @@ class Channel {
 
   final int id;
   final String title;
+  final String backend;
   final String thumbnail;
   final String chatBackgroundUrl;
 

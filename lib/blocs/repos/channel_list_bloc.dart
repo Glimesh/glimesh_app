@@ -161,6 +161,7 @@ class ChannelListBloc extends Bloc<ChannelListEvent, ChannelListState> {
     return Channel(
       id: int.parse(json['node']['id']),
       title: json['node']['title'] as String,
+      backend: json['node']['backend'] as String,
       chatBackgroundUrl: json['node']['chatBgUrl'] as String,
       thumbnail: json['node']['stream']['thumbnailUrl'] as String,
       username: json['node']['streamer']['username'] as String,

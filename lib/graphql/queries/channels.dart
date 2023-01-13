@@ -5,6 +5,7 @@ query LiveChannels($categorySlug: String!) {
       node {
         id
         title
+        backend
         chatBgUrl
         language
         matureContent
@@ -41,6 +42,7 @@ query GetMyself {
         node {
           id
           title
+          backend
           chatBgUrl
           language
           matureContent
@@ -76,6 +78,7 @@ query GetHomepageChannels {
       node {
         id
         title
+        backend
         chatBgUrl
         language
         matureContent
