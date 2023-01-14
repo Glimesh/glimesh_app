@@ -45,12 +45,11 @@ dependencies:
   url_launcher: ^6.0.12
   flutter_web_auth: ^0.4.1
   shared_preferences: ^2.0.8
-  sentry_flutter: ^6.0.1
+  sentry_flutter: ^6.5.1
   font_awesome_flutter: ^9.1.0
   flutter_markdown: ^0.6.8
   cached_network_image: ^3.1.0+1
   wakelock: ^0.6.1+1
-  workmanager: ^0.5.0-dev.8
   flutter_staggered_grid_view: ^0.6.1
   gettext_i18n: ^1.0.4
   flutter_localizations: 
