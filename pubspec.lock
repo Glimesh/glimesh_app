@@ -147,7 +147,7 @@ packages:
       name: dart_webrtc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.15"
   dbus:
     dependency: transitive
     description:
@@ -255,12 +255,10 @@ packages:
   flutter_webrtc:
     dependency: "direct overridden"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "94e94f679e350611882bfa9eed7b833e1c150974"
-      url: "https://github.com/glimesh/flutter-webrtc.git"
-    source: git
-    version: "0.8.3"
+      name: flutter_webrtc
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.23"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -611,6 +609,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  platform_detect:
+    dependency: transitive
+    description:
+      name: platform_detect
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.7"
   plausible_analytics:
     dependency: "direct main"
     description:
@@ -639,6 +644,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.0.1"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.3"
   quiver:
     dependency: transitive
     description:
@@ -888,7 +900,7 @@ packages:
       name: webrtc_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.11"
   win32:
     dependency: transitive
     description:
@@ -911,5 +923,5 @@ packages:
     source: hosted
     version: "5.3.1"
 sdks:
-  dart: ">=2.17.0-0 <3.0.0"
+  dart: ">=2.17.0 <3.0.0"
   flutter: ">=2.5.0"
