@@ -1,27 +1,18 @@
-library glimesh_app.track;
-
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:plausible_analytics/plausible_analytics.dart';
+import 'package:glimesh_app/track/track.dart';
 
-const String serverUrl = "https://plausible.io";
-const String domain = "app.glimesh.tv";
+UserAgentBuilder getUserAgentBuilder() => MobileAgentBuilder();
 
-final track = Plausible(
-  serverUrl,
-  domain,
-  userAgent: UserAgentBuilder.build(),
-);
-
-class UserAgentBuilder {
+class MobileAgentBuilder extends UserAgentBuilder {
   // Build to help Plausible figure out what our device usage is. Not perfect yet though!
-  static String build() {
+  String build() {
     String os = Platform.operatingSystem;
     String osVersion = Platform.operatingSystemVersion;
     String osString = "${os} ${osVersion}";
 
     if (Platform.isIOS) {
-      if (UserAgentBuilder.isTablet()) {
+      if (isTablet()) {
         os = "iPad";
       } else {
         os = "iPhone";

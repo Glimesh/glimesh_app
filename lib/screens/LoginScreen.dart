@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:glimesh_app/glimesh.dart';
-import 'package:glimesh_app/track.dart';
+import 'package:glimesh_app/track/track.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:package_info_plus/package_info_plus.dart';

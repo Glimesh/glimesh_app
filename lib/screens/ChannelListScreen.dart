@@ -6,7 +6,7 @@ import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:glimesh_app/blocs/repos/auth_bloc.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
-import 'package:glimesh_app/track.dart';
+import 'package:glimesh_app/track/track.dart';
 
 class ChannelListScreen extends StatelessWidget {
   @override

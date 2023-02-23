@@ -7,7 +7,7 @@ import 'package:glimesh_app/components/Loading.dart';
 import 'package:glimesh_app/repository.dart';
 import 'package:glimesh_app/models.dart';
 import 'package:gettext_i18n/gettext_i18n.dart';
-import 'package:glimesh_app/track.dart';
+import 'package:glimesh_app/track/track.dart';
 
 class FollowingScreen extends StatelessWidget {
   @override
