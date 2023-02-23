@@ -8,7 +8,7 @@ import 'package:glimesh_app/screens/ProfileScreen.dart';
 import 'package:glimesh_app/screens/CategoryListScreen.dart';
 import 'package:glimesh_app/screens/FollowingScreen.dart';
 
-import 'package:glimesh_app/track.dart';
+import 'package:glimesh_app/track/track.dart';
 
 class AppScreen extends StatefulWidget {
   AppScreen({Key? key, required this.title}) : super(key: key);
