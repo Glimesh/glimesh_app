@@ -62,8 +62,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-dependency_overrides:
-  flutter_webrtc: 0.9.23
+flutter_webrtc:
+  git:
+    url: https://github.com/glimesh/flutter-webrtc.git
+    ref: 1eb2a95e159c299c81dc6c6a212d0fa789be7c55
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -12,7 +12,10 @@ dependencies:
     sdk: flutter
   flutter:
     sdk: flutter
-  flutter_webrtc: ^0.7.1
+  flutter_webrtc:
+    git:
+      url: https://github.com/glimesh/flutter-webrtc.git
+      ref: 1eb2a95e159c299c81dc6c6a212d0fa789be7c55
   path_provider: ^2.0.5
   http: ^0.13.4
   web_socket_channel: ^2.1.0

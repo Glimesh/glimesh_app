@@ -253,12 +253,14 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_webrtc:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      name: flutter_webrtc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.23"
+      path: "."
+      ref: "1eb2a95e159c299c81dc6c6a212d0fa789be7c55"
+      resolved-ref: "1eb2a95e159c299c81dc6c6a212d0fa789be7c55"
+      url: "https://github.com/glimesh/flutter-webrtc.git"
+    source: git
+    version: "0.9.24"
   font_awesome_flutter:
     dependency: "direct main"
     description:
