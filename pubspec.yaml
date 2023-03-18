@@ -36,34 +36,36 @@ dependencies:
   #      ref: c04b3e79fb8f6f39ea6bb68fd85176b9928a72f4
   # janus_client: ^2.1.1-beta
   graphql_flutter: ^5.0.0
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.2
   equatable: ^2.0.3
   phoenix_wings: ^1.0.2
   gql_phoenix_link: ^0.1.0
   auto_size_text: ^3.0.0-nullsafety.0
   oauth2: ^2.0.0
-  url_launcher: ^6.0.12
+  url_launcher: ^6.1.10
   flutter_web_auth: ^0.4.1
-  shared_preferences: ^2.0.8
-  sentry_flutter: ^6.5.1
+  shared_preferences: ^2.0.18
+  sentry_flutter: ^6.22.0
   font_awesome_flutter: ^9.1.0
-  flutter_markdown: ^0.6.8
-  cached_network_image: ^3.1.0+1
-  wakelock: ^0.6.1+1
+  flutter_markdown: ^0.6.14
+  cached_network_image: ^3.2.3
+  wakelock: ^0.6.2
   flutter_staggered_grid_view: ^0.6.1
-  gettext_i18n: ^1.0.4
+  gettext_i18n: ^1.0.5
   flutter_localizations: 
     sdk: flutter
     version: ^0.0.0
-  plausible_analytics: ^0.1.3
+  plausible_analytics: ^0.2.1
 
 dev_dependencies:
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
 
-dependency_overrides:
-  flutter_webrtc: 0.9.23
+flutter_webrtc:
+  git:
+    url: https://github.com/glimesh/flutter-webrtc.git
+    ref: 1eb2a95e159c299c81dc6c6a212d0fa789be7c55
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
